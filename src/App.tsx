@@ -1,27 +1,27 @@
-// App.tsx
-
-import React from 'react'
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { TabProvider } from './components/provider/TabProvider'; // Import TabProvider
 
-import Sidebar from './components/Sidebar'
+import Sidebar from './components/Sidebar';
 
 import Home from './pages/Home';
-
 import Tasks from './pages/Task';
 import Chats from './pages/Chats';
 import Analytics from './pages/Analytics';
+import Deneme from './pages/Deneme';
+import Deneme1 from './pages/Deneme1';
 
 import DashboardLayout from './components/layouts/dashboardlayout';
-import FullWidthTabs from './components/Tabs'; // Tabs bileşenini ekledik
+
 
 const App: React.FunctionComponent = () => {
   return (
-    <>
+    <TabProvider> {/* Wrap your app with TabProvider */}
       <Router>
         <Routes>
-          <Route path='/' element={
+          <Route path='/home' element={
             <DashboardLayout>
-              <FullWidthTabs /> {/* Tabs bileşenini ekledik */}
+              
               <Home />
             </DashboardLayout>
           }/>
@@ -45,9 +45,19 @@ const App: React.FunctionComponent = () => {
               <Analytics />
             </DashboardLayout>
           }/>
+           <Route path='/Deneme' element={
+            <DashboardLayout>
+              <Deneme />
+            </DashboardLayout>
+          }/>
+           <Route path='/Deneme1' element={
+            <DashboardLayout>
+              <Deneme1 />
+            </DashboardLayout>
+          }/>
         </Routes>
       </Router> 
-    </>
+    </TabProvider> 
   )
 }
 

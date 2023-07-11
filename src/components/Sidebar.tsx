@@ -5,6 +5,9 @@ import * as FaIcons from 'react-icons/fa'
 import { SidebarData } from './SidebarData'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import { TabContext as GlobalTabContext, Tab } from '../context/TabContext'; 
+import { useContext } from 'react';
+
 
 
 type MenuItem = {
@@ -101,10 +104,13 @@ const SubMenuItems = styled.ul<{ open: boolean }>`
 
 
 
+
 const Sidebar: React.FunctionComponent = () => {
   const [close, setClose] = useState(false)
   const [openSubMenu, setOpenSubMenu] = useState<number[]>([])
   const [menuData, setMenuData] = useState<any[]>([]);
+  const { addTab, tabs } = useContext(GlobalTabContext)!;
+  
 
   useEffect(() => {
     const parentChildMap: any = {};
@@ -128,9 +134,14 @@ const Sidebar: React.FunctionComponent = () => {
       });
     };
 
+    
+
+    
+
     const newMenuData = buildMenuTree(topLevelMenus);
     setMenuData(newMenuData);
   }, []);
+  
 
   const showSidebar = () => setClose(!close)
 
@@ -140,13 +151,32 @@ const Sidebar: React.FunctionComponent = () => {
     } else {
       setOpenSubMenu([...openSubMenu, menuId]);
     }
-  }
+  };
+  
+  const handleMenuItemClick = (path: string, name: string) => {
+    // Check if the tab already exists
+    const tabExists = tabs.find((tab: Tab) => tab.value === path);
+  
+    // If the tab doesn't exist, create a new one
+    if (!tabExists && path && name) {
+      
+      addTab(name, path);
+    }
+  };
+ 
+  
+
+
+  
 
   const renderMenuItems = (data: any[], parentOpen: boolean) => {
     return data.map((item, index) => (
         <div key={index}>
-            <MenuItems onClick={() => item.children.length > 0 && handleSubMenu(item.menuId)}>
-                <MenuItemLinks to={item.path}>
+            <MenuItems onClick={() => item.children.length > 0 ? handleSubMenu(item.menuId) : null}>
+
+
+            <MenuItemLinks to={item.path} onClick={() => handleMenuItemClick(item.path, item.name)}>
+      
                     <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", fontSize: "12px", textDecoration: "none", color: "#ffffff", width: "90%"}}>
                         <span style={{ marginLeft: '16px' }}>{item.name}</span>
                     </div>

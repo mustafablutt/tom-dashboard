@@ -4,35 +4,43 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Button from '@mui/material/Button';
+import { useContext } from 'react';
+import { TabContext as GlobalTabContext } from '../context/TabContext'; // Import global TabContext
 
-
-//...
-
-export default function LabTabs({ menuItems }: { menuItems: MenuItem[] }) {
-  const [value, setValue] = React.useState('1');
-
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
+export default function LabTabs() {
+  const { tabs, currentTab, addTab, removeTab, changeTab } = useContext(GlobalTabContext)!; // Use global TabContext
 
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
-      <TabContext value={value}>
+      <Button onClick={() => addTab('label', 'value')}>Add Tab</Button>
+
+      <TabContext value={currentTab}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
-            {menuItems.map((item, index) => (
-              <Tab key={index} label={item.name} value={index.toString()} />
-            ))}
-          </TabList>
+        <TabList onChange={(event, newValue) => changeTab(newValue)} aria-label="lab API tabs example">
+  {tabs.map((tab, index) => (
+    <Tab 
+      key={index} 
+      label={
+        <div>
+          {tab.label}
+          <IconButton onClick={() => removeTab(tab)} size="small">
+            <CloseIcon />
+          </IconButton>
+        </div>
+      }
+      value={tab.value} 
+    />
+  ))}
+</TabList>
+
         </Box>
-        {menuItems.map((item, index) => (
-          <TabPanel key={index} value={index.toString()}>
-            {item.name}
-          </TabPanel>
+        {tabs.map((tab, index) => (
+          <TabPanel key={index} value={tab.value}>{tab.label}</TabPanel>
         ))}
       </TabContext>
     </Box>
   );
 }
-
-//...

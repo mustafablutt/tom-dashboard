@@ -1,5 +1,6 @@
 import React from 'react';
 import Sidebar from '../Sidebar';
+import FullWidthTabs from '../Tabs'; // FullWidthTabs bileşenini import edin
 
 const DashboardLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   return (
@@ -8,6 +9,7 @@ const DashboardLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) =>
         <Sidebar />
       </div>
       <div style={{ flex: '1 0 auto', padding: '1em' }}>
+        <FullWidthTabs /> {/* Bu satırı ekleyin */}
         {children}
       </div>
     </div>

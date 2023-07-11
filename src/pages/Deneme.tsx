@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const HomeText = styled.div`
+const DenemeText = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,10 +9,10 @@ const HomeText = styled.div`
     height: 70vh;
 `
 
-const Home: React.FunctionComponent = () => {
+const Deneme: React.FunctionComponent = () => {
     return (
-        <HomeText>Home</HomeText>
+        <DenemeText>Deneme</DenemeText>
     )
 }
 
-export default Home
+export default Deneme
