@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import * as FaIcons from 'react-icons/fa' 
@@ -6,6 +6,14 @@ import { SidebarData } from './SidebarData'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
+
+type MenuItem = {
+  menuId: number;
+  parentId: number;
+  path: string;
+  name: string;
+  children?: MenuItem[];
+};
 
 const Navbar = styled.div`
   display: flex;
@@ -72,7 +80,7 @@ const MenuItemLinks = styled(Link)`
     border-radius: 50px;
   }
 `
-
+/*
 const AdministrationMenu = styled.li`
 display: flex;
 align-items: center;
@@ -81,6 +89,7 @@ font-size: 15px;
 text-decoration: none;
 color: #ffffff;
 `
+*/
 
 const SubMenuItems = styled.ul<{ open: boolean }>`
   display: ${({ open }) => (open ? 'block' : 'none')};
@@ -91,45 +100,73 @@ const SubMenuItems = styled.ul<{ open: boolean }>`
 `
 
 
+
 const Sidebar: React.FunctionComponent = () => {
   const [close, setClose] = useState(false)
-  const [openSubMenu, setOpenSubMenu] = useState<number | null>(null)
+  const [openSubMenu, setOpenSubMenu] = useState<number[]>([])
+  const [menuData, setMenuData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const parentChildMap: any = {};
+    SidebarData.forEach((menu: any) => {
+      if (parentChildMap[menu.parentId]) {
+        parentChildMap[menu.parentId].push(menu);
+      } else {
+        parentChildMap[menu.parentId] = [menu];
+      }
+    });
+
+    const topLevelMenus = SidebarData.filter((menu: any) => menu.parentId === 0);
+
+    const buildMenuTree = (menus: any[]): MenuItem[] => {
+      return menus.map((menu: any) => {
+        const children = parentChildMap[menu.menuId];
+        return {
+          ...menu,
+          children: children ? buildMenuTree(children) : [],
+        };
+      });
+    };
+
+    const newMenuData = buildMenuTree(topLevelMenus);
+    setMenuData(newMenuData);
+  }, []);
+
   const showSidebar = () => setClose(!close)
 
   const handleSubMenu = (menuId: number) => {
-    setOpenSubMenu(openSubMenu === menuId ? null : menuId)
+    if(openSubMenu.includes(menuId)) {
+      setOpenSubMenu(openSubMenu.filter(id => id !== menuId));
+    } else {
+      setOpenSubMenu([...openSubMenu, menuId]);
+    }
   }
 
   const renderMenuItems = (data: any[], parentOpen: boolean) => {
     return data.map((item, index) => (
-      <div key={index}>
-        <MenuItems onClick={() => item.children.length > 0 && handleSubMenu(item.menuId)}>
-          <MenuItemLinks to={item.path}>
-            <div style={{ display: "flex",
-              alignItems: "center",
-              padding: "0 1rem",
-              fontSize: "12px",
-              textDecoration: "none",
-              color: "#ffffff",
-              width: "90%"}}>
-              {item.icon}
-              <span style={{ marginLeft: '16px' }}>{item.title}</span>
-            </div>
-            {item.children.length > 0 && !(openSubMenu === item.menuId) &&
-            <ArrowRightIcon style={{color: 'gray' }} />}
-            {item.children.length > 0 && (openSubMenu === item.menuId) &&
-            <ArrowDropUpIcon style={{color:  'white' }} />}
-          </MenuItemLinks>
-         
-        </MenuItems>
-        {item.children.length > 0 && (
-          <SubMenuItems className='sub-menu-items' open={parentOpen && openSubMenu === item.menuId}>
-            {renderMenuItems(item.children, parentOpen && openSubMenu === item.menuId)}
-          </SubMenuItems>
-        )}
-      </div>
+        <div key={index}>
+            <MenuItems onClick={() => item.children.length > 0 && handleSubMenu(item.menuId)}>
+                <MenuItemLinks to={item.path}>
+                    <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", fontSize: "12px", textDecoration: "none", color: "#ffffff", width: "90%"}}>
+                        <span style={{ marginLeft: '16px' }}>{item.name}</span>
+                    </div>
+                    {item.children.length > 0 && !openSubMenu.includes(item.menuId) &&
+                    <ArrowRightIcon style={{color: 'white' }} />}
+                    {item.children.length > 0 && openSubMenu.includes(item.menuId) &&
+                    <ArrowDropUpIcon style={{color:  'white' }} />}
+                </MenuItemLinks>
+            </MenuItems>
+            {item.children.length > 0 && (
+                <SubMenuItems className='sub-menu-items' open={parentOpen && openSubMenu.includes(item.menuId)}>
+                    {renderMenuItems(item.children, parentOpen && openSubMenu.includes(item.menuId))}
+                </SubMenuItems>
+            )}
+        </div>
     ))
-  }
+}
+
+
+  
 
   return (
     <>
@@ -144,7 +181,7 @@ const Sidebar: React.FunctionComponent = () => {
           <FaIcons.FaTimes />
         </MenuIconClose>
 
-        {renderMenuItems(SidebarData, close)}
+        {renderMenuItems(menuData, close)}
       </SidebarMenu>
     </>
   )

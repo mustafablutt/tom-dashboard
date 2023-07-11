@@ -1,3 +1,5 @@
+// App.tsx
+
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -10,6 +12,7 @@ import Chats from './pages/Chats';
 import Analytics from './pages/Analytics';
 
 import DashboardLayout from './components/layouts/dashboardlayout';
+import FullWidthTabs from './components/Tabs'; // Tabs bileşenini ekledik
 
 const App: React.FunctionComponent = () => {
   return (
@@ -18,6 +21,7 @@ const App: React.FunctionComponent = () => {
         <Routes>
           <Route path='/' element={
             <DashboardLayout>
+              <FullWidthTabs /> {/* Tabs bileşenini ekledik */}
               <Home />
             </DashboardLayout>
           }/>
