@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { TabProvider } from './components/provider/TabProvider'; // Import TabProvider
 
-import Sidebar from './components/Sidebar';
+
 
 import Home from './pages/Home';
 import Tasks from './pages/Task';
@@ -12,6 +12,7 @@ import Deneme from './pages/Deneme';
 import Deneme1 from './pages/Deneme1';
 
 import DashboardLayout from './components/layouts/dashboardlayout';
+import Team from './pages/Team';
 
 
 const App: React.FunctionComponent = () => {
@@ -27,7 +28,7 @@ const App: React.FunctionComponent = () => {
           }/>
           <Route path='/team' element={
             <DashboardLayout>
-            
+             <Team />
             </DashboardLayout>
           }/>
           <Route path='/tasks' element={

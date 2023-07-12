@@ -3,19 +3,20 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
+
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Button from '@mui/material/Button';
+
 import { useContext } from 'react';
-import { TabContext as GlobalTabContext } from '../context/TabContext'; // Import global TabContext
+import { TabContext as GlobalTabContext } from '../context/TabContext';
+import { Outlet, useNavigate } from 'react-router-dom'; // Import global TabContext
 
 export default function LabTabs() {
-  const { tabs, currentTab, addTab, removeTab, changeTab } = useContext(GlobalTabContext)!; // Use global TabContext
-
+  const { tabs, currentTab,  removeTab, changeTab } = useContext(GlobalTabContext)!; // Use global TabContext
+  const navigate = useNavigate();
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
-      <Button onClick={() => addTab('label', 'value')}>Add Tab</Button>
+      
 
       <TabContext value={currentTab}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -31,15 +32,14 @@ export default function LabTabs() {
           </IconButton>
         </div>
       }
-      value={tab.value} 
+      value={tab.value}
+      onClick={() => navigate(tab.value)} // Tab'a tıkladığında kullanıcıyı ilgili sayfaya yönlendirin 
     />
   ))}
 </TabList>
 
         </Box>
-        {tabs.map((tab, index) => (
-          <TabPanel key={index} value={tab.value}>{tab.label}</TabPanel>
-        ))}
+        <Outlet /> {/* Route içerisindeki çocukları görüntülemek için Outlet'i kullanın */}
       </TabContext>
     </Box>
   );

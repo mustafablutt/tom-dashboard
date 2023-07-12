@@ -11,7 +11,7 @@ const Deneme1Text = styled.div`
 
 const Deneme1: React.FunctionComponent = () => {
     return (
-        <Deneme1Text>Deneme1</Deneme1Text>
+        <Deneme1Text>Deneme2</Deneme1Text>
     )
 }
 
