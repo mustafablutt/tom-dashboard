@@ -64,7 +64,7 @@ const MenuItems = styled.li`
   padding: 0.25rem 0 0.5rem;
 `
 
-const MenuItemLinks = styled(Link)`
+const MenuItemLinks = styled(Link)<{ isActive: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -72,9 +72,10 @@ const MenuItemLinks = styled(Link)`
   font-size: 12px;
   text-decoration: none;
   color: #ffffff;
-  width: 90%;
-
-
+  width: ${({ isActive }) => (isActive ? '90%' : '100%')}; // genişlik ayarlandı
+  background-color: ${({ isActive }) => (isActive ? '#546cb2' : 'transparent')};
+  border-radius: ${({ isActive }) => (isActive ? '15px' : '0px')}; // border radius ayarlandı
+  height: ${({ isActive }) => (isActive ? '45px' : '0px')};;
   &:hover {
     background-color: #546cb2;
     color: #ffffff;
@@ -83,6 +84,7 @@ const MenuItemLinks = styled(Link)`
     border-radius: 50px;
   }
 `
+
 /*
 const AdministrationMenu = styled.li`
 display: flex;
@@ -109,7 +111,7 @@ const Sidebar: React.FunctionComponent = () => {
   const [close, setClose] = useState(false)
   const [openSubMenu, setOpenSubMenu] = useState<number[]>([])
   const [menuData, setMenuData] = useState<any[]>([]);
-  const { addTab, tabs } = useContext(GlobalTabContext)!;
+  const { addTab, tabs, currentTab } = useContext(GlobalTabContext)!;
   
 
   useEffect(() => {
@@ -175,7 +177,11 @@ const Sidebar: React.FunctionComponent = () => {
             <MenuItems onClick={() => item.children.length > 0 ? handleSubMenu(item.menuId) : null}>
 
 
-            <MenuItemLinks to={item.path} onClick={() => handleMenuItemClick(item.path, item.name)}>
+            <MenuItemLinks 
+        to={item.path} 
+        onClick={() => handleMenuItemClick(item.path, item.name)} 
+        isActive={currentTab === item.path} // Aktif tabın durumuna bağlı olarak ayarlandı
+      >
       
                     <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", fontSize: "12px", textDecoration: "none", color: "#ffffff", width: "90%"}}>
                         <span style={{ marginLeft: '16px' }}>{item.name}</span>

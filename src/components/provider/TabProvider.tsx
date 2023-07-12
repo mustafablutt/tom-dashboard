@@ -1,7 +1,7 @@
 import React, { useState, ReactNode } from 'react';
 import { TabContext, Tab } from '../../context/TabContext';
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+
 
 interface TabProviderProps {
     children: ReactNode;
@@ -12,7 +12,7 @@ interface TabProviderProps {
      
     ]);
     const navigate = useNavigate();
-    const location = useLocation();
+   
   
     const [currentTab, setCurrentTab] = useState<string>('1');
   
