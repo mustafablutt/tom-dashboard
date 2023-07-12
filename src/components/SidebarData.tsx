@@ -73,7 +73,7 @@ export const SidebarData = [
     menuId: 11,
     parentId: 0,
     path: '/deneme',
-    name: 'Deneme1',
+    name: 'Deneme',
     
   },
   {

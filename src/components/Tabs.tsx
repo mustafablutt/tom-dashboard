@@ -11,6 +11,7 @@ import { useContext } from 'react';
 import { TabContext as GlobalTabContext } from '../context/TabContext';
 import { Outlet, useNavigate } from 'react-router-dom'; // Import global TabContext
 
+
 export default function LabTabs() {
   const { tabs, currentTab,  removeTab, changeTab } = useContext(GlobalTabContext)!; // Use global TabContext
   const navigate = useNavigate();

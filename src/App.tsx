@@ -17,9 +17,10 @@ import Team from './pages/Team';
 
 const App: React.FunctionComponent = () => {
   return (
-    <TabProvider> {/* Wrap your app with TabProvider */}
+
       <Router>
-        <Routes>
+            <TabProvider>
+            <Routes>
           <Route path='/home' element={
             <DashboardLayout>
               
@@ -57,9 +58,14 @@ const App: React.FunctionComponent = () => {
             </DashboardLayout>
           }/>
         </Routes>
+
+      </TabProvider>
       </Router> 
-    </TabProvider> 
+     
   )
 }
 
 export default App;
+
+
+
