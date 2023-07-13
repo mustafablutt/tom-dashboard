@@ -27,6 +27,11 @@ const Sidebar: React.FunctionComponent = () => {
   const [openSubMenu, setOpenSubMenu] = useState<number[]>([])
   const [menuData, setMenuData] = useState<any[]>([]);
   const { addTab, tabs, currentTab, changeTab} = useContext(GlobalTabContext)!;
+  const [search, setSearch] = useState('');
+
+  const nameMatchesSearch = (name: string) => {
+    return search === '' || name.toLowerCase().includes(search.toLowerCase());
+  };
 
   
 
@@ -86,57 +91,70 @@ const Sidebar: React.FunctionComponent = () => {
 
   
 
-  const renderMenuItems = (data: any[], parentOpen: boolean) => {
-    return data.map((item, index) => (
-        <div key={index}>
-            <MenuItems onClick={() => item.children.length > 0 ? handleSubMenu(item.menuId) : null}>
-
-
-            <MenuItemLinks 
-        to={item.path} 
-        onClick={() => handleMenuItemClick(item.path, item.name)} 
-        isActive={currentTab === item.path} // Aktif tabın durumuna bağlı olarak ayarlandı
-      >
-      
-                    <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", fontSize: "12px", textDecoration: "none", color: "#ffffff", width: "90%"}}>
-                        <span style={{ marginLeft: '16px' }}>{item.name}</span>
-                    </div>
-                    {item.children.length > 0 && !openSubMenu.includes(item.menuId) &&
-                    <ArrowRightIcon style={{color: 'white' }} />}
-                    {item.children.length > 0 && openSubMenu.includes(item.menuId) &&
-                    <ArrowDropUpIcon style={{color:  'white' }} />}
-                </MenuItemLinks>
-            </MenuItems>
-            {item.children.length > 0 && (
-                <SubMenuItems className='sub-menu-items' open={parentOpen && openSubMenu.includes(item.menuId)}>
-                    {renderMenuItems(item.children, parentOpen && openSubMenu.includes(item.menuId))}
-                </SubMenuItems>
-            )}
-        </div>
-    ))
-}
+  const renderMenuItems = (data: any[], parentOpen: boolean, parentMatched: boolean = false) => {
+    // eşleşen menü öğelerini filtreleyin
+    const filteredData = data.filter(item => {
+      const matched = nameMatchesSearch(item.name);
+      if (matched || parentMatched) {
+        return true;
+      }
+      if (item.children) {
+        const filteredChildren: any = renderMenuItems(item.children, false, matched);
+        return filteredChildren.length > 0;
+      }
+      return false;
+    });
+  
+    // filtrelenmiş verileri kullanarak menü öğelerini render edin
+    return filteredData.map((item: any, index: any) => (
+      <div key={index}>
+        <MenuItems onClick={() => item.children.length > 0 ? handleSubMenu(item.menuId) : null}>
+          <MenuItemLinks
+            to={item.path}
+            onClick={() => handleMenuItemClick(item.path, item.name)}
+            isActive={currentTab === item.path}
+          >
+            <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", fontSize: "12px", textDecoration: "none", color: "#ffffff", width: "90%"}}>
+              <span style={{ marginLeft: '16px' }}>{item.name}</span>
+            </div>
+            {item.children.length > 0 && !openSubMenu.includes(item.menuId) &&
+              <ArrowRightIcon style={{ color: 'white' }} />}
+            {item.children.length > 0 && openSubMenu.includes(item.menuId) &&
+              <ArrowDropUpIcon style={{ color:  'white' }} />}
+          </MenuItemLinks>
+        </MenuItems>
+        {item.children.length > 0 && (
+          <SubMenuItems className='sub-menu-items' open={parentOpen && openSubMenu.includes(item.menuId)}>
+            {renderMenuItems(item.children, parentOpen && openSubMenu.includes(item.menuId), nameMatchesSearch(item.name) || parentMatched)}
+          </SubMenuItems>
+        )}
+      </div>
+    ));
+  };
+  
+  
 
 
   
 
-return (
-  <>
-    <Navbar>
-      <MenuIconOpen to="#" onClick={showSidebar}>
-        <FaIcons.FaBars />
-      </MenuIconOpen>
-    </Navbar>
-
-    <SidebarMenu close={close}>
-      <SearchAppBar />
-      <MenuIconClose to="#" onClick={showSidebar}>
-        <FaIcons.FaTimes />
-      </MenuIconClose>
-
-      {renderMenuItems(menuData, close)}
-    </SidebarMenu>
-  </>
-)
+  return (
+    <>
+      <Navbar>
+        <MenuIconOpen to="#" onClick={showSidebar}>
+          <FaIcons.FaBars />
+        </MenuIconOpen>
+      </Navbar>
+  
+      <SidebarMenu close={close}>
+        <SearchAppBar onSearch={setSearch} /> {/* onSearch propunu ekleyin */}
+        <MenuIconClose to="#" onClick={showSidebar}>
+          <FaIcons.FaTimes />
+        </MenuIconClose>
+  
+        {renderMenuItems(menuData, close)}
+      </SidebarMenu>
+    </>
+  );
 
 }
 
