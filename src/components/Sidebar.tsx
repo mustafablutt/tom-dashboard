@@ -111,7 +111,7 @@ const Sidebar: React.FunctionComponent = () => {
   const [close, setClose] = useState(false)
   const [openSubMenu, setOpenSubMenu] = useState<number[]>([])
   const [menuData, setMenuData] = useState<any[]>([]);
-  const { addTab, tabs, currentTab } = useContext(GlobalTabContext)!;
+  const { addTab, tabs, currentTab, changeTab} = useContext(GlobalTabContext)!;
   
 
   useEffect(() => {
@@ -161,10 +161,13 @@ const Sidebar: React.FunctionComponent = () => {
   
     // If the tab doesn't exist, create a new one
     if (!tabExists && path && name) {
-      
       addTab(name, path);
+    } else if (tabExists) {
+      // If the tab does exist, set it as the current tab
+      changeTab(path);
     }
   };
+  
  
   
 
