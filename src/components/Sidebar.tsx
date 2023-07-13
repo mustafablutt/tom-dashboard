@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
 import * as FaIcons from 'react-icons/fa' 
 import { SidebarData } from './SidebarData'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { TabContext as GlobalTabContext, Tab } from '../context/TabContext'; 
 import { useContext } from 'react';
+import { Navbar, MenuIconOpen, MenuIconClose, SidebarMenu, MenuItems, MenuItemLinks, SubMenuItems } from '../styles/SidebarStyles';
+import SearchAppBar from './Search';
 
 
 
@@ -18,91 +18,6 @@ type MenuItem = {
   children?: MenuItem[];
 };
 
-const Navbar = styled.div`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  height: 3.5rem;
-  background-color: ;
-`
-
-const MenuIconOpen = styled(Link)`
-  display: flex;
-  justify-content: start;
-  padding: 2px;
-  font-size: 1.2rem;
-  margin-left: 2rem;
-  color: #4e79f5;
-`
-
-const MenuIconClose = styled(Link)`
-  display: flex;
-  justify-content: end;
-  font-size: 1.5rem;
-  margin-top: 0.75rem;
-  margin-right: 1rem;
-  color: #ffffff;
-`
-
-const SidebarMenu = styled.div<{ close: boolean }>`
-  width: 250px;
-  height: 100vh;
-  background-color: #4e79f5;
-  position: fixed;
-  top: 0;
-  left: ${({ close }) => (close ? '0' : '-100%')};
-  transition: 0.6s;
-`
-
-const MenuItems = styled.li`
-  list-style: none;
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  width: 100%;
-  height: 50px;
-  padding: 0.25rem 0 0.5rem;
-`
-
-const MenuItemLinks = styled(Link)<{ isActive: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
-  font-size: 12px;
-  text-decoration: none;
-  color: #ffffff;
-  width: ${({ isActive }) => (isActive ? '90%' : '100%')}; // genişlik ayarlandı
-  background-color: ${({ isActive }) => (isActive ? '#546cb2' : 'transparent')};
-  border-radius: ${({ isActive }) => (isActive ? '15px' : '0px')}; // border radius ayarlandı
-  height: ${({ isActive }) => (isActive ? '45px' : '0px')};;
-  &:hover {
-    background-color: #546cb2;
-    color: #ffffff;
-    height: 45px;
-    text-align: center;
-    border-radius: 50px;
-  }
-`
-
-/*
-const AdministrationMenu = styled.li`
-display: flex;
-align-items: center;
-padding: 0 2rem;
-font-size: 15px;
-text-decoration: none;
-color: #ffffff;
-`
-*/
-
-const SubMenuItems = styled.ul<{ open: boolean }>`
-  display: ${({ open }) => (open ? 'block' : 'none')};
-  padding: 0;
-  padding-left:15px;
-  margin: 0;
-  
-`
 
 
 
@@ -112,6 +27,7 @@ const Sidebar: React.FunctionComponent = () => {
   const [openSubMenu, setOpenSubMenu] = useState<number[]>([])
   const [menuData, setMenuData] = useState<any[]>([]);
   const { addTab, tabs, currentTab, changeTab} = useContext(GlobalTabContext)!;
+
   
 
   useEffect(() => {
@@ -135,10 +51,6 @@ const Sidebar: React.FunctionComponent = () => {
         };
       });
     };
-
-    
-
-    
 
     const newMenuData = buildMenuTree(topLevelMenus);
     setMenuData(newMenuData);
@@ -207,23 +119,25 @@ const Sidebar: React.FunctionComponent = () => {
 
   
 
-  return (
-    <>
-      <Navbar>
-        <MenuIconOpen to="#" onClick={showSidebar}>
-          <FaIcons.FaBars />
-        </MenuIconOpen>
-      </Navbar>
+return (
+  <>
+    <Navbar>
+      <MenuIconOpen to="#" onClick={showSidebar}>
+        <FaIcons.FaBars />
+      </MenuIconOpen>
+    </Navbar>
 
-      <SidebarMenu close={close}>
-        <MenuIconClose to="#" onClick={showSidebar}>
-          <FaIcons.FaTimes />
-        </MenuIconClose>
+    <SidebarMenu close={close}>
+      <SearchAppBar />
+      <MenuIconClose to="#" onClick={showSidebar}>
+        <FaIcons.FaTimes />
+      </MenuIconClose>
 
-        {renderMenuItems(menuData, close)}
-      </SidebarMenu>
-    </>
-  )
+      {renderMenuItems(menuData, close)}
+    </SidebarMenu>
+  </>
+)
+
 }
 
 export default Sidebar
