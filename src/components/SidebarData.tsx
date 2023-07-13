@@ -30,7 +30,7 @@ export const SidebarData = [
   {
     menuId: 5,
     parentId: 3,
-    path: '/analytics1',
+    path: '/analytics',
     name: 'Analytics',
     
   },

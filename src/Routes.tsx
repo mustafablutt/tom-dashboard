@@ -1,5 +1,3 @@
-// Routes.tsx
-
 import { useRoutes } from "react-router-dom";
 import DashboardLayout from "./components/layouts/dashboardlayout";
 

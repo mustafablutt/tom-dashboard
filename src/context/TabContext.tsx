@@ -1,4 +1,5 @@
 import React from 'react';
+import { useContext } from 'react';
 
 export interface Tab {
   label: string;
@@ -12,5 +13,9 @@ interface TabContextProps {
   removeTab: (tab: Tab) => void;
   changeTab: (tab: string) => void;
 }
+
+export const useTab = () => {
+  return useContext(TabContext);
+};
 
 export const TabContext = React.createContext<TabContextProps | undefined>(undefined);

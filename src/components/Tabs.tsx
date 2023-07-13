@@ -6,13 +6,11 @@ import TabList from '@mui/lab/TabList';
 
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-
-import { useContext } from 'react';
-import { TabContext as GlobalTabContext } from '../context/TabContext';
+import { useTab} from '../context/TabContext';
 import { Outlet, useNavigate } from 'react-router-dom'; // Import global TabContext
 
 export default function LabTabs() {
-  const { tabs, currentTab,  removeTab, changeTab } = useContext(GlobalTabContext)!; // Use global TabContext
+  const { tabs, currentTab,  removeTab, changeTab } = useTab()!; // Use global TabContext
   const navigate = useNavigate();
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>

@@ -3,8 +3,7 @@ import * as FaIcons from 'react-icons/fa'
 import { SidebarData } from './SidebarData'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import { TabContext as GlobalTabContext, Tab } from '../context/TabContext'; 
-import { useContext } from 'react';
+import { useTab , Tab } from '../context/TabContext';
 import { Navbar, MenuIconOpen, MenuIconClose, SidebarMenu, MenuItems, MenuItemLinks, SubMenuItems } from '../styles/SidebarStyles';
 import SearchAppBar from './Search';
 
@@ -26,7 +25,7 @@ const Sidebar: React.FunctionComponent = () => {
   const [close, setClose] = useState(false)
   const [openSubMenu, setOpenSubMenu] = useState<number[]>([])
   const [menuData, setMenuData] = useState<any[]>([]);
-  const { addTab, tabs, currentTab, changeTab} = useContext(GlobalTabContext)!;
+  const { addTab, tabs, currentTab, changeTab} = useTab()!;
   const [search, setSearch] = useState('');
 
   const nameMatchesSearch = (name: string) => {
@@ -73,17 +72,26 @@ const Sidebar: React.FunctionComponent = () => {
   };
   
   const handleMenuItemClick = (path: string, name: string) => {
-    // Check if the tab already exists
-    const tabExists = tabs.find((tab: Tab) => tab.value === path);
+    // Check if the menu item has children
+    const menuItem = menuData.find(item => item.path === path);
+    if (menuItem && menuItem.children && menuItem.children.length > 0) {
+      // If the menu item has children, expand/collapse the submenu
+      handleSubMenu(menuItem.menuId);
+    } else {
+      // If the menu item does not have children, create or change the tab
+      // Check if the tab already exists
+      const tabExists = tabs.find((tab: Tab) => tab.value === path);
   
-    // If the tab doesn't exist, create a new one
-    if (!tabExists && path && name) {
-      addTab(name, path);
-    } else if (tabExists) {
-      // If the tab does exist, set it as the current tab
-      changeTab(path);
+      // If the tab doesn't exist, create a new one
+      if (!tabExists && path && name) {
+        addTab(name, path);
+      } else if (tabExists) {
+        // If the tab does exist, set it as the current tab
+        changeTab(path);
+      }
     }
   };
+  
   
  
   
