@@ -113,20 +113,21 @@ const Sidebar: React.FunctionComponent = () => {
     return filteredData.map((item: any, index: any) => (
       <div key={index}>
         <MenuItems onClick={() => item.children.length > 0 ? handleSubMenu(item.menuId) : null}>
-          <MenuItemLinks
-            to={item.path}
-            onClick={() => handleMenuItemClick(item.path, item.name)}
-            isActive={currentTab === item.path}
-          >
-            <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", fontSize: "12px", textDecoration: "none", color: "#ffffff", width: "90%"}}>
-              <span style={{ marginLeft: '16px' }}>{item.name}</span>
-            </div>
-            {item.children.length > 0 && !openSubMenu.includes(item.menuId) &&
-              <ArrowRightIcon style={{ color: 'white' }} />}
-            {item.children.length > 0 && openSubMenu.includes(item.menuId) &&
-              <ArrowDropUpIcon style={{ color:  'white' }} />}
-          </MenuItemLinks>
-        </MenuItems>
+  <MenuItemLinks
+    to={item.path}
+    onClick={() => item.children.length === 0 ? handleMenuItemClick(item.path, item.name) : null}
+    isActive={currentTab === item.path}
+  >
+    <div style={{ display: "flex", alignItems: "center", padding: "0 1rem", fontSize: "12px", textDecoration: "none", color: "#ffffff", width: "90%"}}>
+      <span style={{ marginLeft: '16px' }}>{item.name}</span>
+    </div>
+    {item.children.length > 0 && !openSubMenu.includes(item.menuId) &&
+      <ArrowRightIcon style={{ color: 'white' }} />}
+    {item.children.length > 0 && openSubMenu.includes(item.menuId) &&
+      <ArrowDropUpIcon style={{ color:  'white' }} />}
+  </MenuItemLinks>
+</MenuItems>
+
         {item.children.length > 0 && (
   <SubMenuItems 
     className='sub-menu-items' 
