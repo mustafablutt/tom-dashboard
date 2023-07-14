@@ -71,26 +71,20 @@ const Sidebar: React.FunctionComponent = () => {
     }
   };
   
-  const handleMenuItemClick = (path: string, name: string) => {
-    // Check if the menu item has children
-    const menuItem = menuData.find(item => item.path === path);
-    if (menuItem && menuItem.children && menuItem.children.length > 0) {
-      // If the menu item has children, expand/collapse the submenu
-      handleSubMenu(menuItem.menuId);
-    } else {
-      // If the menu item does not have children, create or change the tab
-      // Check if the tab already exists
-      const tabExists = tabs.find((tab: Tab) => tab.value === path);
+ const handleMenuItemClick = (path: string, name: string) => {
+    // Check if the tab already exists
+    const tabExists = tabs.find((tab: Tab) => tab.value === path);
   
-      // If the tab doesn't exist, create a new one
-      if (!tabExists && path && name) {
-        addTab(name, path);
-      } else if (tabExists) {
-        // If the tab does exist, set it as the current tab
-        changeTab(path);
-      }
+    // If the tab doesn't exist, create a new one
+    if (!tabExists && path && name) {
+      addTab(name, path);
+    } else if (tabExists) {
+      // If the tab does exist, set it as the current tab
+      changeTab(path);
     }
   };
+  
+
   
   
  
@@ -100,7 +94,6 @@ const Sidebar: React.FunctionComponent = () => {
   
 
   const renderMenuItems = (data: any[], parentOpen: boolean, parentMatched: boolean = false) => {
-    // eşleşen menü öğelerini filtreleyin
     const filteredData = data.filter(item => {
       const matched = nameMatchesSearch(item.name);
       if (matched || parentMatched) {
@@ -113,7 +106,10 @@ const Sidebar: React.FunctionComponent = () => {
       return false;
     });
   
-    // filtrelenmiş verileri kullanarak menü öğelerini render edin
+    // If there is a search term and any menu item in this menu tree matches, 
+    // then make sure the menu is open
+    const shouldOpen = search !== '' && filteredData.length > 0;
+  
     return filteredData.map((item: any, index: any) => (
       <div key={index}>
         <MenuItems onClick={() => item.children.length > 0 ? handleSubMenu(item.menuId) : null}>
@@ -132,10 +128,13 @@ const Sidebar: React.FunctionComponent = () => {
           </MenuItemLinks>
         </MenuItems>
         {item.children.length > 0 && (
-          <SubMenuItems className='sub-menu-items' open={parentOpen && openSubMenu.includes(item.menuId)}>
-            {renderMenuItems(item.children, parentOpen && openSubMenu.includes(item.menuId), nameMatchesSearch(item.name) || parentMatched)}
-          </SubMenuItems>
-        )}
+  <SubMenuItems 
+    className='sub-menu-items' 
+    open={(parentOpen && openSubMenu.includes(item.menuId)) || shouldOpen}>
+    {renderMenuItems(item.children, (parentOpen && openSubMenu.includes(item.menuId)) || shouldOpen, nameMatchesSearch(item.name) || parentMatched)}
+  </SubMenuItems>
+)}
+
       </div>
     ));
   };
