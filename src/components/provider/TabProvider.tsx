@@ -1,6 +1,6 @@
-import React, { useState, useCallback, ReactNode } from 'react';
-import { TabContext, Tab } from '../../context/TabContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useCallback, ReactNode } from "react";
+import { TabContext, Tab } from "../../context/TabContext";
+import { useNavigate } from "react-router-dom";
 
 interface TabProviderProps {
   children: ReactNode;
@@ -9,7 +9,7 @@ interface TabProviderProps {
 export const TabProvider: React.FC<TabProviderProps> = ({ children }) => {
   const [tabs, setTabs] = useState<Tab[]>([]);
   const navigate = useNavigate();
-  const [currentTab, setCurrentTab] = useState<string>('1');
+  const [currentTab, setCurrentTab] = useState<string>("1");
 
   const addTab = useCallback((label: string, value: string) => {
     const newTab = { label, value };
@@ -21,33 +21,47 @@ export const TabProvider: React.FC<TabProviderProps> = ({ children }) => {
     setCurrentTab(tab);
   }, []);
 
-  const removeTab = useCallback((tab: Tab) => {
-    const newTabs = tabs.filter((t) => t.value !== tab.value);
-    setTabs(newTabs);
+  const reorderTabs = useCallback((startIndex: number, endIndex: number) => {
+    setTabs((prevTabs) => {
+      const result = Array.from(prevTabs);
+      const [removed] = result.splice(startIndex, 1);
+      result.splice(endIndex, 0, removed);
 
-    if (newTabs.length > 0) {
-      const activeTabExists = newTabs.some((t) => t.value === currentTab);
-      if (!activeTabExists) {
-        const previousTab = newTabs[newTabs.length - 1];
-        setCurrentTab(() => {
-          navigate(previousTab.value);
-          return previousTab.value;
-        });
+      return result;
+    });
+  }, []);
+
+  const removeTab = useCallback(
+    (tab: Tab) => {
+      const newTabs = tabs.filter((t) => t.value !== tab.value);
+      setTabs(newTabs);
+
+      if (newTabs.length > 0) {
+        const activeTabExists = newTabs.some((t) => t.value === currentTab);
+        if (!activeTabExists) {
+          const previousTab = newTabs[newTabs.length - 1];
+          setCurrentTab(() => {
+            navigate(previousTab.value);
+            return previousTab.value;
+          });
+        } else {
+          setCurrentTab((currentTab) => {
+            navigate(currentTab);
+            changeTab(currentTab);
+            return currentTab;
+          });
+        }
       } else {
-        setCurrentTab((currentTab) => {
-          navigate(currentTab);
-          changeTab(currentTab);
-          return currentTab;
-        });
+        navigate("/home");
       }
-    } else {
-      navigate('/home');
-    }
-  }, [currentTab, navigate, tabs, changeTab]); // changeTab bağımlılık listesine eklendi.
-
+    },
+    [currentTab, navigate, tabs, changeTab]
+  ); // changeTab bağımlılık listesine eklendi.
 
   return (
-    <TabContext.Provider value={{ tabs, currentTab, addTab, removeTab, changeTab }}>
+    <TabContext.Provider
+      value={{ tabs, currentTab, addTab, removeTab, changeTab, reorderTabs }}
+    >
       {children}
     </TabContext.Provider>
   );

@@ -1,5 +1,5 @@
-import React from 'react';
-import { useContext } from 'react';
+import React from "react";
+import { useContext } from "react";
 
 export interface Tab {
   label: string;
@@ -12,10 +12,13 @@ interface TabContextProps {
   addTab: (label: string, value: string) => void;
   removeTab: (tab: Tab) => void;
   changeTab: (tab: string) => void;
+  reorderTabs: (startIndex: number, endIndex: number) => void; // Yeni eklediğimiz fonksiyon
 }
 
 export const useTab = () => {
   return useContext(TabContext);
 };
 
-export const TabContext = React.createContext<TabContextProps | undefined>(undefined);
+export const TabContext = React.createContext<TabContextProps | undefined>(
+  undefined
+);
