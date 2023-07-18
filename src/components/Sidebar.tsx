@@ -110,6 +110,13 @@ const Sidebar: React.FunctionComponent = () => {
     }
   };
 
+  const getLinkPath = (item: any) => {
+    if (item.children.length === 0) {
+      return item.path;
+    }
+    return "#";
+  };
+
   const renderMenuItems = (
     data: any[],
     parentOpen: boolean,
@@ -145,7 +152,7 @@ const Sidebar: React.FunctionComponent = () => {
           }
         >
           <MenuItemLinks
-            to={item.path}
+            to={getLinkPath(item)}
             onClick={() =>
               item.children.length === 0
                 ? handleMenuItemClick(item.path, item.name, item.parentId)
