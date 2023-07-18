@@ -4,6 +4,8 @@ import { SidebarData } from "./SidebarData";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useTab, Tab } from "../context/TabContext";
+import CancelIcon from "@mui/icons-material/Cancel";
+
 import {
   Navbar,
   MenuIconOpen,
@@ -138,8 +140,6 @@ const Sidebar: React.FunctionComponent = () => {
       return false;
     });
 
-    // If there is a search term and any menu item in this menu tree matches,
-    // then make sure the menu is open
     const shouldOpen = search !== "" && filteredData.length > 0;
 
     return filteredData.map((item: any, index: any) => (
@@ -211,10 +211,11 @@ const Sidebar: React.FunctionComponent = () => {
       </Navbar>
 
       <SidebarMenu close={close}>
-        <SearchAppBar onSearch={setSearch} /> {/* onSearch propunu ekleyin */}
         <MenuIconClose to="#" onClick={showSidebar}>
-          <FaIcons.FaTimes />
+          <CancelIcon />
         </MenuIconClose>
+        <SearchAppBar onSearch={setSearch} />
+
         {renderMenuItems(menuData, close)}
       </SidebarMenu>
     </>

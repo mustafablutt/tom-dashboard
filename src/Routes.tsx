@@ -5,9 +5,11 @@ import Home from "./pages/Home";
 import Tasks from "./pages/Task";
 import Chats from "./pages/Chats";
 import Analytics from "./pages/Analytics";
-import Deneme from "./pages/Deneme";
-import Deneme1 from "./pages/Deneme1";
+import Root10 from "./pages/Root10";
+import Random from "./pages/Random";
 import Team from "./pages/Team";
+import Random2 from "./pages/Random2";
+import Random3 from "./pages/Random3";
 
 export const RouteList: React.FC = () => {
   return useRoutes([
@@ -35,12 +37,20 @@ export const RouteList: React.FC = () => {
           element: <Analytics />,
         },
         {
-          path: "/deneme",
-          element: <Deneme />,
+          path: "/Random",
+          element: <Random />,
         },
         {
-          path: "/deneme1",
-          element: <Deneme1 />,
+          path: "/Root10",
+          element: <Root10 />,
+        },
+        {
+          path: "/Random2",
+          element: <Random2 />,
+        },
+        {
+          path: "/Random3",
+          element: <Random3 />,
         },
       ],
     },

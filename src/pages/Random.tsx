@@ -1,0 +1,16 @@
+import React from "react";
+import styled from "styled-components";
+
+const Deneme1Text = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  height: 70vh;
+`;
+
+const Random: React.FunctionComponent = () => {
+  return <Deneme1Text>Random</Deneme1Text>;
+};
+
+export default Random;
