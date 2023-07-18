@@ -4,11 +4,11 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import CancelIcon from "@mui/icons-material/Cancel";
-
-import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTab } from "../context/TabContext";
 import { Outlet, useNavigate } from "react-router-dom"; // Import global TabContext
+
+import { StyledIconButton, StyledTabDiv } from "../styles/TabStyles"; // import the new styles
 
 export default function LabTabs() {
   const { tabs, currentTab, removeTab, changeTab, reorderTabs } = useTab()!; // Use global TabContext
@@ -31,32 +31,21 @@ export default function LabTabs() {
               <Tab
                 key={tab.value}
                 label={
-                  <div
-                    style={{
-                      textTransform: "none",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
+                  <StyledTabDiv>
                     {tab.label.charAt(0).toUpperCase() +
                       tab.label.slice(1).toLowerCase()}
                     {tab.value !== "/" && (
-                      <IconButton
+                      <StyledIconButton
                         onClick={(event) => {
                           event.stopPropagation();
                           removeTab(tab);
                         }}
                         size="small"
-                        style={{
-                          backgroundColor: "rgba(0, 0, 0, 0.04)",
-                          borderRadius: "50%",
-                          marginLeft: "10px",
-                        }}
                       >
                         <CloseIcon fontSize="small" />
-                      </IconButton>
+                      </StyledIconButton>
                     )}
-                  </div>
+                  </StyledTabDiv>
                 }
                 value={tab.value}
                 onClick={() => navigate(tab.value)}
