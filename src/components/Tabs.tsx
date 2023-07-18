@@ -16,7 +16,13 @@ export default function LabTabs() {
   return (
     <Box sx={{ width: "100%", typography: "body1" }}>
       <TabContext value={currentTab}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+            //  width: `${tabs.length * 100}px`,
+          }}
+        >
           <TabList
             onChange={(event, newValue) => changeTab(newValue)}
             aria-label="lab API tabs example"
@@ -34,20 +40,22 @@ export default function LabTabs() {
                   >
                     {tab.label.charAt(0).toUpperCase() +
                       tab.label.slice(1).toLowerCase()}
-                    <IconButton
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        removeTab(tab);
-                      }}
-                      size="small"
-                      style={{
-                        backgroundColor: "rgba(0, 0, 0, 0.04)",
-                        borderRadius: "50%",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
+                    {tab.value !== "/" && (
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          removeTab(tab);
+                        }}
+                        size="small"
+                        style={{
+                          backgroundColor: "rgba(0, 0, 0, 0.04)",
+                          borderRadius: "50%",
+                          marginLeft: "10px",
+                        }}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    )}
                   </div>
                 }
                 value={tab.value}

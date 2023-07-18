@@ -7,9 +7,10 @@ interface TabProviderProps {
 }
 
 export const TabProvider: React.FC<TabProviderProps> = ({ children }) => {
-  const [tabs, setTabs] = useState<Tab[]>([]);
   const navigate = useNavigate();
-  const [currentTab, setCurrentTab] = useState<string>("1");
+  const [currentTab, setCurrentTab] = useState<string>("/");
+
+  const [tabs, setTabs] = useState<Tab[]>([{ label: "Home", value: "/" }]);
 
   const addTab = useCallback((label: string, value: string) => {
     const newTab = { label, value };
@@ -56,7 +57,7 @@ export const TabProvider: React.FC<TabProviderProps> = ({ children }) => {
       }
     },
     [currentTab, navigate, tabs, changeTab]
-  ); // changeTab bağımlılık listesine eklendi.
+  );
 
   return (
     <TabContext.Provider
