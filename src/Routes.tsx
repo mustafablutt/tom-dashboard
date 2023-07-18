@@ -1,13 +1,13 @@
 import { useRoutes } from "react-router-dom";
 import DashboardLayout from "./components/layouts/dashboardlayout";
 
-import Home from './pages/Home';
-import Tasks from './pages/Task';
-import Chats from './pages/Chats';
-import Analytics from './pages/Analytics';
-import Deneme from './pages/Deneme';
-import Deneme1 from './pages/Deneme1';
-import Team from './pages/Team';
+import Home from "./pages/Home";
+import Tasks from "./pages/Task";
+import Chats from "./pages/Chats";
+import Analytics from "./pages/Analytics";
+import Deneme from "./pages/Deneme";
+import Deneme1 from "./pages/Deneme1";
+import Team from "./pages/Team";
 
 export const RouteList: React.FC = () => {
   return useRoutes([
@@ -15,7 +15,7 @@ export const RouteList: React.FC = () => {
       element: <DashboardLayout />,
       children: [
         {
-          path: "/home",
+          path: "/",
           element: <Home />,
         },
         {
@@ -41,7 +41,7 @@ export const RouteList: React.FC = () => {
         {
           path: "/deneme1",
           element: <Deneme1 />,
-        }
+        },
       ],
     },
   ]);

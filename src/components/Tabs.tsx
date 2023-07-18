@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -24,16 +25,28 @@ export default function LabTabs() {
               <Tab
                 key={tab.value}
                 label={
-                  <div>
-                    {tab.label}
+                  <div
+                    style={{
+                      textTransform: "none",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {tab.label.charAt(0).toUpperCase() +
+                      tab.label.slice(1).toLowerCase()}
                     <IconButton
                       onClick={(event) => {
                         event.stopPropagation();
                         removeTab(tab);
                       }}
                       size="small"
+                      style={{
+                        backgroundColor: "rgba(0, 0, 0, 0.04)",
+                        borderRadius: "50%",
+                        marginLeft: "10px",
+                      }}
                     >
-                      <CloseIcon />
+                      <CloseIcon fontSize="small" />
                     </IconButton>
                   </div>
                 }
