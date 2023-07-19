@@ -15,26 +15,41 @@ export const MenuIconOpen = styled(Link)`
   padding: 2px;
   font-size: 1.2rem;
   margin-left: 2rem;
-  color: #4e79f5;
+  color: #53308c;
 `;
 
 export const MenuIconClose = styled(Link)`
   display: flex;
-  justify-content: end;
-  font-size: 1.5rem;
-  margin-top: 0.75rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  margin-top: 1rem;
   margin-right: 1rem;
-  color: #ffffff;
-`;
+  color: #53308c;
+  background-color: #eee;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%; /* Change this to 50% to create a perfect circle */
+  border: 2px solid #fff;
+  transition: background-color 0.3s ease;
+  position: absolute;
 
+  right: -37px; /* Move the icon half of its width outside the SidebarMenu */
+  z-index: 1; /* Ensure the icon is displayed on top */
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`;
 export const SidebarMenu = styled.div<{ close: boolean }>`
-  width: 250px;
+  width: 268px;
   height: 100vh;
-  background-color: #4e79f5;
+  background-color: #7947ca;
   position: fixed;
   top: 0;
   left: ${({ close }) => (close ? "0" : "-100%")};
   transition: 0.6s;
+  overflow: visible;
 `;
 
 export const MenuItems = styled.li`
@@ -56,29 +71,18 @@ export const MenuItemLinks = styled(Link)<{ isActive: boolean }>`
   text-decoration: none;
   color: #ffffff;
   width: ${({ isActive }) => (isActive ? "90%" : "100%")}; // genişlik ayarlandı
-  background-color: ${({ isActive }) => (isActive ? "#546cb2" : "transparent")};
+  background-color: ${({ isActive }) => (isActive ? "#8A6DCA" : "transparent")};
   border-radius: ${({ isActive }) =>
     isActive ? "15px" : "0px"}; // border radius ayarlandı
   height: ${({ isActive }) => (isActive ? "45px" : "0px")};
   &:hover {
-    background-color: #546cb2;
+    background-color: #8a6dca;
     color: #ffffff;
     height: 45px;
     text-align: center;
     border-radius: 50px;
   }
 `;
-
-/*
-const AdministrationMenu = styled.li`
-display: flex;
-align-items: center;
-padding: 0 2rem;
-font-size: 15px;
-text-decoration: none;
-color: #ffffff;
-`
-*/
 
 export const SubMenuItems = styled.ul<{ open: boolean }>`
   display: ${({ open }) => (open ? "block" : "none")};

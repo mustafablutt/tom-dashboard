@@ -26,7 +26,9 @@ type MenuItem = {
   children?: MenuItem[];
 };
 
-const Sidebar: React.FunctionComponent = () => {
+const Sidebar: React.FunctionComponent<{
+  onWidthChange: (width: string) => void;
+}> = ({ onWidthChange }) => {
   const [close, setClose] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<Record<number, boolean>>({});
   const [menuData, setMenuData] = useState<any[]>([]);
@@ -71,7 +73,10 @@ const Sidebar: React.FunctionComponent = () => {
     fetchMenuData();
   }, []);
 
-  const showSidebar = () => setClose(!close);
+  const showSidebar = () => {
+    setClose(!close);
+    onWidthChange(close ? "100px" : "256px");
+  };
 
   const handleSubMenu = (menuId: number, parentId: number) => {
     setOpenSubMenu((prevState) => {
@@ -218,10 +223,12 @@ const Sidebar: React.FunctionComponent = () => {
       </Navbar>
 
       <SidebarMenu close={close}>
-        <MenuIconClose to="#" onClick={showSidebar}>
-          <CancelIcon />
-        </MenuIconClose>
-        <SearchAppBar onSearch={setSearch} />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <SearchAppBar onSearch={setSearch} />
+          <MenuIconClose to="#" onClick={showSidebar}>
+            <FaIcons.FaBars />
+          </MenuIconClose>
+        </div>
 
         {renderMenuItems(menuData, close)}
       </SidebarMenu>

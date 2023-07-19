@@ -20,11 +20,17 @@ export default function LabTabs() {
           sx={{
             borderBottom: 1,
             borderColor: "divider",
+            marginLeft: 2,
             //   width: `${tabs.length * 120}px`,
           }}
         >
           <TabList
             onChange={(event, newValue) => changeTab(newValue)}
+            TabIndicatorProps={{
+              style: {
+                backgroundColor: "#7947CA", // Change the indicator color for the selected tab
+              },
+            }}
             aria-label="lab API tabs example"
           >
             {tabs.map((tab, index) => (
@@ -32,8 +38,7 @@ export default function LabTabs() {
                 key={tab.value}
                 label={
                   <StyledTabDiv>
-                    {tab.label.charAt(0).toUpperCase() +
-                      tab.label.slice(1).toLowerCase()}
+                    {tab.label}
                     {tab.value !== "/" && (
                       <StyledIconButton
                         onClick={(event) => {
@@ -62,6 +67,12 @@ export default function LabTabs() {
                     event.dataTransfer.getData("text/plain")
                   );
                   reorderTabs(oldIndex, index); // Bu satırı ekleyin
+                }}
+                sx={{
+                  color: "GrayText",
+                  "&.Mui-selected": {
+                    color: "#7947CA", // Change the color for the active tab
+                  },
                 }}
               />
             ))}
