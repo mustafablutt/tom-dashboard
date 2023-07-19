@@ -20,7 +20,7 @@ export default function LabTabs() {
           sx={{
             borderBottom: 1,
             borderColor: "divider",
-            //  width: `${tabs.length * 100}px`,
+            //   width: `${tabs.length * 120}px`,
           }}
         >
           <TabList

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as FaIcons from "react-icons/fa";
-import { SidebarData } from "./SidebarData";
+import { fetchSidebarData } from "./SidebarData";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useTab, Tab } from "../context/TabContext";
@@ -18,10 +18,11 @@ import {
 import SearchAppBar from "./Search";
 
 type MenuItem = {
-  menuId: number;
+  _id: number;
   parentId: number;
   path: string;
   name: string;
+  fullPath: string;
   children?: MenuItem[];
 };
 
@@ -38,31 +39,36 @@ const Sidebar: React.FunctionComponent = () => {
   };
 
   useEffect(() => {
-    const parentChildMap: any = {};
-    SidebarData.forEach((menu: any) => {
-      if (parentChildMap[menu.parentId]) {
-        parentChildMap[menu.parentId].push(menu);
-      } else {
-        parentChildMap[menu.parentId] = [menu];
-      }
-    });
-
-    const topLevelMenus = SidebarData.filter(
-      (menu: any) => menu.parentId === 0
-    );
-
-    const buildMenuTree = (menus: any[]): MenuItem[] => {
-      return menus.map((menu: any) => {
-        const children = parentChildMap[menu.menuId];
-        return {
-          ...menu,
-          children: children ? buildMenuTree(children) : [],
-        };
+    const fetchMenuData = async () => {
+      const fetchedData = await fetchSidebarData();
+      const parentChildMap: any = {};
+      fetchedData.forEach((menu: any) => {
+        if (parentChildMap[menu.parentId]) {
+          parentChildMap[menu.parentId].push(menu);
+        } else {
+          parentChildMap[menu.parentId] = [menu];
+        }
       });
+
+      const topLevelMenus = fetchedData.filter(
+        (menu: any) => menu.parentId === 0
+      );
+
+      const buildMenuTree = (menus: any[]): MenuItem[] => {
+        return menus.map((menu: any) => {
+          const children = parentChildMap[menu._id]; // id field changed to _id to match your API data
+          return {
+            ...menu,
+            children: children ? buildMenuTree(children) : [],
+          };
+        });
+      };
+
+      const newMenuData = buildMenuTree(topLevelMenus);
+      setMenuData(newMenuData);
     };
 
-    const newMenuData = buildMenuTree(topLevelMenus);
-    setMenuData(newMenuData);
+    fetchMenuData();
   }, []);
 
   const showSidebar = () => setClose(!close);
@@ -120,21 +126,18 @@ const Sidebar: React.FunctionComponent = () => {
   };
 
   const renderMenuItems = (
-    data: any[],
+    data: MenuItem[], // MenuItem tipini kullanın
     parentOpen: boolean,
     parentMatched: boolean = false
-  ) => {
+  ): JSX.Element[] => {
+    // JSX.Element[] olarak dönüş tipini belirtin
     const filteredData = data.filter((item) => {
       const matched = nameMatchesSearch(item.name);
       if (matched || parentMatched) {
         return true;
       }
       if (item.children) {
-        const filteredChildren: any = renderMenuItems(
-          item.children,
-          false,
-          matched
-        );
+        const filteredChildren = renderMenuItems(item.children, false, matched);
         return filteredChildren.length > 0;
       }
       return false;
@@ -142,19 +145,19 @@ const Sidebar: React.FunctionComponent = () => {
 
     const shouldOpen = search !== "" && filteredData.length > 0;
 
-    return filteredData.map((item: any, index: any) => (
+    return filteredData.map((item: MenuItem, index: number) => (
       <div key={index}>
         <MenuItems
           onClick={() =>
-            item.children.length > 0
-              ? handleSubMenu(item.menuId, item.parentId)
+            item.children && item.children.length > 0
+              ? handleSubMenu(item._id, item.parentId) // _id alanını kullanın
               : null
           }
         >
           <MenuItemLinks
-            to={getLinkPath(item)}
+            to={item.path}
             onClick={() =>
-              item.children.length === 0
+              item.children && item.children.length === 0
                 ? handleMenuItemClick(item.path, item.name, item.parentId)
                 : null
             }
@@ -173,27 +176,31 @@ const Sidebar: React.FunctionComponent = () => {
             >
               <span style={{ marginLeft: "16px" }}>{item.name}</span>
             </div>
-            {item.children.length > 0 && !openSubMenu[item.menuId] && (
-              <ArrowRightIcon style={{ color: "white" }} />
-            )}
-            {item.children.length > 0 && openSubMenu[item.menuId] && (
-              <ArrowDropUpIcon style={{ color: "white" }} />
-            )}
+            {item.children &&
+              item.children.length > 0 &&
+              !openSubMenu[item._id] && ( // _id alanını kullanın
+                <ArrowRightIcon style={{ color: "white" }} />
+              )}
+            {item.children &&
+              item.children.length > 0 &&
+              openSubMenu[item._id] && ( // _id alanını kullanın
+                <ArrowDropUpIcon style={{ color: "white" }} />
+              )}
           </MenuItemLinks>
         </MenuItems>
 
-        {item.children.length > 0 && (
+        {item.children && item.children.length > 0 && (
           <SubMenuItems
             className="sub-menu-items"
             open={
-              ((parentOpen && openSubMenu[item.menuId]) || shouldOpen) &&
-              (item.parentId !== 0 || openTopMenu === item.menuId)
+              ((parentOpen && openSubMenu[item._id]) || shouldOpen) && // _id alanını kullanın
+              (item.parentId !== 0 || openTopMenu === item._id) // _id alanını kullanın
             }
           >
             {renderMenuItems(
               item.children,
-              ((parentOpen && openSubMenu[item.menuId]) || shouldOpen) &&
-                (item.parentId !== 0 || openTopMenu === item.menuId),
+              ((parentOpen && openSubMenu[item._id]) || shouldOpen) && // _id alanını kullanın
+                (item.parentId !== 0 || openTopMenu === item._id), // _id alanını kullanın
               nameMatchesSearch(item.name) || parentMatched
             )}
           </SubMenuItems>

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Random2Text = styled.div`
+const AddCustomerText = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,8 +9,8 @@ const Random2Text = styled.div`
   height: 70vh;
 `;
 
-const Random2: React.FunctionComponent = () => {
-  return <Random2Text>Random2</Random2Text>;
+const AddCustomer: React.FunctionComponent = () => {
+  return <AddCustomerText>Müşteri Ekle</AddCustomerText>;
 };
 
-export default Random2;
+export default AddCustomer;
