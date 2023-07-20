@@ -37,6 +37,10 @@ export const MenuIconClose = styled(Link)`
   right: -37px; /* Move the icon half of its width outside the SidebarMenu */
   z-index: 1; /* Ensure the icon is displayed on top */
 
+  @media (max-width: 768px) {
+    right: -5px;
+    z-index: 1;
+  }
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);
   }
@@ -50,6 +54,13 @@ export const SidebarMenu = styled.div<{ close: boolean }>`
   left: ${({ close }) => (close ? "0" : "-100%")};
   transition: 0.6s;
   overflow: visible;
+  z-index: 1;
+
+  /* Eklenen CSS media query */
+  @media (max-width: 768px) {
+    width: ${({ close }) => (close ? "100%" : "0")};
+    height: 100%;
+  }
 `;
 
 export const MenuItems = styled.li`
@@ -75,6 +86,7 @@ export const MenuItemLinks = styled(Link)<{ isActive: boolean }>`
   border-radius: ${({ isActive }) =>
     isActive ? "15px" : "0px"}; // border radius ayarlandı
   height: ${({ isActive }) => (isActive ? "45px" : "0px")};
+
   &:hover {
     background-color: #8a6dca;
     color: #ffffff;
