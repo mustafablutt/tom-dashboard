@@ -9,7 +9,7 @@ const DashboardLayout: React.FC<React.PropsWithChildren<{}>> = ({
 
   return (
     <div style={{ display: "flex" }}>
-      <div style={{ flex: `0 0 ${sidebarWidth}`, transition: "flex 0.7s" }}>
+      <div style={{ flex: `0 0 ${sidebarWidth}`, transition: "flex 0.6s" }}>
         <Sidebar onWidthChange={setSidebarWidth} />
       </div>
       <div style={{ flex: "1 0 auto", padding: "1em" }}>

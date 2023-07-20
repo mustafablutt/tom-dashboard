@@ -129,11 +129,37 @@ const Sidebar: React.FunctionComponent<{
     }
     return "#";
   };
+  const isActiveOrParentActive = (item: MenuItem): boolean => {
+    return item.path === currentTab || isActiveParent(item);
+  };
 
+  const isActiveParent = (item: MenuItem): boolean => {
+    if (item.children) {
+      for (const child of item.children) {
+        if (child.path === currentTab || isActiveParent(child)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  const isAnyChildActive = (data: MenuItem[]): boolean => {
+    for (const item of data) {
+      if (item.path === currentTab) {
+        return true;
+      }
+      if (item.children && isAnyChildActive(item.children)) {
+        return true;
+      }
+    }
+    return false;
+  };
   const renderMenuItems = (
     data: MenuItem[], // MenuItem tipini kullanın
     parentOpen: boolean,
-    parentMatched: boolean = false
+    parentMatched: boolean = false,
+    activeParent: MenuItem | null = null
   ): JSX.Element[] => {
     // JSX.Element[] olarak dönüş tipini belirtin
     const filteredData = data.filter((item) => {
@@ -150,68 +176,83 @@ const Sidebar: React.FunctionComponent<{
 
     const shouldOpen = search !== "" && filteredData.length > 0;
 
-    return filteredData.map((item: MenuItem, index: number) => (
-      <div key={index}>
-        <MenuItems
-          onClick={() =>
-            item.children && item.children.length > 0
-              ? handleSubMenu(item._id, item.parentId) // _id alanını kullanın
-              : null
-          }
-        >
-          <MenuItemLinks
-            to={item.path}
+    return filteredData.map((item: MenuItem, index: number) => {
+      const isActive = item.path === currentTab;
+      const isChildActive = item.children && isAnyChildActive(item.children);
+
+      // Calculate the font weight based on whether the parent or the current item is active
+      const fontWeight =
+        isActive || isChildActive || isActiveOrParentActive(item)
+          ? "bold"
+          : "normal";
+
+      return (
+        <div key={index}>
+          <MenuItems
             onClick={() =>
-              item.children && item.children.length === 0
-                ? handleMenuItemClick(item.path, item.name, item.parentId)
+              item.children && item.children.length > 0
+                ? handleSubMenu(item._id, item.parentId) // _id alanını kullanın
                 : null
             }
-            isActive={currentTab === item.path}
+            style={{
+              fontWeight,
+            }}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "0 1rem",
-                fontSize: "12px",
-                textDecoration: "none",
-                color: "#ffffff",
-                width: "90%",
-              }}
+            <MenuItemLinks
+              to={item.path}
+              onClick={() =>
+                item.children && item.children.length === 0
+                  ? handleMenuItemClick(item.path, item.name, item.parentId)
+                  : null
+              }
+              isActive={currentTab === item.path}
             >
-              <span style={{ marginLeft: "16px" }}>{item.name}</span>
-            </div>
-            {item.children &&
-              item.children.length > 0 &&
-              !openSubMenu[item._id] && ( // _id alanını kullanın
-                <ArrowRightIcon style={{ color: "white" }} />
-              )}
-            {item.children &&
-              item.children.length > 0 &&
-              openSubMenu[item._id] && ( // _id alanını kullanın
-                <ArrowDropUpIcon style={{ color: "white" }} />
-              )}
-          </MenuItemLinks>
-        </MenuItems>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "0 1rem",
+                  fontSize: "12px",
+                  textDecoration: "none",
+                  color: "#ffffff",
+                  width: "90%",
+                }}
+              >
+                <span style={{ marginLeft: "16px" }}>{item.name}</span>
+              </div>
+              {item.children &&
+                item.children.length > 0 &&
+                !openSubMenu[item._id] && ( // _id alanını kullanın
+                  <ArrowRightIcon style={{ color: "white" }} />
+                )}
+              {item.children &&
+                item.children.length > 0 &&
+                openSubMenu[item._id] && ( // _id alanını kullanın
+                  <ArrowDropUpIcon style={{ color: "white" }} />
+                )}
+            </MenuItemLinks>
+          </MenuItems>
 
-        {item.children && item.children.length > 0 && (
-          <SubMenuItems
-            className="sub-menu-items"
-            open={
-              ((parentOpen && openSubMenu[item._id]) || shouldOpen) && // _id alanını kullanın
-              (item.parentId !== 0 || openTopMenu === item._id) // _id alanını kullanın
-            }
-          >
-            {renderMenuItems(
-              item.children,
-              ((parentOpen && openSubMenu[item._id]) || shouldOpen) && // _id alanını kullanın
-                (item.parentId !== 0 || openTopMenu === item._id), // _id alanını kullanın
-              nameMatchesSearch(item.name) || parentMatched
-            )}
-          </SubMenuItems>
-        )}
-      </div>
-    ));
+          {item.children && item.children.length > 0 && (
+            <SubMenuItems
+              className="sub-menu-items"
+              open={
+                ((parentOpen && openSubMenu[item._id]) || shouldOpen) && // _id alanını kullanın
+                (item.parentId !== 0 || openTopMenu === item._id) // _id alanını kullanın
+              }
+            >
+              {renderMenuItems(
+                item.children,
+                ((parentOpen && openSubMenu[item._id]) || shouldOpen) && // _id alanını kullanın
+                  (item.parentId !== 0 || openTopMenu === item._id), // _id alanını kullanın
+                nameMatchesSearch(item.name) || parentMatched,
+                isActiveOrParentActive(item) ? item : activeParent
+              )}
+            </SubMenuItems>
+          )}
+        </div>
+      );
+    });
   };
 
   return (
