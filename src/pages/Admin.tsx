@@ -11,6 +11,8 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Checkbox from "@mui/joy/Checkbox";
 import Radio from "@mui/joy/Radio";
+import Button from "@mui/joy/Button";
+import ButtonGroup from "@mui/joy/ButtonGroup";
 
 import Grid from "@mui/joy/Grid";
 
@@ -44,6 +46,17 @@ export default function InputColors() {
     | undefined;
 
   const [color, setColor] = React.useState<colorType>("primary");
+  const [name, setName] = React.useState<String>("");
+  const [radioOrientation, setRadioOrientation] = React.useState<
+    "vertical" | "horizontal"
+  >("vertical");
+
+  const handleOrientationChange = (orientation: any) => {
+    setRadioOrientation(orientation);
+  };
+  const handleName = (name: any) => {
+    setName(name);
+  };
 
   type variantType = "outlined" | "soft" | "solid" | "plain" | undefined;
   const [variant, setVariant] = React.useState<variantType>("outlined");
@@ -103,6 +116,7 @@ export default function InputColors() {
             <Option value="input">Input</Option>
             <Option value="checkbox">Checkbox</Option>
             <Option value="dropdown">Dropdown</Option>
+            <Option value="radiobutton">Radiobutton</Option>
           </Select>
         </Box>
         <Box
@@ -118,6 +132,13 @@ export default function InputColors() {
           }}
         >
           <FormControl>
+            <FormLabel>Enter your component name</FormLabel>
+            <Textarea
+              name="Outlined"
+              placeholder="name"
+              variant="outlined"
+              onChange={handleName}
+            />
             <FormLabel>Variants</FormLabel>
             <RadioGroup
               defaultValue="outlined"
@@ -198,6 +219,25 @@ export default function InputColors() {
           <Select defaultValue="page1">
             <Option value="page1">Page1</Option>
           </Select>
+
+          {selectedComponent === "radiobutton" && (
+            <FormControl>
+              <FormLabel>Orientation</FormLabel>
+              <ButtonGroup
+                variant="soft"
+                aria-label="outlined primary button group"
+                buttonFlex="0 1 200px"
+                sx={{ width: "100%", justifyContent: "center" }}
+              >
+                <Button onClick={() => handleOrientationChange("vertical")}>
+                  Vertical
+                </Button>
+                <Button onClick={() => handleOrientationChange("horizontal")}>
+                  Horizontal
+                </Button>
+              </ButtonGroup>
+            </FormControl>
+          )}
         </Box>
       </Grid>
 
@@ -214,30 +254,69 @@ export default function InputColors() {
         }}
       >
         {selectedComponent === "input" && (
-          <Input
-            color={color}
-            disabled={false}
-            placeholder={placeholder}
-            size={size}
-            variant={variant}
-          />
+          <FormControl>
+            <FormLabel>Input</FormLabel>
+            <Input
+              name="random"
+              color={color}
+              disabled={false}
+              placeholder={placeholder}
+              size={size}
+              variant={variant}
+            />
+          </FormControl>
         )}
         {selectedComponent === "checkbox" && (
-          <Checkbox
-            color={color}
-            disabled={false}
-            label={placeholder}
-            size={size}
-            variant={variant}
-          />
+          <FormControl>
+            <FormLabel>Checkbox</FormLabel>
+            <Checkbox
+              color={color}
+              disabled={false}
+              label={placeholder}
+              size={size}
+              variant={variant}
+            />
+          </FormControl>
         )}
         {selectedComponent === "dropdown" && (
-          <Select
-            color={color}
-            placeholder={placeholder}
-            size={size}
-            variant={variant}
-          ></Select>
+          <FormControl>
+            <FormLabel>Dropdown</FormLabel>
+            <Select
+              color={color}
+              placeholder={placeholder}
+              size={size}
+              variant={variant}
+            ></Select>
+          </FormControl>
+        )}
+        {selectedComponent === "radiobutton" && (
+          <FormControl>
+            <FormLabel>Radio Button</FormLabel>
+            <RadioGroup
+              defaultValue="radio2"
+              name="radio-buttons-group"
+              orientation={radioOrientation}
+            >
+              <Radio
+                value="radio1"
+                label={placeholder}
+                size={size}
+                color={color}
+              />
+              <Radio
+                value="radio2"
+                label={placeholder}
+                size={size}
+                color={color}
+              />
+              <Radio
+                value="radio3"
+                label={placeholder}
+                size={size}
+                color={color}
+              />
+            </RadioGroup>
+          </FormControl>
         )}
       </Box>
 
