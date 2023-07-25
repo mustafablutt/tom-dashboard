@@ -6,7 +6,8 @@ import DeleteCustomer from "./pages/customer/deleteCustomer";
 import AddCustomer from "./pages/customer/addCustomer";
 import DeletePerson from "./pages/customer/person/deletePerson";
 import AddPerson from "./pages/customer/person/addPerson";
-import Admin from "./pages/Admin";
+import Admin from "./pages/admin/Admin";
+import EditPages from "./pages/admin/editPages";
 
 export const RouteList: React.FC = () => {
   return useRoutes([
@@ -20,6 +21,10 @@ export const RouteList: React.FC = () => {
         {
           path: "/admin",
           element: <Admin />,
+        },
+        {
+          path: "/admin/edit-pages",
+          element: <EditPages />,
         },
         {
           path: "/customer/add-customer",

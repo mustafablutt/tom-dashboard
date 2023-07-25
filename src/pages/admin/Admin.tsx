@@ -3,6 +3,7 @@ import Box from "@mui/joy/Box";
 import Input from "@mui/joy/Input";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
+import { useSidebar } from "../../context/SidebarContext";
 
 import RadioGroup from "@mui/joy/RadioGroup";
 import Textarea from "@mui/joy/Textarea";
@@ -31,6 +32,34 @@ export default function InputColors() {
     if (value) {
       setSelectedComponent(value);
     }
+  };
+  const { menuData } = useSidebar();
+
+  type MenuItem = {
+    name: string;
+    children?: MenuItem[];
+  };
+
+  const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
+    let options: any = [];
+    const addChildren = (children: MenuItem[]) => {
+      children.forEach((child) => {
+        options.push(
+          <Option key={child.name} value={child.name}>
+            {child.name}
+          </Option>
+        );
+        if (child.children) {
+          addChildren(child.children);
+        }
+      });
+    };
+    items.forEach((item) => {
+      if (item.children) {
+        addChildren(item.children);
+      }
+    });
+    return options;
   };
 
   const [placeholder, setPlaceholder] =
@@ -90,6 +119,30 @@ export default function InputColors() {
       sx={{ flexGrow: 1, ml: 30, mt: 15 }}
     >
       <Grid xs={8}>
+        <Box
+          sx={{
+            py: 2,
+            display: "grid",
+            gap: 2,
+            alignItems: "center",
+            flexWrap: "wrap",
+            mt: -15,
+            ml: 55,
+            width: 300,
+          }}
+        >
+          <FormControl>
+            <ButtonGroup
+              variant="soft"
+              aria-label="outlined primary button group"
+              buttonFlex="0 1 200px"
+              sx={{ width: "120%", justifyContent: "center" }}
+            >
+              <Button>Create Components</Button>
+              <Button>Edit Components</Button>
+            </ButtonGroup>
+          </FormControl>
+        </Box>
         <h2
           style={{
             marginBottom: "10px",
@@ -216,9 +269,7 @@ export default function InputColors() {
             />
           </FormControl>
           <FormLabel>Select Page</FormLabel>
-          <Select defaultValue="page1">
-            <Option value="page1">Page1</Option>
-          </Select>
+          <Select defaultValue="page1">{getMenuOptions(menuData)}</Select>
 
           {selectedComponent === "radiobutton" && (
             <FormControl>

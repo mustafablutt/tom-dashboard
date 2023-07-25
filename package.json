@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^5.13.7",
     "@mui/joy": "^5.0.0-alpha.88",
     "@mui/lab": "^5.0.0-alpha.135",
@@ -36,6 +37,7 @@
     "react-closeable-tabs": "^1.1.5",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
+    "react-resizable": "^3.0.5",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
     "react-swipeable": "^7.0.1",
@@ -68,6 +70,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react-beautiful-dnd": "^13.1.4"
+    "@types/react-beautiful-dnd": "^13.1.4",
+    "@types/react-resizable": "^3.0.4"
   }
 }

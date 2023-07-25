@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import * as FaIcons from "react-icons/fa";
-import { fetchSidebarData } from "./SidebarData";
+import { useSidebar } from "../context/SidebarContext";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useTab, Tab } from "../context/TabContext";
-import CancelIcon from "@mui/icons-material/Cancel";
 
 import {
   Navbar,
@@ -31,47 +30,15 @@ const Sidebar: React.FunctionComponent<{
 }> = ({ onWidthChange }) => {
   const [close, setClose] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<Record<number, boolean>>({});
-  const [menuData, setMenuData] = useState<any[]>([]);
+
   const { addTab, tabs, currentTab, changeTab } = useTab()!;
   const [search, setSearch] = useState("");
   const [openTopMenu, setOpenTopMenu] = useState<number | null>(null);
+  const { menuData } = useSidebar();
 
   const nameMatchesSearch = (name: string) => {
     return search === "" || name.toLowerCase().includes(search.toLowerCase());
   };
-
-  useEffect(() => {
-    const fetchMenuData = async () => {
-      const fetchedData = await fetchSidebarData();
-      const parentChildMap: any = {};
-      fetchedData.forEach((menu: any) => {
-        if (parentChildMap[menu.parentId]) {
-          parentChildMap[menu.parentId].push(menu);
-        } else {
-          parentChildMap[menu.parentId] = [menu];
-        }
-      });
-
-      const topLevelMenus = fetchedData.filter(
-        (menu: any) => menu.parentId === 0
-      );
-
-      const buildMenuTree = (menus: any[]): MenuItem[] => {
-        return menus.map((menu: any) => {
-          const children = parentChildMap[menu._id]; // id field changed to _id to match your API data
-          return {
-            ...menu,
-            children: children ? buildMenuTree(children) : [],
-          };
-        });
-      };
-
-      const newMenuData = buildMenuTree(topLevelMenus);
-      setMenuData(newMenuData);
-    };
-
-    fetchMenuData();
-  }, []);
 
   const showSidebar = () => {
     setClose(!close);
