@@ -292,86 +292,86 @@ export default function InputColors() {
         </Box>
       </Grid>
 
-      <Box
-        sx={{
-          py: 2,
-          display: "grid",
-          gap: 2,
-          alignItems: "center",
-          flexWrap: "wrap",
-          mt: 0,
-          ml: 10,
-          width: 300,
-        }}
-      >
-        {selectedComponent === "input" && (
-          <FormControl>
-            <FormLabel>Input</FormLabel>
-            <Input
-              name="random"
-              color={color}
-              disabled={false}
-              placeholder={placeholder}
-              size={size}
-              variant={variant}
-            />
-          </FormControl>
-        )}
-        {selectedComponent === "checkbox" && (
-          <FormControl>
-            <FormLabel>Checkbox</FormLabel>
-            <Checkbox
-              color={color}
-              disabled={false}
-              label={placeholder}
-              size={size}
-              variant={variant}
-            />
-          </FormControl>
-        )}
-        {selectedComponent === "dropdown" && (
-          <FormControl>
-            <FormLabel>Dropdown</FormLabel>
-            <Select
-              color={color}
-              placeholder={placeholder}
-              size={size}
-              variant={variant}
-            ></Select>
-          </FormControl>
-        )}
-        {selectedComponent === "radiobutton" && (
-          <FormControl>
-            <FormLabel>Radio Button</FormLabel>
-            <RadioGroup
-              defaultValue="radio2"
-              name="radio-buttons-group"
-              orientation={radioOrientation}
-            >
-              <Radio
-                value="radio1"
+      <Grid xs={8}>
+        <Box
+          sx={{
+            py: 2,
+            display: "grid",
+            gap: 2,
+            alignItems: "center",
+            flexWrap: "wrap",
+            mt: 20,
+            ml: 10,
+            width: 300,
+          }}
+        >
+          {selectedComponent === "input" && (
+            <FormControl>
+              <FormLabel>Input</FormLabel>
+              <Input
+                name="random"
+                color={color}
+                disabled={false}
+                placeholder={placeholder}
+                size={size}
+                variant={variant}
+              />
+            </FormControl>
+          )}
+          {selectedComponent === "checkbox" && (
+            <FormControl>
+              <FormLabel>Checkbox</FormLabel>
+              <Checkbox
+                color={color}
+                disabled={false}
                 label={placeholder}
                 size={size}
-                color={color}
+                variant={variant}
               />
-              <Radio
-                value="radio2"
-                label={placeholder}
+            </FormControl>
+          )}
+          {selectedComponent === "dropdown" && (
+            <FormControl>
+              <FormLabel>Dropdown</FormLabel>
+              <Select
+                color={color}
+                placeholder={placeholder}
                 size={size}
-                color={color}
-              />
-              <Radio
-                value="radio3"
-                label={placeholder}
-                size={size}
-                color={color}
-              />
-            </RadioGroup>
-          </FormControl>
-        )}
-      </Box>
-
-      <Grid xs={8}></Grid>
+                variant={variant}
+              ></Select>
+            </FormControl>
+          )}
+          {selectedComponent === "radiobutton" && (
+            <FormControl>
+              <FormLabel>Radio Button</FormLabel>
+              <RadioGroup
+                defaultValue="radio2"
+                name="radio-buttons-group"
+                orientation={radioOrientation}
+              >
+                <Radio
+                  value="radio1"
+                  label={placeholder}
+                  size={size}
+                  color={color}
+                />
+                <Radio
+                  value="radio2"
+                  label={placeholder}
+                  size={size}
+                  color={color}
+                />
+                <Radio
+                  value="radio3"
+                  label={placeholder}
+                  size={size}
+                  color={color}
+                />
+              </RadioGroup>
+            </FormControl>
+          )}
+        </Box>
+      </Grid>
     </Grid>
   );
 }

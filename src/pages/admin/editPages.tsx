@@ -1,78 +1,87 @@
-import React, { useState } from "react";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
+import * as React from "react";
+import Grid from "@mui/material/Grid";
+import FormLabel from "@mui/material/FormLabel";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import RadioGroup from "@mui/material/RadioGroup";
+import Radio from "@mui/material/Radio";
+import Paper from "@mui/material/Paper";
+import { GridGenerator } from "./components/gridGenerator";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
+import Box from "@mui/joy/Box";
+import SelectGroupedOptions from "./components/pagesListDropdown";
 
-interface GridProps {
-  rows: number;
-  cols: number;
-}
+export default function SpacingGrid() {
+  const [spacing, setSpacing] = React.useState(2);
+  const [generatedGrid, setGeneratedGrid] = React.useState<JSX.Element[]>([]); // State to store generated grid
 
-const MyCheckboxComponent: React.FC = () => <input type="checkbox" />;
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-}));
-
-const GridComponent: React.FC<GridProps> = ({ rows, cols }) => {
-  const classes = useStyles();
-
-  const calculateGridSize = () => {
-    return Math.floor(12 / cols);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSpacing(Number((event.target as HTMLInputElement).value));
   };
 
-  const gridSize = calculateGridSize();
-
-  const grid = Array.from({ length: rows }, (_, rowIndex) => (
-    <Grid container spacing={3} key={rowIndex}>
-      {Array.from({ length: cols }, (_, colIndex) => (
-        <Grid item xs={gridSize as any} key={colIndex}>
-          <Paper className={classes.paper}>
-            {`Grid ${rowIndex + 1}-${colIndex + 1}`}
-          </Paper>
-        </Grid>
-      ))}
-    </Grid>
-  ));
-
-  return <div>{grid}</div>;
-};
-
-const GridGenerator: React.FC = () => {
-  const [rows, setRows] = useState<number>(0);
-  const [cols, setCols] = useState<number>(0);
-  const [generated, setGenerated] = useState<boolean>(false);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setGenerated(true);
+  const handleGridGenerated = (grid: JSX.Element[]) => {
+    setGeneratedGrid(grid);
   };
+
+  const jsx = `
+<Grid container spacing={${spacing}}>
+`;
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="number"
-          value={rows}
-          onChange={(e) => setRows(parseInt(e.target.value))}
-          placeholder="Number of rows"
-        />
-        <input
-          type="number"
-          value={cols}
-          onChange={(e) => setCols(parseInt(e.target.value))}
-          placeholder="Number of columns"
-        />
-        <button type="submit">Generate Grid</button>
-      </form>
+    <Grid
+      container
+      spacing={2}
+      columns={16}
+      sx={{ flexGrow: 1, ml: 10, mt: 5 }}
+    >
+      <Grid item xs={0}>
+        <Paper sx={{ p: 2, border: 1 }}>
+          <h2
+            style={{
+              marginBottom: "10px",
+              fontSize: "20px",
+              color: "black",
+              marginLeft: "2px",
+            }}
+          >
+            EDIT PAGES
+          </h2>
+          <Box
+            sx={{
+              py: 2,
+              display: "grid",
+              gap: 2,
+              alignItems: "center",
+              flexWrap: "wrap",
+              mt: 0,
+              mr: -37.5,
+              width: 300,
+            }}
+          >
+            <SelectGroupedOptions />
 
-      {generated && <GridComponent rows={rows} cols={cols} />}
-    </div>
+            <h2
+              style={{
+                marginBottom: "10px",
+                fontSize: "14px",
+                color: "black",
+                marginLeft: "2px",
+              }}
+            >
+              Enter the grid structure you want on the page in row column format
+            </h2>
+          </Box>
+          <GridGenerator onGridGenerated={handleGridGenerated} />{" "}
+          {/* Pass the callback function as prop */}
+        </Paper>
+      </Grid>
+
+      <Grid item xs={8}>
+        <Paper sx={{ p: 2, border: 1 }}>
+          {generatedGrid} {/* Render the generated grid here */}
+        </Paper>
+      </Grid>
+    </Grid>
   );
-};
-
-export default GridGenerator;
+}
