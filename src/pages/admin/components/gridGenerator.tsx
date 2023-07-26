@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
+import { RowInput } from "./rowInput"; // RowInput componentinin import edilmesi
 
 interface GridComponentProps {
-  rows: number;
+  row: number;
   cols: number;
-  onGridGenerated: (grid: JSX.Element[]) => void;
+  onGridGenerated: (grid: JSX.Element) => void;
 }
 
 interface GridGeneratorProps {
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const GridComponent: React.FC<GridComponentProps> = ({
-  rows,
+  row,
   cols,
   onGridGenerated,
 }) => {
@@ -33,17 +34,17 @@ const GridComponent: React.FC<GridComponentProps> = ({
 
   const gridSize = calculateGridSize();
 
-  const grid = Array.from({ length: rows }, (_, rowIndex) => (
-    <Grid container spacing={3} key={rowIndex}>
+  const grid = (
+    <Grid container spacing={3} key={row}>
       {Array.from({ length: cols }, (_, colIndex) => (
         <Grid item xs={gridSize as any} key={colIndex}>
           <Paper className={classes.paper}>
-            {`Grid ${rowIndex + 1}-${colIndex + 1}`}
+            {`Grid ${row + 1}-${colIndex + 1}`}
           </Paper>
         </Grid>
       ))}
     </Grid>
-  ));
+  );
 
   React.useEffect(() => {
     onGridGenerated(grid);
@@ -56,13 +57,31 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   onGridGenerated,
 }) => {
   const [rows, setRows] = useState<number>(0);
-  const [cols, setCols] = useState<number>(0);
-  const [generated, setGenerated] = useState<boolean>(false);
+  const [cols, setCols] = useState<number[]>([]);
+
+  const handleRowChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRows(parseInt(event.target.value));
+    setCols(new Array(parseInt(event.target.value)).fill(0));
+  };
+
+  const handleRowColumnsChange = (rowIndex: number, columnCount: number) => {
+    const newCols = [...cols];
+    newCols[rowIndex] = columnCount;
+    setCols(newCols);
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setGenerated(true);
   };
+
+  const gridArray: JSX.Element[] = [];
+  const handleGridGenerated = (grid: JSX.Element) => {
+    gridArray.push(grid);
+  };
+
+  React.useEffect(() => {
+    onGridGenerated(gridArray);
+  }, [gridArray]);
 
   return (
     <div>
@@ -70,24 +89,26 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
         <input
           type="number"
           value={rows}
-          onChange={(e) => setRows(parseInt(e.target.value))}
+          onChange={handleRowChange}
           placeholder="Number of rows"
         />
-        <input
-          type="number"
-          value={cols}
-          onChange={(e) => setCols(parseInt(e.target.value))}
-          placeholder="Number of columns"
-        />
+        {Array.from({ length: rows }, (_, index) => (
+          <RowInput
+            key={index}
+            rowIndex={index}
+            onRowColumnsChange={handleRowColumnsChange}
+          />
+        ))}
         <button type="submit">Generate Grid</button>
       </form>
-      {generated && (
+      {cols.map((col, index) => (
         <GridComponent
-          rows={rows}
-          cols={cols}
-          onGridGenerated={onGridGenerated}
+          key={index}
+          row={index}
+          cols={col}
+          onGridGenerated={handleGridGenerated}
         />
-      )}
+      ))}
     </div>
   );
 };
