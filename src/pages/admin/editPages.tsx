@@ -8,6 +8,7 @@ import SelectGroupedOptions from "./components/pagesListDropdown";
 
 import { DraggableInput } from "./components/draggableInput";
 import { DraggableCheckbox } from "./components/draggableCheckbox";
+import { DraggableSelect } from "./components/draggableSelect";
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
@@ -96,6 +97,10 @@ export default function SpacingGrid() {
 
             <DraggableInput id="1" type="text" value="Drag me" />
             <DraggableCheckbox id="2" checked={false} />
+            <DraggableSelect
+              id="3"
+              options={["Option 1", "Option 2", "Option 3"]}
+            />
           </Box>
         </Paper>
       </Grid>

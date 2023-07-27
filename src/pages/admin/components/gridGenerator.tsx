@@ -7,7 +7,7 @@ import { useDrop } from "react-dnd";
 import Input from "@mui/joy/Input/Input";
 import Checkbox from "@mui/joy/Checkbox/Checkbox";
 import Select from "@mui/joy/Select/Select";
-import Radio from "@mui/joy/Radio/Radio";
+import { MenuItem } from "@mui/material";
 interface GridComponentProps {
   row: number;
   cols: number;
@@ -32,8 +32,10 @@ const inputStyle = {
 
 interface DroppedItem {
   id: string;
-  type: string;
-  value: string;
+  type: "input" | "checkbox" | "select";
+  value?: string;
+  checked?: boolean;
+  options?: string[];
 }
 
 const GridCell: React.FC<{
@@ -45,12 +47,21 @@ const GridCell: React.FC<{
   const [content, setContent] = useState<JSX.Element[]>([]);
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
-    accept: ["input", "checkbox"],
+    accept: ["input", "checkbox", "select"],
     drop: (item: DroppedItem, monitor) => {
       setContent((prev) => [
         ...prev,
         item.type === "checkbox" ? (
           <Checkbox checked={true} />
+        ) : item.type === "select" ? (
+          <Select defaultValue={item.options ? item.options[0] : ""}>
+            {item.options &&
+              item.options.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+          </Select>
         ) : (
           <Input
             type={item.type}
