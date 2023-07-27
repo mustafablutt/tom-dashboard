@@ -1,16 +1,12 @@
 import * as React from "react";
 import Grid from "@mui/material/Grid";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
 import Paper from "@mui/material/Paper";
 import { GridGenerator } from "./components/gridGenerator";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
+
 import Box from "@mui/joy/Box";
 import SelectGroupedOptions from "./components/pagesListDropdown";
+
+import { DraggableInput } from "./components/draggableInput";
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
@@ -60,7 +56,6 @@ export default function SpacingGrid() {
             }}
           >
             <SelectGroupedOptions />
-
             <h2
               style={{
                 marginBottom: "10px",
@@ -71,9 +66,35 @@ export default function SpacingGrid() {
             >
               Enter the grid structure you want on the page in row column format
             </h2>
+            <GridGenerator onGridGenerated={handleGridGenerated} />{" "}
           </Box>
-          <GridGenerator onGridGenerated={handleGridGenerated} />{" "}
-          {/* Pass the callback function as prop */}
+
+          <Box
+            sx={{
+              py: 2,
+              display: "grid",
+              gap: 2,
+              alignItems: "center",
+              flexWrap: "wrap",
+              mt: 0,
+              mr: -37.5,
+              width: 300,
+            }}
+          >
+            <h2
+              style={{
+                marginBottom: "10px",
+                fontSize: "14px",
+                color: "black",
+                marginLeft: "2px",
+              }}
+            >
+              Sayfada Bulunan componentleri sürükle bırak yolu ile gridlerin
+              üzerine yerleştirin.
+            </h2>
+
+            <DraggableInput id="1" type="text" value="Drag me" />
+          </Box>
         </Paper>
       </Grid>
 

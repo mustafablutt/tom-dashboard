@@ -24,8 +24,7 @@ import Alert from "@mui/material/Alert";
 export default function InputColors() {
   const [selectedComponent, setSelectedComponent] =
     React.useState<string>("Input");
-    const [selectedPage, setSelectedPage] =
-    React.useState<string|null>("");
+  const [selectedPage, setSelectedPage] = React.useState<string | null>("");
 
   const handleSelectChange = (
     event:
@@ -40,7 +39,14 @@ export default function InputColors() {
     }
   };
   const { menuData } = useSidebar();
-  const {components,addComponent,loading,addMessage,setShowAlert,showAlert} = usePageComponent();
+  const {
+    components,
+    addComponent,
+    loading,
+    addMessage,
+    setShowAlert,
+    showAlert,
+  } = usePageComponent();
 
   type MenuItem = {
     name: string;
@@ -48,13 +54,13 @@ export default function InputColors() {
   };
   interface IComponentValue {
     propertyName: string;
-    valueName: string|any;
+    valueName: string | any;
   }
-  
+
   interface IAddComponentData {
     componentName: string;
-    name: string|null;
-    pageName: string|null;
+    name: string | null;
+    pageName: string | null;
     values: IComponentValue[];
   }
   const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
@@ -92,7 +98,9 @@ export default function InputColors() {
     | undefined;
 
   const [color, setColor] = React.useState<colorType>("primary");
-  const [componentNameText, setComponentNameText] = React.useState<string | null>(null);
+  const [componentNameText, setComponentNameText] = React.useState<
+    string | null
+  >(null);
   const [radioOrientation, setRadioOrientation] = React.useState<
     "vertical" | "horizontal"
   >("vertical");
@@ -138,7 +146,7 @@ export default function InputColors() {
     setPlaceholder(event.target.value);
   };
 
-  const handleAddComponent= async () => {
+  const handleAddComponent = async () => {
     // Gather values from the input fields
     const componentName = selectedComponent;
     const name = componentNameText;
@@ -148,35 +156,33 @@ export default function InputColors() {
     values.push({ propertyName: "size", valueName: size });
     values.push({ propertyName: "variant", valueName: variant });
     values.push({ propertyName: "placeholder", valueName: placeholder });
-    
+
     if (selectedComponent === "Radiobutton") {
       values.push({ propertyName: "orientation", valueName: radioOrientation });
     }
-        // Create the componentData object
-        const componentData: IAddComponentData = {
-          componentName,
-          name,
-          pageName,
-          values,
-        };
-    
-        // Call the addComponent function from the context
-        await addComponent(componentData);
+    // Create the componentData object
+    const componentData: IAddComponentData = {
+      componentName,
+      name,
+      pageName,
+      values,
+    };
 
+    // Call the addComponent function from the context
+    await addComponent(componentData);
 
-        setSelectedComponent("Input");
-        setSelectedPage("");
-        setComponentNameText("");
-        setRadioOrientation("vertical");
-        setPlaceholder("Type Something");
-        setColor("primary");
-      };
+    setSelectedComponent("Input");
+    setSelectedPage("");
+    setComponentNameText("");
+    setRadioOrientation("vertical");
+    setPlaceholder("Type Something");
+    setColor("primary");
+  };
 
-  React.useEffect(()=>{
-    console.log("ceyda",components);
-    console.log("hey",selectedPage);
-    
-  },[components,selectedPage]);
+  React.useEffect(() => {
+    console.log("ceyda", components);
+    console.log("hey", selectedPage);
+  }, [components, selectedPage]);
 
   return (
     <Grid
@@ -186,7 +192,6 @@ export default function InputColors() {
       sx={{ flexGrow: 1, ml: 30, mt: 15 }}
     >
       <Grid xs={8}>
- 
         <Box
           sx={{
             py: 2,
@@ -337,7 +342,9 @@ export default function InputColors() {
             />
           </FormControl>
           <FormLabel>Select Page</FormLabel>
-          <Select placeholder="Sayfa Seç"  onChange={handlePageChange}>{getMenuOptions(menuData)}</Select>
+          <Select placeholder="Sayfa Seç" onChange={handlePageChange}>
+            {getMenuOptions(menuData)}
+          </Select>
 
           {selectedComponent === "Radiobutton" && (
             <FormControl>
@@ -357,10 +364,15 @@ export default function InputColors() {
               </ButtonGroup>
             </FormControl>
           )}
-         
-         <Button onClick={handleAddComponent}> {loading? (<CircularProgress sx={{color:'#fff'}} />):("Add Component")}</Button>
 
-
+          <Button onClick={handleAddComponent}>
+            {" "}
+            {loading ? (
+              <CircularProgress sx={{ color: "#fff" }} />
+            ) : (
+              "Add Component"
+            )}
+          </Button>
         </Box>
       </Grid>
 
@@ -426,34 +438,35 @@ export default function InputColors() {
                   label={placeholder}
                   size={size}
                   color={color}
+                  variant={variant}
                 />
                 <Radio
                   value="radio2"
                   label={placeholder}
                   size={size}
                   color={color}
+                  variant={variant}
                 />
                 <Radio
                   value="radio3"
                   label={placeholder}
                   size={size}
                   color={color}
+                  variant={variant}
                 />
               </RadioGroup>
             </FormControl>
           )}
         </Box>
-        
       </Grid>
       {showAlert && (
-          <Alert
-            severity={addMessage.includes("Error") ? "error" : "success"}
-            onClose={() => setShowAlert(false)}
-          >
-            {addMessage}
-          </Alert>
-        )}
+        <Alert
+          severity={addMessage.includes("Error") ? "error" : "success"}
+          onClose={() => setShowAlert(false)}
+        >
+          {addMessage}
+        </Alert>
+      )}
     </Grid>
-    
   );
 }

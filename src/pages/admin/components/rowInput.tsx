@@ -11,9 +11,9 @@ export const RowInput: React.FC<RowInputProps> = ({
 }) => {
   return (
     <div>
-      <label>{`Number of columns in Row ${rowIndex + 1}: `}</label>
+      <label>{`Row ${rowIndex + 1}: `}</label>
       <input
-        placeholder="aa"
+        placeholder="Number of column"
         type="number"
         onChange={(e) => onRowColumnsChange(rowIndex, parseInt(e.target.value))}
       />
