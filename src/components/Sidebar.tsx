@@ -44,7 +44,7 @@ const Sidebar: React.FunctionComponent<{
     setClose(!close);
     onWidthChange(close ? "100px" : "256px");
   };
-
+  
   const handleSubMenu = (menuId: number, parentId: number) => {
     setOpenSubMenu((prevState) => {
       const newState = { ...prevState };

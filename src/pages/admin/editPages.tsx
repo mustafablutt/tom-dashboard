@@ -35,7 +35,7 @@ export default function SpacingGrid() {
       columns={16}
       sx={{ flexGrow: 1, ml: 10, mt: 5 }}
     >
-      <Grid item xs={0}>
+      <Grid item xs={4}>
         <Paper sx={{ p: 2, border: 1 }}>
           <h2
             style={{

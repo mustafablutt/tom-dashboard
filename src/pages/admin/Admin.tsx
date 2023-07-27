@@ -16,10 +16,16 @@ import Button from "@mui/joy/Button";
 import ButtonGroup from "@mui/joy/ButtonGroup";
 
 import Grid from "@mui/joy/Grid";
+import { usePageComponent } from "../../context/PageComponentContext";
+
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 
 export default function InputColors() {
   const [selectedComponent, setSelectedComponent] =
-    React.useState<string>("input");
+    React.useState<string>("Input");
+    const [selectedPage, setSelectedPage] =
+    React.useState<string|null>("");
 
   const handleSelectChange = (
     event:
@@ -34,12 +40,23 @@ export default function InputColors() {
     }
   };
   const { menuData } = useSidebar();
+  const {components,addComponent,loading,addMessage,setShowAlert,showAlert} = usePageComponent();
 
   type MenuItem = {
     name: string;
     children?: MenuItem[];
   };
-
+  interface IComponentValue {
+    propertyName: string;
+    valueName: string|any;
+  }
+  
+  interface IAddComponentData {
+    componentName: string;
+    name: string|null;
+    pageName: string|null;
+    values: IComponentValue[];
+  }
   const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
     let options: any = [];
     const addChildren = (children: MenuItem[]) => {
@@ -75,7 +92,7 @@ export default function InputColors() {
     | undefined;
 
   const [color, setColor] = React.useState<colorType>("primary");
-  const [name, setName] = React.useState<String>("");
+  const [componentNameText, setComponentNameText] = React.useState<string | null>(null);
   const [radioOrientation, setRadioOrientation] = React.useState<
     "vertical" | "horizontal"
   >("vertical");
@@ -83,8 +100,8 @@ export default function InputColors() {
   const handleOrientationChange = (orientation: any) => {
     setRadioOrientation(orientation);
   };
-  const handleName = (name: any) => {
-    setName(name);
+  const handleNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setComponentNameText(event.target.value);
   };
 
   type variantType = "outlined" | "soft" | "solid" | "plain" | undefined;
@@ -104,12 +121,62 @@ export default function InputColors() {
   const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSize(event.target.value as sizeType);
   };
+  const handlePageChange = (
+    event:
+      | React.MouseEvent<Element, MouseEvent>
+      | React.KeyboardEvent<Element>
+      | React.FocusEvent<Element>
+      | null,
+    value: string | null
+  ) => {
+    setSelectedPage(value);
+  };
 
   const handlePlaceholderChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setPlaceholder(event.target.value);
   };
+
+  const handleAddComponent= async () => {
+    // Gather values from the input fields
+    const componentName = selectedComponent;
+    const name = componentNameText;
+    const pageName = selectedPage; // Get the selected page from the dropdown
+    const values: IComponentValue[] = [];
+    values.push({ propertyName: "color", valueName: color });
+    values.push({ propertyName: "size", valueName: size });
+    values.push({ propertyName: "variant", valueName: variant });
+    values.push({ propertyName: "placeholder", valueName: placeholder });
+    
+    if (selectedComponent === "Radiobutton") {
+      values.push({ propertyName: "orientation", valueName: radioOrientation });
+    }
+        // Create the componentData object
+        const componentData: IAddComponentData = {
+          componentName,
+          name,
+          pageName,
+          values,
+        };
+    
+        // Call the addComponent function from the context
+        await addComponent(componentData);
+
+
+        setSelectedComponent("Input");
+        setSelectedPage("");
+        setComponentNameText("");
+        setRadioOrientation("vertical");
+        setPlaceholder("Type Something");
+        setColor("primary");
+      };
+
+  React.useEffect(()=>{
+    console.log("ceyda",components);
+    console.log("hey",selectedPage);
+    
+  },[components,selectedPage]);
 
   return (
     <Grid
@@ -119,6 +186,7 @@ export default function InputColors() {
       sx={{ flexGrow: 1, ml: 30, mt: 15 }}
     >
       <Grid xs={8}>
+ 
         <Box
           sx={{
             py: 2,
@@ -166,10 +234,10 @@ export default function InputColors() {
           }}
         >
           <Select defaultValue="input" onChange={handleSelectChange}>
-            <Option value="input">Input</Option>
-            <Option value="checkbox">Checkbox</Option>
-            <Option value="dropdown">Dropdown</Option>
-            <Option value="radiobutton">Radiobutton</Option>
+            <Option value="Input">Input</Option>
+            <Option value="Checkbox">Checkbox</Option>
+            <Option value="Dropdown">Dropdown</Option>
+            <Option value="Radiobutton">Radiobutton</Option>
           </Select>
         </Box>
         <Box
@@ -190,7 +258,7 @@ export default function InputColors() {
               name="Outlined"
               placeholder="name"
               variant="outlined"
-              onChange={handleName}
+              onChange={handleNameChange}
             />
             <FormLabel>Variants</FormLabel>
             <RadioGroup
@@ -269,9 +337,9 @@ export default function InputColors() {
             />
           </FormControl>
           <FormLabel>Select Page</FormLabel>
-          <Select defaultValue="page1">{getMenuOptions(menuData)}</Select>
+          <Select placeholder="Sayfa Seç"  onChange={handlePageChange}>{getMenuOptions(menuData)}</Select>
 
-          {selectedComponent === "radiobutton" && (
+          {selectedComponent === "Radiobutton" && (
             <FormControl>
               <FormLabel>Orientation</FormLabel>
               <ButtonGroup
@@ -289,6 +357,10 @@ export default function InputColors() {
               </ButtonGroup>
             </FormControl>
           )}
+         
+         <Button onClick={handleAddComponent}> {loading? (<CircularProgress sx={{color:'#fff'}} />):("Add Component")}</Button>
+
+
         </Box>
       </Grid>
 
@@ -305,7 +377,7 @@ export default function InputColors() {
             width: 300,
           }}
         >
-          {selectedComponent === "input" && (
+          {selectedComponent === "Input" && (
             <FormControl>
               <FormLabel>Input</FormLabel>
               <Input
@@ -318,7 +390,7 @@ export default function InputColors() {
               />
             </FormControl>
           )}
-          {selectedComponent === "checkbox" && (
+          {selectedComponent === "Checkbox" && (
             <FormControl>
               <FormLabel>Checkbox</FormLabel>
               <Checkbox
@@ -330,7 +402,7 @@ export default function InputColors() {
               />
             </FormControl>
           )}
-          {selectedComponent === "dropdown" && (
+          {selectedComponent === "Dropdown" && (
             <FormControl>
               <FormLabel>Dropdown</FormLabel>
               <Select
@@ -341,7 +413,7 @@ export default function InputColors() {
               ></Select>
             </FormControl>
           )}
-          {selectedComponent === "radiobutton" && (
+          {selectedComponent === "Radiobutton" && (
             <FormControl>
               <FormLabel>Radio Button</FormLabel>
               <RadioGroup
@@ -371,7 +443,17 @@ export default function InputColors() {
             </FormControl>
           )}
         </Box>
+        
       </Grid>
+      {showAlert && (
+          <Alert
+            severity={addMessage.includes("Error") ? "error" : "success"}
+            onClose={() => setShowAlert(false)}
+          >
+            {addMessage}
+          </Alert>
+        )}
     </Grid>
+    
   );
 }
