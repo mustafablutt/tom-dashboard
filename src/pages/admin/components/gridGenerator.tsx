@@ -8,6 +8,13 @@ import Input from "@mui/joy/Input/Input";
 import Checkbox from "@mui/joy/Checkbox/Checkbox";
 import Select from "@mui/joy/Select/Select";
 import { MenuItem } from "@mui/material";
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+} from "@mui/material";
+
 interface GridComponentProps {
   row: number;
   cols: number;
@@ -32,7 +39,7 @@ const inputStyle = {
 
 interface DroppedItem {
   id: string;
-  type: "input" | "checkbox" | "select";
+  type: "input" | "checkbox" | "select" | "radio";
   value?: string;
   checked?: boolean;
   options?: string[];
@@ -47,12 +54,12 @@ const GridCell: React.FC<{
   const [content, setContent] = useState<JSX.Element[]>([]);
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
-    accept: ["input", "checkbox", "select"],
+    accept: ["input", "checkbox", "select", "radio"],
     drop: (item: DroppedItem, monitor) => {
       setContent((prev) => [
         ...prev,
         item.type === "checkbox" ? (
-          <Checkbox checked={true} />
+          <Checkbox checked={item.checked} />
         ) : item.type === "select" ? (
           <Select defaultValue={item.options ? item.options[0] : ""}>
             {item.options &&
@@ -62,6 +69,20 @@ const GridCell: React.FC<{
                 </MenuItem>
               ))}
           </Select>
+        ) : item.type === "radio" ? (
+          <FormControl component="fieldset">
+            <RadioGroup defaultValue={item.options ? item.options[0] : ""}>
+              {item.options &&
+                item.options.map((option, index) => (
+                  <FormControlLabel
+                    key={index}
+                    value={option}
+                    control={<Radio />}
+                    label={option}
+                  />
+                ))}
+            </RadioGroup>
+          </FormControl>
         ) : (
           <Input
             type={item.type}
@@ -76,6 +97,7 @@ const GridCell: React.FC<{
       ]);
       console.log(`Dropped ${item} on cell ${rowIndex}-${colIndex}`);
     },
+
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
