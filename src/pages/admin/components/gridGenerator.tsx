@@ -5,6 +5,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { RowInput } from "./rowInput";
 import { useDrop } from "react-dnd";
 import Input from "@mui/joy/Input/Input";
+import Checkbox from "@mui/joy/Checkbox/Checkbox";
+import Select from "@mui/joy/Select/Select";
+import Radio from "@mui/joy/Radio/Radio";
 interface GridComponentProps {
   row: number;
   cols: number;
@@ -42,19 +45,23 @@ const GridCell: React.FC<{
   const [content, setContent] = useState<JSX.Element[]>([]);
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
-    accept: "input",
+    accept: ["input", "checkbox"],
     drop: (item: DroppedItem, monitor) => {
       setContent((prev) => [
         ...prev,
-        <Input
-          type={item.type}
-          defaultValue={item.value}
-          readOnly
-          color="primary"
-          placeholder="Type Something"
-          size="lg"
-          variant="outlined"
-        />,
+        item.type === "checkbox" ? (
+          <Checkbox checked={true} />
+        ) : (
+          <Input
+            type={item.type}
+            defaultValue={item.value}
+            readOnly
+            color="primary"
+            placeholder="Type Something"
+            size="lg"
+            variant="outlined"
+          />
+        ),
       ]);
       console.log(`Dropped ${item} on cell ${rowIndex}-${colIndex}`);
     },

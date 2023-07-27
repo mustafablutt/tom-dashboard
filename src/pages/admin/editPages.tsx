@@ -7,6 +7,7 @@ import Box from "@mui/joy/Box";
 import SelectGroupedOptions from "./components/pagesListDropdown";
 
 import { DraggableInput } from "./components/draggableInput";
+import { DraggableCheckbox } from "./components/draggableCheckbox";
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
@@ -94,6 +95,7 @@ export default function SpacingGrid() {
             </h2>
 
             <DraggableInput id="1" type="text" value="Drag me" />
+            <DraggableCheckbox id="2" checked={false} />
           </Box>
         </Paper>
       </Grid>
