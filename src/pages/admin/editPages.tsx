@@ -27,6 +27,10 @@ export default function SpacingGrid() {
 <Grid container spacing={${spacing}}>
 `;
 
+const handleRemove = (id: string) => {
+  // kaldırılan öğenin id'si ile ilgili işlemleri burada yapabilirsiniz.
+};
+
   return (
     <Grid
       container
@@ -96,7 +100,7 @@ export default function SpacingGrid() {
               üzerine yerleştirin.
             </h2>
 
-            <DraggableInput id="1" type="text" value="Drag me" />
+             <DraggableInput id="1" type="text" value="Drag me" onRemove={handleRemove} showClearIcon={false} />
             <DraggableCheckbox id="2" checked={false} />
             <DraggableSelect
               id="3"

@@ -4,6 +4,10 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import { RowInput } from "./rowInput";
 import { useDrop } from "react-dnd";
+import { DraggableCheckbox } from "./draggableCheckbox";
+import { DraggableSelect } from "./draggableSelect";
+import { DraggableInput } from "./draggableInput";
+import { DraggableRadioButton } from "./draggableRadioButton";
 import Input from "@mui/joy/Input/Input";
 import Checkbox from "@mui/joy/Checkbox/Checkbox";
 import Select from "@mui/joy/Select/Select";
@@ -43,7 +47,9 @@ interface DroppedItem {
   value?: string;
   checked?: boolean;
   options?: string[];
+  onRemove?: () => void; 
 }
+
 
 const GridCell: React.FC<{
   gridSize: any;
@@ -52,51 +58,29 @@ const GridCell: React.FC<{
 }> = ({ gridSize, rowIndex, colIndex }) => {
   const classes = useStyles();
   const [content, setContent] = useState<JSX.Element[]>([]);
+  const removeItem = (id: string) => {
+    setContent(prev => prev.filter(item => item.props.id !== id));
+  };
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: ["input", "checkbox", "select", "radio"],
     drop: (item: DroppedItem, monitor) => {
-      setContent((prev) => [
-        ...prev,
-        item.type === "checkbox" ? (
-          <Checkbox checked={item.checked} />
-        ) : item.type === "select" ? (
-          <Select defaultValue={item.options ? item.options[0] : ""}>
-            {item.options &&
-              item.options.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-          </Select>
-        ) : item.type === "radio" ? (
-          <FormControl component="fieldset">
-            <RadioGroup defaultValue={item.options ? item.options[0] : ""}>
-              {item.options &&
-                item.options.map((option, index) => (
-                  <FormControlLabel
-                    key={index}
-                    value={option}
-                    control={<Radio />}
-                    label={option}
-                  />
-                ))}
-            </RadioGroup>
-          </FormControl>
-        ) : (
-          <Input
-            type={item.type}
-            defaultValue={item.value}
-            readOnly
-            color="primary"
-            placeholder="Type Something"
-            size="lg"
-            variant="outlined"
-          />
-        ),
-      ]);
-      console.log(`Dropped ${item} on cell ${rowIndex}-${colIndex}`);
-    },
+  setContent((prev) => [
+    ...prev,
+    item.type === "checkbox" ? (
+      <DraggableCheckbox id={item.id} checked={item.checked} />
+    ) : item.type === "select" ? (
+      <DraggableSelect id={item.id} options={item.options} />
+    ) : item.type === "radio" ? (
+      <DraggableRadioButton id={item.id} options={item.options} />
+    ) : (
+      <DraggableInput id={item.id + Date.now()} type={item.type} value={item.value || ""} onRemove={removeItem} showClearIcon={true} />
+    ),
+  ]);
+  console.log(`Dropped ${item} on cell ${rowIndex}-${colIndex}`);
+},
+
+    
 
     collect: (monitor) => ({
       isOver: monitor.isOver(),
