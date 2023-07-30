@@ -7,9 +7,10 @@ import { useSidebar } from "../../context/SidebarContext";
 
 import RadioGroup from "@mui/joy/RadioGroup";
 import Textarea from "@mui/joy/Textarea";
+import { useEffect, useRef, useState } from "react";
+import Select, { selectClasses } from "@mui/joy/Select";
+import Option, { optionClasses } from "@mui/joy/Option";
 
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
 import Checkbox from "@mui/joy/Checkbox";
 import Radio from "@mui/joy/Radio";
 import Button from "@mui/joy/Button";
@@ -20,11 +21,118 @@ import { usePageComponent } from "../../context/PageComponentContext";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import ListDivider from "@mui/joy/ListDivider/ListDivider";
+import ListItemDecorator, {
+  listItemDecoratorClasses,
+} from "@mui/joy/ListItemDecorator";
+
+import Chip from "@mui/joy/Chip";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
+import Typography from "@mui/joy/Typography";
+import Check from "@mui/icons-material/Check";
+import {
+  IAddComponentData,
+  IComponentValue,
+  IUpdateComponentData,
+} from "../../interfaces/Interfaces";
+import { colorType, variantType, sizeType } from "../../types/Types";
+import DynamicComponent from "./components/DynamicComponent";
+import { AnyARecord } from "dns";
 
 export default function InputColors() {
-  const [selectedComponent, setSelectedComponent] =
-    React.useState<string>("Input");
-  const [selectedPage, setSelectedPage] = React.useState<string | null>("");
+  const [isEditing, setIsEditing] = React.useState<boolean>();
+  const [selectedPageComponent, setSelectedPageComponent] = React.useState<
+    IUpdateComponentData 
+  >();
+
+  const colorValueRef = useRef<any>("");
+  const placeholderValueRef = useRef<string>("Type Something");
+  const sizeValueRef = useRef<sizeType>("lg");
+  const variantValueRef = useRef<variantType>("outlined");
+  const radioOrientationValueRef = useRef<"vertical" | "horizontal">(
+    "vertical"
+  );
+  const selectedComponentRef = useRef<string>("Input");
+  const selectedPageRef = useRef<string | null>("");
+  const componentNameTextRef = useRef<string | null>(null);
+  const selectedComponentIdRef = useRef<number>(-1);
+
+
+  useEffect(() => {
+    if (isEditing && selectedPageComponent) {
+      colorValueRef.current = selectedPageComponent.values.find(
+        (value) => value.propertyName === "color"
+      )?.valueName;
+      placeholderValueRef.current = selectedPageComponent.values.find(
+        (value) => value.propertyName === "placeholder"
+      )?.valueName;
+      sizeValueRef.current = selectedPageComponent.values.find(
+        (value) => value.propertyName === "size"
+      )?.valueName;
+      variantValueRef.current = selectedPageComponent.values.find(
+        (value) => value.propertyName === "variant"
+      )?.valueName;
+      radioOrientationValueRef.current = selectedPageComponent.values.find(
+        (value) => value.propertyName === "orientation"
+      )?.valueName;
+      selectedComponentRef.current = selectedPageComponent.componentName;
+      selectedPageRef.current = selectedPageComponent.pageName || "";
+      componentNameTextRef.current = selectedPageComponent.name || null;
+      selectedComponentIdRef.current = selectedPageComponent._id;
+    } else {
+      selectedComponentRef.current = "Input";
+      selectedPageRef.current = "";
+      componentNameTextRef.current = null;
+    }
+    setSelectedComponentId(selectedComponentIdRef.current||-1);
+    setColor(colorValueRef.current || "primary");
+    setPlaceholder(placeholderValueRef.current || "Type Something");
+    setSize(sizeValueRef.current || "lg");
+    setVariant(variantValueRef.current || "outlined");
+    setRadioOrientation(radioOrientationValueRef.current || "vertical");
+    setSelectedComponent(selectedComponentRef.current);
+    setSelectedPage(selectedPageRef.current);
+    setComponentNameText(componentNameTextRef.current);
+  }, [isEditing, selectedPageComponent]);
+
+  const [color, setColor] = useState<colorType>(
+    colorValueRef.current || "primary"
+  );
+  const [placeholder, setPlaceholder] = useState<string>(
+    placeholderValueRef.current || "Type Something"
+  );
+  const [size, setSize] = useState<sizeType>(sizeValueRef.current || "lg");
+  const [variant, setVariant] = useState<variantType>(
+    variantValueRef.current || "outlined"
+  );
+  const [radioOrientation, setRadioOrientation] = useState<
+    "vertical" | "horizontal"
+  >(radioOrientationValueRef.current || "vertical");
+  const [selectedComponent, setSelectedComponent] = useState<string>(
+    selectedComponentRef.current
+  );
+  const [selectedPage, setSelectedPage] = useState<string | null>(
+    selectedPageRef.current
+  );
+  const [componentNameText, setComponentNameText] = useState<string | null>(
+    componentNameTextRef.current
+  );
+
+  const [isCreating, setIsCreating] = useState(true);
+  const [selectedComponentId, setSelectedComponentId] = useState<number>(selectedComponentIdRef.current);
+  const { menuData } = useSidebar();
+  const {
+    componentsInPage,
+    addComponent,
+    components,
+    loading,
+    addMessage,
+    setShowAlert,
+    showAlert,
+    updatePageComponent,
+  } = usePageComponent();
 
   const handleSelectChange = (
     event:
@@ -38,31 +146,12 @@ export default function InputColors() {
       setSelectedComponent(value);
     }
   };
-  const { menuData } = useSidebar();
-  const {
-    components,
-    addComponent,
-    loading,
-    addMessage,
-    setShowAlert,
-    showAlert,
-  } = usePageComponent();
 
   type MenuItem = {
     name: string;
     children?: MenuItem[];
   };
-  interface IComponentValue {
-    propertyName: string;
-    valueName: string | any;
-  }
 
-  interface IAddComponentData {
-    componentName: string;
-    name: string | null;
-    pageName: string | null;
-    values: IComponentValue[];
-  }
   const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
     let options: any = [];
     const addChildren = (children: MenuItem[]) => {
@@ -85,38 +174,53 @@ export default function InputColors() {
     return options;
   };
 
-  const [placeholder, setPlaceholder] =
-    React.useState<string>("Type Something");
-
-  type colorType =
-    | "primary"
-    | "neutral"
-    | "danger"
-    | "info"
-    | "success"
-    | "warning"
-    | undefined;
-
-  const [color, setColor] = React.useState<colorType>("primary");
-  const [componentNameText, setComponentNameText] = React.useState<
-    string | null
-  >(null);
-  const [radioOrientation, setRadioOrientation] = React.useState<
-    "vertical" | "horizontal"
-  >("vertical");
-
   const handleOrientationChange = (orientation: any) => {
     setRadioOrientation(orientation);
   };
   const handleNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComponentNameText(event.target.value);
   };
+  const groupByPageName = (data: IAddComponentData[] | undefined) => {
+    const groupedData: Record<string, any[]> = {};
+    if (data) {
+      data.forEach((item) => {
+        const { pageName, name } = item;
+        const pageKey = pageName ?? "Uncategorized";
+        if (!groupedData[pageKey]) {
+          groupedData[pageKey] = [];
+        }
+        groupedData[pageKey].push(name);
+      });
+    }
+    return groupedData;
+  };
+  const groupedComponents = groupByPageName(componentsInPage);
 
-  type variantType = "outlined" | "soft" | "solid" | "plain" | undefined;
-  const [variant, setVariant] = React.useState<variantType>("outlined");
+  const handleEditComponents = () => {
+    setIsEditing(true);
+    setIsCreating(false);
+  };
 
-  type sizeType = "sm" | "md" | "lg" | undefined;
-  const [size, setSize] = React.useState<sizeType>("lg");
+  const handleSelect2Change = (
+    event:
+      | React.MouseEvent<Element, MouseEvent>
+      | React.KeyboardEvent<Element>
+      | React.FocusEvent<Element>
+      | null,
+    value: string | null
+  ) => {
+    if (value) {
+      const selectedComponent = componentsInPage?.find(
+        (component) => component.name === value
+      );
+      setSelectedPageComponent(selectedComponent);
+    }
+  };
+
+  const handleCreateComponents = () => {
+    setIsCreating(true);
+    setIsEditing(false);
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setColor(event.target.value as colorType);
@@ -146,11 +250,15 @@ export default function InputColors() {
     setPlaceholder(event.target.value);
   };
 
-  const handleAddComponent = async () => {
+  const handleAddComponent =  async (event:any) => {
     // Gather values from the input fields
+    event.preventDefault();
+    console.log("bunu önemli:", selectedComponentId);
+
+    const _id = selectedComponentId;
     const componentName = selectedComponent;
     const name = componentNameText;
-    const pageName = selectedPage; // Get the selected page from the dropdown
+    const pageName = selectedPage;
     const values: IComponentValue[] = [];
     values.push({ propertyName: "color", valueName: color });
     values.push({ propertyName: "size", valueName: size });
@@ -160,29 +268,52 @@ export default function InputColors() {
     if (selectedComponent === "Radiobutton") {
       values.push({ propertyName: "orientation", valueName: radioOrientation });
     }
-    // Create the componentData object
+
     const componentData: IAddComponentData = {
       componentName,
       name,
       pageName,
       values,
     };
+    const componentDataUpdate: IUpdateComponentData = {
+      _id,
+      componentName,
+      name,
+      pageName,
+      values,
+    };
 
-    // Call the addComponent function from the context
-    await addComponent(componentData);
-
+    if (isEditing) {
+        await updatePageComponent(componentDataUpdate);
+    } else {
+      await addComponent(componentData);
+    }
     setSelectedComponent("Input");
-    setSelectedPage("");
-    setComponentNameText("");
-    setRadioOrientation("vertical");
+    setSelectedPage(null);
+    setComponentNameText(null);
     setPlaceholder("Type Something");
     setColor("primary");
   };
 
-  React.useEffect(() => {
-    console.log("ceyda", components);
+  useEffect(() => {
+    if (!isEditing) {
+      setColor("primary");
+      setPlaceholder("Type Something");
+      setSize("lg");
+      setVariant("outlined");
+      setRadioOrientation("vertical");
+      setSelectedComponent("Input");
+      setSelectedPage(null);
+      setComponentNameText(null);
+    }
+  }, [isEditing]);
+
+  useEffect(() => {
+    console.log("ceyda", componentsInPage);
+    console.log("compoentlerrr", components);
+    console.log("compoentlerrr gfhh", selectedPageComponent);
     console.log("hey", selectedPage);
-  }, [components, selectedPage]);
+  }, [components, componentsInPage, selectedPage, selectedPageComponent]);
 
   return (
     <Grid
@@ -211,8 +342,10 @@ export default function InputColors() {
               buttonFlex="0 1 200px"
               sx={{ width: "120%", justifyContent: "center" }}
             >
-              <Button>Create Components</Button>
-              <Button>Edit Components</Button>
+              <Button onClick={handleCreateComponents}>
+                Create Components
+              </Button>
+              <Button onClick={handleEditComponents}>Edit Components</Button>
             </ButtonGroup>
           </FormControl>
         </Box>
@@ -224,27 +357,100 @@ export default function InputColors() {
             marginLeft: "2px",
           }}
         >
-          SELECT COMPONENTS
+          {isEditing ? "Edit" : "Create"} Components
         </h2>
-        <Box
-          sx={{
-            py: 2,
-            display: "grid",
-            gap: 2,
-            alignItems: "center",
-            flexWrap: "wrap",
-            mt: -2,
-            mr: -37.5,
-            width: 300,
-          }}
-        >
-          <Select defaultValue="input" onChange={handleSelectChange}>
-            <Option value="Input">Input</Option>
-            <Option value="Checkbox">Checkbox</Option>
-            <Option value="Dropdown">Dropdown</Option>
-            <Option value="Radiobutton">Radiobutton</Option>
-          </Select>
-        </Box>
+        {isEditing ? (
+          <Box
+            sx={{
+              py: 2,
+              display: "grid",
+              gap: 2,
+              alignItems: "center",
+              flexWrap: "wrap",
+              mt: -2,
+              mr: -37.5,
+              width: 300,
+            }}
+          >
+            <FormControl>
+              <FormLabel>Editlemek İstediğin Component:</FormLabel>
+              <Select
+                placeholder="Choose your component to edit"
+                onChange={handleSelect2Change}
+                indicator={<KeyboardArrowDown />}
+                sx={{
+                  [`& .${selectClasses.indicator}`]: {
+                    transition: "0.2s",
+                    [`&.${selectClasses.expanded}`]: {
+                      transform: "rotate(-180deg)",
+                    },
+                  },
+                }}
+                slotProps={{
+                  listbox: {
+                    component: "div",
+                    sx: {
+                      overflow: "auto",
+                      "--List-padding": "0px",
+                      "--ListItem-radius": "0px",
+                    },
+                  },
+                }}
+              >
+                {Object.entries(groupedComponents).map(
+                  ([pageName, names], index) => (
+                    <React.Fragment key={pageName}>
+                      {index !== 0 && <ListDivider role="none" />}
+                      <List
+                        aria-labelledby={`select-group-${pageName}`}
+                        sx={{ "--ListItemDecorator-size": "28px" }}
+                      >
+                        <ListItem id={`select-group-${pageName}`} sticky>
+                          <Typography
+                            level="body3"
+                            textTransform="uppercase"
+                            letterSpacing="md"
+                          >
+                            {pageName} ({names.length})
+                          </Typography>
+                        </ListItem>
+                        {names.map((name: string) => (
+                          <Option
+                            key={name}
+                            value={name}
+                            label={
+                              <React.Fragment>
+                                <Chip
+                                  size="sm"
+                                  color="primary" // Replace this with the appropriate color based on the component
+                                  sx={{ borderRadius: "xs", mr: 1 }}
+                                >
+                                  {pageName}
+                                </Chip>{" "}
+                                {name}
+                              </React.Fragment>
+                            }
+                            sx={{
+                              [`&.${optionClasses.selected} .${listItemDecoratorClasses.root}`]:
+                                {
+                                  opacity: 1,
+                                },
+                            }}
+                          >
+                            <ListItemDecorator sx={{ opacity: 0 }}>
+                              <Check />
+                            </ListItemDecorator>
+                            {name}
+                          </Option>
+                        ))}
+                      </List>
+                    </React.Fragment>
+                  )
+                )}
+              </Select>
+            </FormControl>
+          </Box>
+        ) : null}
         <Box
           sx={{
             py: 2,
@@ -258,19 +464,79 @@ export default function InputColors() {
           }}
         >
           <FormControl>
-            <FormLabel>Enter your component name</FormLabel>
+            <FormLabel>Sayfa</FormLabel>
+            <Select
+              placeholder="Sayfa Seç"
+              onChange={handlePageChange}
+              indicator={<KeyboardArrowDown />}
+              value={selectedPage}
+              sx={{
+                [`& .${selectClasses.indicator}`]: {
+                  transition: "0.2s",
+                  [`&.${selectClasses.expanded}`]: {
+                    transform: "rotate(-180deg)",
+                  },
+                },
+              }}
+            >
+              {getMenuOptions(menuData)}
+            </Select>
+          </FormControl>
+          <FormControl>
+            <FormLabel>Component</FormLabel>
+            <Select
+              placeholder="Component Seç…"
+              defaultValue="input"
+              onChange={handleSelectChange}
+              indicator={<KeyboardArrowDown />}
+              value={selectedComponent}
+              sx={{
+                [`& .${selectClasses.indicator}`]: {
+                  transition: "0.2s",
+                  [`&.${selectClasses.expanded}`]: {
+                    transform: "rotate(-180deg)",
+                  },
+                },
+              }}
+            >
+              {components?.map((component) => (
+                <Option key={component.name} value={component.name}>
+                  {component.name}
+                </Option>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box
+          sx={{
+            py: 2,
+            display: "grid",
+            gap: 2,
+            alignItems: "center",
+            flexWrap: "wrap",
+            mt: -2,
+            mr: -37.5,
+            width: 200,
+          }}
+        >
+          <FormControl>
+            <FormLabel>Component İsmi</FormLabel>
             <Textarea
               name="Outlined"
               placeholder="name"
               variant="outlined"
               onChange={handleNameChange}
+              value={componentNameText as string}
             />
+          </FormControl>
+          <FormControl>
             <FormLabel>Variants</FormLabel>
             <RadioGroup
               defaultValue="outlined"
               name="radio-buttons-group"
               orientation="horizontal"
               onChange={handleVariantChange}
+              value={variant}
             >
               <Radio value="outlined" label="Outlined" variant="outlined" />
               <Radio value="soft" label="Soft" variant="soft" />
@@ -299,6 +565,7 @@ export default function InputColors() {
               name="radio-buttons-group"
               orientation="horizontal"
               onChange={handleChange}
+              value={color}
             >
               <Radio value="primary" label="Primary" color="primary" />
               <Radio value="neutral" label="Neutral" color="neutral" />
@@ -328,6 +595,7 @@ export default function InputColors() {
               name="radio-buttons-group"
               orientation="horizontal"
               onChange={handleSizeChange}
+              value={size}
             >
               <Radio value="sm" label="Small" size="sm" />
               <Radio value="md" label="Medium" size="md" />
@@ -339,40 +607,39 @@ export default function InputColors() {
               placeholder="Type in here…"
               variant="outlined"
               onChange={handlePlaceholderChange}
+              value={placeholder}
             />
           </FormControl>
-          <FormLabel>Select Page</FormLabel>
-          <Select placeholder="Sayfa Seç" onChange={handlePageChange}>
-            {getMenuOptions(menuData)}
-          </Select>
 
-          {selectedComponent === "Radiobutton" && (
-            <FormControl>
-              <FormLabel>Orientation</FormLabel>
-              <ButtonGroup
-                variant="soft"
-                aria-label="outlined primary button group"
-                buttonFlex="0 1 200px"
-                sx={{ width: "100%", justifyContent: "center" }}
-              >
-                <Button onClick={() => handleOrientationChange("vertical")}>
-                  Vertical
-                </Button>
-                <Button onClick={() => handleOrientationChange("horizontal")}>
-                  Horizontal
-                </Button>
-              </ButtonGroup>
-            </FormControl>
-          )}
+          {selectedComponent === "Radiobutton" ||
+            (selectedPageComponent?.componentName === "Radiobutton" && (
+              <FormControl>
+                <FormLabel>Orientation</FormLabel>
+                <ButtonGroup
+                  variant="soft"
+                  aria-label="outlined primary button group"
+                  buttonFlex="0 1 200px"
+                  sx={{ width: "100%", justifyContent: "center" }}
+                >
+                  <Button onClick={() => handleOrientationChange("vertical")}>
+                    Vertical
+                  </Button>
+                  <Button onClick={() => handleOrientationChange("horizontal")}>
+                    Horizontal
+                  </Button>
+                </ButtonGroup>
+              </FormControl>
+            ))}
 
-          <Button onClick={handleAddComponent}>
-            {" "}
-            {loading ? (
-              <CircularProgress sx={{ color: "#fff" }} />
-            ) : (
-              "Add Component"
-            )}
-          </Button>
+<Button onClick={handleAddComponent}>
+  {loading ? (
+    <CircularProgress sx={{ color: "#fff" }} />
+  ) : (
+    isEditing ? "Edit Component" : "Add Component"
+  )}
+</Button>
+
+
         </Box>
       </Grid>
 
@@ -389,74 +656,14 @@ export default function InputColors() {
             width: 300,
           }}
         >
-          {selectedComponent === "Input" && (
-            <FormControl>
-              <FormLabel>Input</FormLabel>
-              <Input
-                name="random"
-                color={color}
-                disabled={false}
-                placeholder={placeholder}
-                size={size}
-                variant={variant}
-              />
-            </FormControl>
-          )}
-          {selectedComponent === "Checkbox" && (
-            <FormControl>
-              <FormLabel>Checkbox</FormLabel>
-              <Checkbox
-                color={color}
-                disabled={false}
-                label={placeholder}
-                size={size}
-                variant={variant}
-              />
-            </FormControl>
-          )}
-          {selectedComponent === "Dropdown" && (
-            <FormControl>
-              <FormLabel>Dropdown</FormLabel>
-              <Select
-                color={color}
-                placeholder={placeholder}
-                size={size}
-                variant={variant}
-              ></Select>
-            </FormControl>
-          )}
-          {selectedComponent === "Radiobutton" && (
-            <FormControl>
-              <FormLabel>Radio Button</FormLabel>
-              <RadioGroup
-                defaultValue="radio2"
-                name="radio-buttons-group"
-                orientation={radioOrientation}
-              >
-                <Radio
-                  value="radio1"
-                  label={placeholder}
-                  size={size}
-                  color={color}
-                  variant={variant}
-                />
-                <Radio
-                  value="radio2"
-                  label={placeholder}
-                  size={size}
-                  color={color}
-                  variant={variant}
-                />
-                <Radio
-                  value="radio3"
-                  label={placeholder}
-                  size={size}
-                  color={color}
-                  variant={variant}
-                />
-              </RadioGroup>
-            </FormControl>
-          )}
+          <DynamicComponent
+            selectedComponent={selectedComponent}
+            color={color}
+            size={size}
+            variant={variant}
+            radioOrientation={radioOrientation}
+            placeholder={placeholder}
+          />
         </Box>
       </Grid>
       {showAlert && (
