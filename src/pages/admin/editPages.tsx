@@ -24,7 +24,7 @@ export default function SpacingGrid() {
   };
 
   const jsx = `
-<Grid container spacing={${spacing}}>
+<Grid container spacing={${spacing}}>Z
 `;
 
 const handleRemove = (id: string) => {

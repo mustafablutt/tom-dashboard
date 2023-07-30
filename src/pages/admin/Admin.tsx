@@ -40,12 +40,12 @@ import {
 import { colorType, variantType, sizeType } from "../../types/Types";
 import DynamicComponent from "./components/DynamicComponent";
 import { AnyARecord } from "dns";
+import SelectGroupedOptions from "./components/SelectGroupedOptions";
 
 export default function InputColors() {
   const [isEditing, setIsEditing] = React.useState<boolean>();
-  const [selectedPageComponent, setSelectedPageComponent] = React.useState<
-    IUpdateComponentData 
-  >();
+  const [selectedPageComponent, setSelectedPageComponent] =
+    React.useState<IUpdateComponentData>();
 
   const colorValueRef = useRef<any>("");
   const placeholderValueRef = useRef<string>("Type Something");
@@ -58,7 +58,6 @@ export default function InputColors() {
   const selectedPageRef = useRef<string | null>("");
   const componentNameTextRef = useRef<string | null>(null);
   const selectedComponentIdRef = useRef<number>(-1);
-
 
   useEffect(() => {
     if (isEditing && selectedPageComponent) {
@@ -86,7 +85,7 @@ export default function InputColors() {
       selectedPageRef.current = "";
       componentNameTextRef.current = null;
     }
-    setSelectedComponentId(selectedComponentIdRef.current||-1);
+    setSelectedComponentId(selectedComponentIdRef.current || -1);
     setColor(colorValueRef.current || "primary");
     setPlaceholder(placeholderValueRef.current || "Type Something");
     setSize(sizeValueRef.current || "lg");
@@ -121,7 +120,9 @@ export default function InputColors() {
   );
 
   const [isCreating, setIsCreating] = useState(true);
-  const [selectedComponentId, setSelectedComponentId] = useState<number>(selectedComponentIdRef.current);
+  const [selectedComponentId, setSelectedComponentId] = useState<number>(
+    selectedComponentIdRef.current
+  );
   const { menuData } = useSidebar();
   const {
     componentsInPage,
@@ -180,21 +181,6 @@ export default function InputColors() {
   const handleNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComponentNameText(event.target.value);
   };
-  const groupByPageName = (data: IAddComponentData[] | undefined) => {
-    const groupedData: Record<string, any[]> = {};
-    if (data) {
-      data.forEach((item) => {
-        const { pageName, name } = item;
-        const pageKey = pageName ?? "Uncategorized";
-        if (!groupedData[pageKey]) {
-          groupedData[pageKey] = [];
-        }
-        groupedData[pageKey].push(name);
-      });
-    }
-    return groupedData;
-  };
-  const groupedComponents = groupByPageName(componentsInPage);
 
   const handleEditComponents = () => {
     setIsEditing(true);
@@ -250,7 +236,7 @@ export default function InputColors() {
     setPlaceholder(event.target.value);
   };
 
-  const handleAddComponent =  async (event:any) => {
+  const handleAddComponent = async (event: any) => {
     // Gather values from the input fields
     event.preventDefault();
     console.log("bunu önemli:", selectedComponentId);
@@ -284,15 +270,15 @@ export default function InputColors() {
     };
 
     if (isEditing) {
-        await updatePageComponent(componentDataUpdate);
+      await updatePageComponent(componentDataUpdate);
     } else {
       await addComponent(componentData);
+      setSelectedComponent("Input");
+      setSelectedPage(null);
+      setComponentNameText(null);
+      setPlaceholder("Type Something");
+      setColor("primary");
     }
-    setSelectedComponent("Input");
-    setSelectedPage(null);
-    setComponentNameText(null);
-    setPlaceholder("Type Something");
-    setColor("primary");
   };
 
   useEffect(() => {
@@ -374,80 +360,7 @@ export default function InputColors() {
           >
             <FormControl>
               <FormLabel>Editlemek İstediğin Component:</FormLabel>
-              <Select
-                placeholder="Choose your component to edit"
-                onChange={handleSelect2Change}
-                indicator={<KeyboardArrowDown />}
-                sx={{
-                  [`& .${selectClasses.indicator}`]: {
-                    transition: "0.2s",
-                    [`&.${selectClasses.expanded}`]: {
-                      transform: "rotate(-180deg)",
-                    },
-                  },
-                }}
-                slotProps={{
-                  listbox: {
-                    component: "div",
-                    sx: {
-                      overflow: "auto",
-                      "--List-padding": "0px",
-                      "--ListItem-radius": "0px",
-                    },
-                  },
-                }}
-              >
-                {Object.entries(groupedComponents).map(
-                  ([pageName, names], index) => (
-                    <React.Fragment key={pageName}>
-                      {index !== 0 && <ListDivider role="none" />}
-                      <List
-                        aria-labelledby={`select-group-${pageName}`}
-                        sx={{ "--ListItemDecorator-size": "28px" }}
-                      >
-                        <ListItem id={`select-group-${pageName}`} sticky>
-                          <Typography
-                            level="body3"
-                            textTransform="uppercase"
-                            letterSpacing="md"
-                          >
-                            {pageName} ({names.length})
-                          </Typography>
-                        </ListItem>
-                        {names.map((name: string) => (
-                          <Option
-                            key={name}
-                            value={name}
-                            label={
-                              <React.Fragment>
-                                <Chip
-                                  size="sm"
-                                  color="primary" // Replace this with the appropriate color based on the component
-                                  sx={{ borderRadius: "xs", mr: 1 }}
-                                >
-                                  {pageName}
-                                </Chip>{" "}
-                                {name}
-                              </React.Fragment>
-                            }
-                            sx={{
-                              [`&.${optionClasses.selected} .${listItemDecoratorClasses.root}`]:
-                                {
-                                  opacity: 1,
-                                },
-                            }}
-                          >
-                            <ListItemDecorator sx={{ opacity: 0 }}>
-                              <Check />
-                            </ListItemDecorator>
-                            {name}
-                          </Option>
-                        ))}
-                      </List>
-                    </React.Fragment>
-                  )
-                )}
-              </Select>
+              <SelectGroupedOptions handleSelectChange={handleSelect2Change} />
             </FormControl>
           </Box>
         ) : null}
@@ -631,15 +544,15 @@ export default function InputColors() {
               </FormControl>
             ))}
 
-<Button onClick={handleAddComponent}>
-  {loading ? (
-    <CircularProgress sx={{ color: "#fff" }} />
-  ) : (
-    isEditing ? "Edit Component" : "Add Component"
-  )}
-</Button>
-
-
+          <Button onClick={handleAddComponent}>
+            {loading ? (
+              <CircularProgress sx={{ color: "#fff" }} />
+            ) : isEditing ? (
+              "Edit Component"
+            ) : (
+              "Add Component"
+            )}
+          </Button>
         </Box>
       </Grid>
 
@@ -668,7 +581,8 @@ export default function InputColors() {
       </Grid>
       {showAlert && (
         <Alert
-          severity={addMessage.includes("Error") ? "error" : "success"}
+          severity="info"
+          // severity={addMessage.includes("Error") ? "error" : "success"}
           onClose={() => setShowAlert(false)}
         >
           {addMessage}
