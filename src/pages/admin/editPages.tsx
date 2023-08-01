@@ -29,8 +29,8 @@ export default function SpacingGrid() {
   const componentsMap: Record<string, React.ElementType> = {
     Input: Input,
     Checkbox: Checkbox,
-    Dropdown: Select, 
-    Radiobutton:RadioGroup
+    Dropdown: Select,
+    Radiobutton: RadioGroup,
   };
 
   const createPropsFromData = (data: any) => {
@@ -208,54 +208,51 @@ export default function SpacingGrid() {
                     <Option value="cat">Cat</Option>
                   </Component>
                 );
-              } 
+              }
               if (data.componentName === "Radiobutton") {
                 return (
-                  <Component
-                  {...props}
-                >
-                  <Radio
-                    value="radio1"
-                    label={props.placeholder}
-                    size={props.size}
-                    color={props.color}
-                    variant={props.ariant}
-                  />
-                   <Radio
-                    value="radio2"
-                    label={props.placeholder}
-                    size={props.size}
-                    color={props.color}
-                    variant={props.ariant}
-                  />
-                  <Radio
-                    value="radio3"
-                    label={props.placeholder}
-                    size={props.size}
-                    color={props.color}
-                    variant={props.ariant}
-                  />
-                </Component>
-                  
+                  <Component {...props}>
+                    <Radio
+                      value="radio1"
+                      label={props.placeholder}
+                      size={props.size}
+                      color={props.color}
+                      variant={props.ariant}
+                    />
+                    <Radio
+                      value="radio2"
+                      label={props.placeholder}
+                      size={props.size}
+                      color={props.color}
+                      variant={props.ariant}
+                    />
+                    <Radio
+                      value="radio3"
+                      label={props.placeholder}
+                      size={props.size}
+                      color={props.color}
+                      variant={props.ariant}
+                    />
+                  </Component>
                 );
-              }
-            
-              else {
+              } else if (data.componentName === "Input") {
+                return (
+                  <DraggableInput
+                    id={data.id}
+                    type={props.type || "text"}
+                    value={props.value || ""}
+                    placeholder={props.placeholder}
+                    variant={props.variant}
+                    color={props.color}
+                    size={props.size}
+                    onRemove={handleRemove}
+                    showClearIcon={false}
+                  />
+                );
+              } else {
                 return <Component {...props} />;
               }
             })}
-
-            {/* <DraggableInput id="1" type="text" value="Drag me" onRemove={handleRemove} showClearIcon={false} />
-            <DraggableCheckbox id="2" checked={false} />
-            <DraggableSelect
-              id="3"
-              options={["Option 1", "Option 2", "Option 3"]}
-            />
-
-            <DraggableRadioButton
-              id="4"
-              options={["Option 1", "Option 2", "Option 3"]}
-            /> */}
           </Box>
         </Paper>
       </Grid>

@@ -3,7 +3,6 @@ export interface IComponentValue {
   valueName: string | any;
 }
 
-
 export interface IAddComponentData {
   componentName: string;
   name: string | null;
@@ -19,9 +18,12 @@ export interface IUpdateComponentData {
 }
 export interface IFetchComponentData {
   _id: number;
-  componentName: string|undefined;
+  componentName: string | undefined;
   name: string | null;
   values: IComponentValue[];
+  id: string;
+  type: string;
+  value: string;
 }
 
 interface IComponentProperties {

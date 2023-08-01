@@ -47,9 +47,8 @@ interface DroppedItem {
   value?: string;
   checked?: boolean;
   options?: string[];
-  onRemove?: () => void; 
+  onRemove?: () => void;
 }
-
 
 const GridCell: React.FC<{
   gridSize: any;
@@ -59,28 +58,33 @@ const GridCell: React.FC<{
   const classes = useStyles();
   const [content, setContent] = useState<JSX.Element[]>([]);
   const removeItem = (id: string) => {
-    setContent(prev => prev.filter(item => item.props.id !== id));
+    setContent((prev) => prev.filter((item) => item.props.id !== id));
   };
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: ["input", "checkbox", "select", "radio"],
     drop: (item: DroppedItem, monitor) => {
-  setContent((prev) => [
-    ...prev,
-    item.type === "checkbox" ? (
-      <DraggableCheckbox id={item.id} checked={item.checked} />
-    ) : item.type === "select" ? (
-      <DraggableSelect id={item.id} options={item.options} />
-    ) : item.type === "radio" ? (
-      <DraggableRadioButton id={item.id} options={item.options} />
-    ) : (
-      <DraggableInput id={item.id + Date.now()} type={item.type} value={item.value || ""} onRemove={removeItem} showClearIcon={true} />
-    ),
-  ]);
-  console.log(`Dropped ${item} on cell ${rowIndex}-${colIndex}`);
-},
-
-    
+      setContent((prev) => [
+        ...prev,
+        item.type === "checkbox" ? (
+          <DraggableCheckbox id={item.id} checked={item.checked} />
+        ) : item.type === "select" ? (
+          <DraggableSelect id={item.id} options={item.options} />
+        ) : item.type === "radio" ? (
+          <DraggableRadioButton id={item.id} options={item.options} />
+        ) : (
+          <DraggableInput
+            id={item.id + Date.now()}
+            type={item.type}
+            value={item.value || ""}
+            placeholder="Selam"
+            onRemove={removeItem}
+            showClearIcon={true}
+          />
+        ),
+      ]);
+      console.log(`Dropped ${item} on cell ${rowIndex}-${colIndex}`);
+    },
 
     collect: (monitor) => ({
       isOver: monitor.isOver(),
