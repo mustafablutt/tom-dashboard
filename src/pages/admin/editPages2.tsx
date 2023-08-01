@@ -14,6 +14,10 @@ import SelectGroupedOptions from "./components2/pagesListDropdown2";
 import Input from "@mui/joy/Input/Input";
 import Checkbox from "@mui/joy/Checkbox/Checkbox";
 import { pageData } from "./components2/pageData";  
+import  { selectClasses } from "@mui/joy/Select";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import { useSidebar } from "../../context/SidebarContext";
+import { usePageComponent } from "../../context/PageComponentContext";
 
 const componentsMap: Record<string, React.ElementType> = {
     Input: Input,
@@ -34,18 +38,65 @@ const createPropsFromData = (data: any) => {
 export default function SpacingGrid() {
   const [spacing, setSpacing] = React.useState(2);
   const [generatedGrid, setGeneratedGrid] = React.useState<JSX.Element[]>([]); // State to store generated grid
+  const [selectedPage, setSelectedPage] = React.useState<string | null>(null); // Initialize as null
+  const { menuData } = useSidebar();
+  const { componentsInCurrentPage, fetchComponentsOfCurrentPage } = usePageComponent();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSpacing(Number((event.target as HTMLInputElement).value));
+  };
+  type MenuItem = {
+    name: string;
+    children?: MenuItem[];
+  };
+  const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
+    let options: any = [];
+    const addChildren = (children: MenuItem[]) => {
+      children.forEach((child) => {
+        options.push(
+          <Option key={child.name} value={child.name}>
+            {child.name}
+          </Option>
+        );
+        if (child.children) {
+          addChildren(child.children);
+        }
+      });
+    };
+    items.forEach((item) => {
+      if (item.children) {
+        addChildren(item.children);
+      }
+    });
+    return options;
+  };
+  React.useEffect(() => {
+   
+    if (selectedPage !== null) {
+      fetchComponentsOfCurrentPage(selectedPage);
+    }
+  }, [selectedPage]);
+
+  React.useEffect(() => {
+    console.log("bunu seçtim editteyim", componentsInCurrentPage);
+  }, [componentsInCurrentPage]);
+  
+  const handlePageChange = (
+    event:
+      | React.MouseEvent<Element, MouseEvent>
+      | React.KeyboardEvent<Element>
+      | React.FocusEvent<Element>
+      | null,
+    value: string|null
+  ) => {
+    setSelectedPage(value);
   };
 
   const handleGridGenerated = (grid: JSX.Element[]) => {
     setGeneratedGrid(grid);
   };
 
-  const jsx = `
-<Grid container spacing={${spacing}}>
-`;
+
 
   return (
     <Grid
@@ -78,7 +129,22 @@ export default function SpacingGrid() {
               width: 300,
             }}
           >
-            <SelectGroupedOptions />
+                 <Select
+              placeholder="Sayfa Seç"
+              onChange={handlePageChange}
+              indicator={<KeyboardArrowDown />}
+              value={selectedPage}
+              sx={{
+                [`& .${selectClasses.indicator}`]: {
+                  transition: "0.2s",
+                  [`&.${selectClasses.expanded}`]: {
+                    transform: "rotate(-180deg)",
+                  },
+                },
+              }}
+            >
+              {getMenuOptions(menuData)}
+            </Select>
 
             <h2
               style={{
@@ -93,8 +159,8 @@ export default function SpacingGrid() {
           </Box>
           <GridGenerator onGridGenerated={handleGridGenerated} />
 
-          {pageData.map((data) => {
-            const Component = componentsMap[data.componentName];
+          {componentsInCurrentPage?.map((data) => {
+            const Component = componentsMap[data.componentName!];
             if (!Component) {
               console.warn(`Component ${data.componentName} not found in componentsMap.`);
               return null;

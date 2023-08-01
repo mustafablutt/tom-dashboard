@@ -3,10 +3,11 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { GridGenerator } from "./components/gridGenerator";
 import Option, { optionClasses } from "@mui/joy/Option";
-
+import Input from "@mui/joy/Input/Input";
+import Checkbox from "@mui/joy/Checkbox/Checkbox";
 import Box from "@mui/joy/Box";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { DraggableInput } from "./components/draggableInput";
 import { DraggableCheckbox } from "./components/draggableCheckbox";
 import { DraggableSelect } from "./components/draggableSelect";
@@ -18,10 +19,26 @@ import { useSidebar } from "../../context/SidebarContext";
 export default function SpacingGrid() {
   const [spacing, setSpacing] = useState(2);
   const [generatedGrid, setGeneratedGrid] = useState<JSX.Element[]>([]); // State to store generated grid
-  const { componentsInCurrentPage, fetchComponentsOfCurrentPage } = usePageComponent();
+  const { componentsInCurrentPage, fetchComponentsOfCurrentPage } =
+    usePageComponent();
   const [selectedPage, setSelectedPage] = useState<string | null>(null); // Initialize as null
   const { menuData } = useSidebar();
 
+  const componentsMap: Record<string, React.ElementType> = {
+    Input: Input,
+    Checkbox: Checkbox,
+    Dropdown: Select, 
+    
+  };
+
+  const createPropsFromData = (data: any) => {
+    const { values } = data;
+    const props: any = {};
+    values.forEach((v: any) => {
+      props[v.propertyName] = v.valueName;
+    });
+    return props;
+  };
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSpacing(Number((event.target as HTMLInputElement).value));
   };
@@ -29,7 +46,6 @@ export default function SpacingGrid() {
     name: string;
     children?: MenuItem[];
   };
-
 
   const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
     let options: any = [];
@@ -59,18 +75,20 @@ export default function SpacingGrid() {
       | React.KeyboardEvent<Element>
       | React.FocusEvent<Element>
       | null,
-    value: string|null
+    value: string | null
   ) => {
     setSelectedPage(value);
   };
-  
+
   useEffect(() => {
-   
     if (selectedPage !== null) {
       fetchComponentsOfCurrentPage(selectedPage);
     }
-    console.log("bunu seçtim editteyim", componentsInCurrentPage);
   }, [selectedPage]);
+
+  useEffect(() => {
+    console.log("bunu seçtim editteyim", componentsInCurrentPage);
+  }, [componentsInCurrentPage]);
 
   if (!menuData) {
     return <div>Loading...</div>;
@@ -84,9 +102,9 @@ export default function SpacingGrid() {
 <Grid container spacing={${spacing}}>
 `;
 
-const handleRemove = (id: string) => {
-  // kaldırılan öğenin id'si ile ilgili işlemleri burada yapabilirsiniz.
-};
+  const handleRemove = (id: string) => {
+    // kaldırılan öğenin id'si ile ilgili işlemleri burada yapabilirsiniz.
+  };
 
   return (
     <Grid
@@ -172,7 +190,28 @@ const handleRemove = (id: string) => {
               üzerine yerleştirin.
             </h2>
 
-             <DraggableInput id="1" type="text" value="Drag me" onRemove={handleRemove} showClearIcon={false} />
+            {componentsInCurrentPage?.map((data) => {
+              const Component = componentsMap[data.componentName!];
+              if (!Component) {
+                console.warn(
+                  `Component ${data.componentName} not found in componentsMap.`
+                );
+                return null;
+              }
+              const props = createPropsFromData(data);
+              if (data.componentName === "Dropdown") {
+                return (
+                  <Component {...props}>
+                    <Option value="dog">Dog</Option>
+                    <Option value="cat">Cat</Option>
+                  </Component>
+                );
+              } else {
+                return <Component {...props} />;
+              }
+            })}
+
+            {/* <DraggableInput id="1" type="text" value="Drag me" onRemove={handleRemove} showClearIcon={false} />
             <DraggableCheckbox id="2" checked={false} />
             <DraggableSelect
               id="3"
@@ -182,7 +221,7 @@ const handleRemove = (id: string) => {
             <DraggableRadioButton
               id="4"
               options={["Option 1", "Option 2", "Option 3"]}
-            />
+            /> */}
           </Box>
         </Paper>
       </Grid>

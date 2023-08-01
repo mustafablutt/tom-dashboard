@@ -63,8 +63,8 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setLoading(true);
       const response = await fetchComponentsOfPageService(pageName);
-      setComponentsInCurrentPage(response.data);
-      console.log("edit pages on", response.data)
+      setComponentsInCurrentPage(response.data.data);
+      console.log("edit pages on", response.data.data)
       setLoading(false);
     } catch (error) {
       console.error("Error fetching components of the page", error);
