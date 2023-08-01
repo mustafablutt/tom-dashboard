@@ -18,6 +18,7 @@ import {
   Radio,
   FormControl,
 } from "@mui/material";
+import { colorType, sizeType, variantType } from "../../../types/Types";
 
 interface GridComponentProps {
   row: number;
@@ -44,6 +45,10 @@ const inputStyle = {
 interface DroppedItem {
   id: string;
   type: "input" | "checkbox" | "select" | "radio";
+  placeholder?: string;
+  variant?: variantType;
+  color?: colorType;
+  size?: sizeType;
   value?: string;
   checked?: boolean;
   options?: string[];
@@ -77,8 +82,11 @@ const GridCell: React.FC<{
             id={item.id + Date.now()}
             type={item.type}
             value={item.value || ""}
-            placeholder="Selam"
             onRemove={removeItem}
+            placeholder={item.placeholder}
+            color = {item.color}
+            variant={item.variant}
+            size = {item.size}
             showClearIcon={true}
           />
         ),

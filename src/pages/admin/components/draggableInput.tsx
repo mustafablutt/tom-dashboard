@@ -31,7 +31,7 @@ export const DraggableInput: React.FC<
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "input",
-    item: { id, type, value },
+    item: { id, type, value, placeholder,color,size,variant},
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
