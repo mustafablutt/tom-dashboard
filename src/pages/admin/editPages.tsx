@@ -2,22 +2,79 @@ import * as React from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { GridGenerator } from "./components/gridGenerator";
+import Option, { optionClasses } from "@mui/joy/Option";
 
 import Box from "@mui/joy/Box";
-import SelectGroupedOptions from "./components/pagesListDropdown";
-
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import { useState,useEffect } from "react";
 import { DraggableInput } from "./components/draggableInput";
 import { DraggableCheckbox } from "./components/draggableCheckbox";
 import { DraggableSelect } from "./components/draggableSelect";
 import { DraggableRadioButton } from "./components/draggableRadioButton";
+import { usePageComponent } from "../../context/PageComponentContext";
+import Select, { selectClasses } from "@mui/joy/Select";
+import { useSidebar } from "../../context/SidebarContext";
 
 export default function SpacingGrid() {
-  const [spacing, setSpacing] = React.useState(2);
-  const [generatedGrid, setGeneratedGrid] = React.useState<JSX.Element[]>([]); // State to store generated grid
+  const [spacing, setSpacing] = useState(2);
+  const [generatedGrid, setGeneratedGrid] = useState<JSX.Element[]>([]); // State to store generated grid
+  const { componentsInCurrentPage, fetchComponentsOfCurrentPage } = usePageComponent();
+  const [selectedPage, setSelectedPage] = useState<string | null>(null); // Initialize as null
+  const { menuData } = useSidebar();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSpacing(Number((event.target as HTMLInputElement).value));
   };
+  type MenuItem = {
+    name: string;
+    children?: MenuItem[];
+  };
+
+
+  const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
+    let options: any = [];
+    const addChildren = (children: MenuItem[]) => {
+      children.forEach((child) => {
+        options.push(
+          <Option key={child.name} value={child.name}>
+            {child.name}
+          </Option>
+        );
+        if (child.children) {
+          addChildren(child.children);
+        }
+      });
+    };
+    items.forEach((item) => {
+      if (item.children) {
+        addChildren(item.children);
+      }
+    });
+    return options;
+  };
+
+  const handlePageChange = (
+    event:
+      | React.MouseEvent<Element, MouseEvent>
+      | React.KeyboardEvent<Element>
+      | React.FocusEvent<Element>
+      | null,
+    value: string|null
+  ) => {
+    setSelectedPage(value);
+  };
+  
+  useEffect(() => {
+   
+    if (selectedPage !== null) {
+      fetchComponentsOfCurrentPage(selectedPage);
+    }
+    console.log("bunu seçtim editteyim", componentsInCurrentPage);
+  }, [selectedPage]);
+
+  if (!menuData) {
+    return <div>Loading...</div>;
+  }
 
   const handleGridGenerated = (grid: JSX.Element[]) => {
     setGeneratedGrid(grid);
@@ -62,7 +119,22 @@ const handleRemove = (id: string) => {
               width: 300,
             }}
           >
-            <SelectGroupedOptions />
+            <Select
+              placeholder="Sayfa Seç"
+              onChange={handlePageChange}
+              indicator={<KeyboardArrowDown />}
+              value={selectedPage}
+              sx={{
+                [`& .${selectClasses.indicator}`]: {
+                  transition: "0.2s",
+                  [`&.${selectClasses.expanded}`]: {
+                    transform: "rotate(-180deg)",
+                  },
+                },
+              }}
+            >
+              {getMenuOptions(menuData)}
+            </Select>
             <h2
               style={{
                 marginBottom: "10px",

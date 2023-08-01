@@ -17,6 +17,12 @@ export interface IUpdateComponentData {
   pageName: string | null;
   values: IComponentValue[];
 }
+export interface IFetchComponentData {
+  _id: number;
+  componentName: string|undefined;
+  name: string | null;
+  values: IComponentValue[];
+}
 
 interface IComponentProperties {
   name: string;

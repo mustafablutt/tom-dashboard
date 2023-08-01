@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
-    addComponentToPageService ,fetchPageComponents,fetchAllComponents,updatePageComponentService
+    addComponentToPageService ,fetchPageComponents,fetchAllComponents,updatePageComponentService,fetchComponentsOfPageService
 } from "../services/apiService";
-import { IAddComponentData,IComponent,IUpdateComponentData } from "../interfaces/Interfaces";
+import { IAddComponentData,IComponent,IFetchComponentData,IUpdateComponentData } from "../interfaces/Interfaces";
 
 interface IContext {
   componentsInPage: IUpdateComponentData[] | undefined;
+  componentsInCurrentPage:IFetchComponentData[]|undefined;
   components : IComponent[] | undefined;
   loading: boolean;
   succeeded : boolean;
@@ -14,6 +15,7 @@ interface IContext {
   setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
   addComponent: (componentData: IAddComponentData) => Promise<void>;
   updatePageComponent : (componentData: IUpdateComponentData) =>Promise<void>;
+  fetchComponentsOfCurrentPage: (pageName: string|null) => Promise<void>;
 }
 
 const PageComponentContext = createContext<IContext | undefined>(undefined);
@@ -23,6 +25,7 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [components, setComponents] = useState<IComponent[] | undefined>(undefined);
   const [componentsInPage, setComponentsInPage] = useState<IUpdateComponentData[] | undefined>(undefined);
+  const [componentsInCurrentPage, setComponentsInCurrentPage] = useState<IFetchComponentData[] | undefined>(undefined);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [succeeded, setSucceeded] = useState<boolean>(false);
@@ -56,6 +59,18 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
       });
   }, []);
 
+  const fetchComponentsOfCurrentPage = async (pageName: string|null) => {
+    try {
+      setLoading(true);
+      const response = await fetchComponentsOfPageService(pageName);
+      setComponentsInCurrentPage(response.data);
+      console.log("edit pages on", response.data)
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching components of the page", error);
+      setLoading(false);
+    }
+  };
   const addComponent = async (componentData: IAddComponentData) => {
     try {
       setLoading(true);
@@ -103,7 +118,9 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
         addMessage,
         showAlert,
         setShowAlert,
-        updatePageComponent
+        updatePageComponent,
+        fetchComponentsOfCurrentPage,
+        componentsInCurrentPage
       }}
     >
       {children}
