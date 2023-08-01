@@ -246,7 +246,20 @@ export default function SpacingGrid() {
                     color={props.color}
                     size={props.size}
                     onRemove={handleRemove}
-                    showClearIcon={false}
+                    showClearIcon={true}
+                  />
+                );
+              } else if (data.componentName === "Checkbox") {
+                return (
+                  <DraggableCheckbox
+                    id={data.id}
+                    checked={props.checked || true}
+                    color={props.color}
+                    variant={props.variant}
+                    label={props.label}
+                    size={props.size}
+                    onRemove={handleRemove}
+                    showClearIcon={true}
                   />
                 );
               } else {

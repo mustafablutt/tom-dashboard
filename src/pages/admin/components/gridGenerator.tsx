@@ -46,6 +46,7 @@ interface DroppedItem {
   id: string;
   type: "input" | "checkbox" | "select" | "radio";
   placeholder?: string;
+  label?: string;
   variant?: variantType;
   color?: colorType;
   size?: sizeType;
@@ -72,7 +73,16 @@ const GridCell: React.FC<{
       setContent((prev) => [
         ...prev,
         item.type === "checkbox" ? (
-          <DraggableCheckbox id={item.id} checked={item.checked} />
+          <DraggableCheckbox
+            id={item.id}
+            checked={item.checked}
+            onRemove={removeItem}
+            label={item.label}
+            color={item.color}
+            variant={item.variant}
+            size={item.size}
+            showClearIcon={true}
+          />
         ) : item.type === "select" ? (
           <DraggableSelect id={item.id} options={item.options} />
         ) : item.type === "radio" ? (
@@ -84,9 +94,9 @@ const GridCell: React.FC<{
             value={item.value || ""}
             onRemove={removeItem}
             placeholder={item.placeholder}
-            color = {item.color}
+            color={item.color}
             variant={item.variant}
-            size = {item.size}
+            size={item.size}
             showClearIcon={true}
           />
         ),
