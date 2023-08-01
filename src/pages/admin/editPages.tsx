@@ -203,10 +203,15 @@ export default function SpacingGrid() {
               const props = createPropsFromData(data);
               if (data.componentName === "Dropdown") {
                 return (
-                  <Component {...props}>
-                    <Option value="dog">Dog</Option>
-                    <Option value="cat">Cat</Option>
-                  </Component>
+                  <DraggableSelect
+                    id={data.id}
+                    color={props.color}
+                    variant={props.variant}
+                    size={props.size}
+                    placeholder={props.placeholder}
+                    onRemove={handleRemove}
+                    showClearIcon={false}
+                  />
                 );
               }
               if (data.componentName === "Radiobutton") {

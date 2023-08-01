@@ -84,7 +84,16 @@ const GridCell: React.FC<{
             showClearIcon={true}
           />
         ) : item.type === "select" ? (
-          <DraggableSelect id={item.id} options={item.options} />
+          <DraggableSelect
+            id={item.id}
+            options={item.options}
+            placeholder={item.placeholder}
+            onRemove={removeItem}
+            color={item.color}
+            size={item.size}
+            variant={item.variant}
+            showClearIcon={true}
+          />
         ) : item.type === "radio" ? (
           <DraggableRadioButton id={item.id} options={item.options} />
         ) : (
