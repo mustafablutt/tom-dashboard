@@ -242,16 +242,16 @@ export default function SpacingGrid() {
                 );
               } else if (data.componentName === "Input") {
                 return (
-                  <DraggableInput
+                  <DraggableSelect
                     id={data.id}
-                    type={props.type || "text"}
-                    value={props.value || ""}
-                    placeholder={props.placeholder}
-                    variant={props.variant}
                     color={props.color}
+                    variant={props.variant}
                     size={props.size}
+                    placeholder={props.placeholder}
                     onRemove={handleRemove}
-                    showClearIcon={true}
+                    showClearIcon={false}
+                    option1="DOG"
+                    option2="CAT"
                   />
                 );
               } else if (data.componentName === "Checkbox") {

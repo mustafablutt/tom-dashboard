@@ -86,7 +86,8 @@ const GridCell: React.FC<{
         ) : item.type === "select" ? (
           <DraggableSelect
             id={item.id}
-            options={item.options}
+            option1="DOG"
+            option2="CAT"
             placeholder={item.placeholder}
             onRemove={removeItem}
             color={item.color}

@@ -2,10 +2,12 @@ import { useDrag } from "react-dnd";
 import Select from "@mui/joy/Select/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { variantType, colorType, sizeType } from "../../../types/Types";
+import Option from "@mui/joy/Option/Option";
 
 interface DraggableSelectProps {
   id: string;
-  options?: string[];
+  option1?: string;
+  option2?: string;
   showClearIcon?: boolean;
   placeholder?: string;
   variant?: variantType;
@@ -17,7 +19,8 @@ export const DraggableSelect: React.FC<
   DraggableSelectProps & { onRemove: (id: string) => void }
 > = ({
   id,
-  options = [],
+  option1,
+  option2,
   onRemove,
   showClearIcon,
   placeholder,
@@ -27,7 +30,16 @@ export const DraggableSelect: React.FC<
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "select",
-    item: { id, type: "select", options, placeholder, size, variant, color },
+    item: {
+      id,
+      type: "select",
+      option1,
+      option2,
+      placeholder,
+      size,
+      variant,
+      color,
+    },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -41,11 +53,8 @@ export const DraggableSelect: React.FC<
         color={color}
         variant={variant}
       >
-        {options.map((option, index) => (
-          <MenuItem key={index} value={option}>
-            {option}
-          </MenuItem>
-        ))}
+        <Option value="dog">{option1}</Option>
+        <Option value="cat">{option2}</Option>
       </Select>
     </div>
   );
