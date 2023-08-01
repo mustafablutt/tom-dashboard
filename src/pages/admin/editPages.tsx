@@ -15,6 +15,8 @@ import { DraggableRadioButton } from "./components/draggableRadioButton";
 import { usePageComponent } from "../../context/PageComponentContext";
 import Select, { selectClasses } from "@mui/joy/Select";
 import { useSidebar } from "../../context/SidebarContext";
+import RadioGroup from "@mui/joy/RadioGroup";
+import Radio from "@mui/joy/Radio";
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = useState(2);
@@ -28,7 +30,7 @@ export default function SpacingGrid() {
     Input: Input,
     Checkbox: Checkbox,
     Dropdown: Select, 
-    
+    Radiobutton:RadioGroup
   };
 
   const createPropsFromData = (data: any) => {
@@ -206,7 +208,38 @@ export default function SpacingGrid() {
                     <Option value="cat">Cat</Option>
                   </Component>
                 );
-              } else {
+              } 
+              if (data.componentName === "Radiobutton") {
+                return (
+                  <Component
+                  {...props}
+                >
+                  <Radio
+                    value="radio1"
+                    label={props.placeholder}
+                    size={props.size}
+                    color={props.color}
+                    variant={props.ariant}
+                  />
+                   <Radio
+                    value="radio2"
+                    label={props.placeholder}
+                    size={props.size}
+                    color={props.color}
+                    variant={props.ariant}
+                  />
+                  <Radio
+                    value="radio3"
+                    label={props.placeholder}
+                    size={props.size}
+                    color={props.color}
+                    variant={props.ariant}
+                  />
+                </Component>
+                  
+                );
+              }
+              else {
                 return <Component {...props} />;
               }
             })}
