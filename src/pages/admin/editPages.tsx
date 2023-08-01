@@ -216,42 +216,29 @@ export default function SpacingGrid() {
               }
               if (data.componentName === "Radiobutton") {
                 return (
-                  <Component {...props}>
-                    <Radio
-                      value="radio1"
-                      label={props.placeholder}
-                      size={props.size}
-                      color={props.color}
-                      variant={props.ariant}
-                    />
-                    <Radio
-                      value="radio2"
-                      label={props.placeholder}
-                      size={props.size}
-                      color={props.color}
-                      variant={props.ariant}
-                    />
-                    <Radio
-                      value="radio3"
-                      label={props.placeholder}
-                      size={props.size}
-                      color={props.color}
-                      variant={props.ariant}
-                    />
-                  </Component>
+                  <DraggableRadioButton
+                    id={data.id}
+                    type={props.type || "text"}
+                    placeholder={props.placeholder}
+                    variant={props.variant}
+                    color={props.color}
+                    size={props.size}
+                    onRemove={handleRemove}
+                    showClearIcon={true}
+                  />
                 );
               } else if (data.componentName === "Input") {
                 return (
-                  <DraggableSelect
+                  <DraggableInput
                     id={data.id}
-                    color={props.color}
-                    variant={props.variant}
-                    size={props.size}
+                    type={props.type || "text"}
+                    value={props.value || ""}
                     placeholder={props.placeholder}
+                    variant={props.variant}
+                    color={props.color}
+                    size={props.size}
                     onRemove={handleRemove}
-                    showClearIcon={false}
-                    option1="DOG"
-                    option2="CAT"
+                    showClearIcon={true}
                   />
                 );
               } else if (data.componentName === "Checkbox") {

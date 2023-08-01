@@ -53,8 +53,8 @@ export const DraggableSelect: React.FC<
         color={color}
         variant={variant}
       >
-        <Option value="dog">{option1}</Option>
-        <Option value="cat">{option2}</Option>
+        <Option value="dog">DOG</Option>
+        <Option value="cat">CAT</Option>
       </Select>
     </div>
   );
