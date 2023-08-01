@@ -78,17 +78,27 @@ const DynamicComponent: React.FC<DynamicComponentProps> = ({
           />
         </SelectedComponent>
       )}
-      {selectedComponent !== "Radiobutton" && (
-        // Render other components using the same approach
+      {selectedComponent === "Checkbox" && (
+        // Special handling for Checkbox
         <SelectedComponent
-          name="random"
           color={color}
-          disabled={false}
-          placeholder={placeholder}
           size={size}
           variant={variant}
+          label={placeholder} // Use the "label" prop for Checkbox
         />
       )}
+      {selectedComponent !== "Radiobutton" &&
+        selectedComponent !== "Checkbox" && (
+          // Render other components using the same approach
+          <SelectedComponent
+            name="random"
+            color={color}
+            disabled={false}
+            placeholder={placeholder}
+            size={size}
+            variant={variant}
+          />
+        )}
     </FormControl>
   );
 };

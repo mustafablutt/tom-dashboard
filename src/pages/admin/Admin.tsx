@@ -246,13 +246,21 @@ export default function InputColors() {
     const name = componentNameText;
     const pageName = selectedPage;
     const values: IComponentValue[] = [];
+    
     values.push({ propertyName: "color", valueName: color });
     values.push({ propertyName: "size", valueName: size });
     values.push({ propertyName: "variant", valueName: variant });
-    values.push({ propertyName: "placeholder", valueName: placeholder });
-
+  
     if (selectedComponent === "Radiobutton") {
       values.push({ propertyName: "orientation", valueName: radioOrientation });
+    }
+  
+    if (selectedComponent === "Checkbox") {
+      // Checkbox component doesn't have a placeholder, it has a label
+      values.push({ propertyName: "label", valueName: placeholder });
+    } else {
+      // For other components, use the "placeholder" property
+      values.push({ propertyName: "placeholder", valueName: placeholder });
     }
 
     const componentData: IAddComponentData = {
