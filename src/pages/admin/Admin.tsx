@@ -532,7 +532,7 @@ export default function InputColors() {
             />
           </FormControl>
 
-          {selectedComponent === "Radiobutton" ||
+          {/* {selectedComponent === "Radiobutton" ||
             (selectedPageComponent?.componentName === "Radiobutton" && (
               <FormControl>
                 <FormLabel>Orientation</FormLabel>
@@ -550,7 +550,7 @@ export default function InputColors() {
                   </Button>
                 </ButtonGroup>
               </FormControl>
-            ))}
+            ))} */}
 
           <Button onClick={handleAddComponent}>
             {loading ? (
