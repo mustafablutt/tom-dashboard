@@ -44,7 +44,7 @@ const inputStyle = {
 };
 
 interface DroppedItem {
-  id: string;
+  id: number;
   type: "input" | "checkbox" | "select" | "radio";
   placeholder?: string;
   label?: string;
@@ -64,24 +64,26 @@ const GridCell: React.FC<{
 }> = ({ gridSize, rowIndex, colIndex }) => {
   const classes = useStyles();
   const [content, setContent] = useState<JSX.Element[]>([]);
-  const removeItem = (id: string) => {
+
+  const removeItem = (id: number) => {
     setContent((prev) => prev.filter((item) => item.props.id !== id));
   };
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: ["input", "checkbox", "select", "radio"],
     drop: (item: DroppedItem, monitor) => {
+      console.log("Dropped item:", item);
       setContent((prev) => [
         ...prev,
         item.type === "checkbox" ? (
           <DraggableCheckbox
             id={item.id}
             checked={item.checked}
-            onRemove={removeItem}
             label={item.label}
             color={item.color}
             variant={item.variant}
             size={item.size}
+            onRemove={removeItem}
             showClearIcon={true}
           />
         ) : item.type === "select" ? (
@@ -90,10 +92,10 @@ const GridCell: React.FC<{
             option1="DOG"
             option2="CAT"
             placeholder={item.placeholder}
-            onRemove={removeItem}
             color={item.color}
             size={item.size}
             variant={item.variant}
+            onRemove={removeItem}
             showClearIcon={true}
           />
         ) : item.type === "radio" ? (
@@ -103,23 +105,23 @@ const GridCell: React.FC<{
             option2="Radio2"
             option3="Radio3"
             placeholder={item.placeholder}
-            onRemove={removeItem}
             color={item.color}
             size={item.size}
             variant={item.variant}
-            showClearIcon={true}
             type={item.type}
+            onRemove={removeItem}
+            showClearIcon={true}
           />
         ) : (
           <DraggableInput
-            id={item.id + Date.now()}
+            id={item.id}
             type={item.type}
             value={item.value || ""}
-            onRemove={removeItem}
             placeholder={item.placeholder}
             color={item.color}
             variant={item.variant}
             size={item.size}
+            onRemove={removeItem}
             showClearIcon={true}
           />
         ),

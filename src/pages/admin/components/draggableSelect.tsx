@@ -1,11 +1,13 @@
 import { useDrag } from "react-dnd";
 import Select from "@mui/joy/Select/Select";
-import MenuItem from "@mui/material/MenuItem";
 import { variantType, colorType, sizeType } from "../../../types/Types";
 import Option from "@mui/joy/Option/Option";
+import ClearIcon from "@mui/icons-material/Clear";
+import { IconButton } from "@mui/material";
+import FormControl from "@mui/joy/FormControl/FormControl";
 
 interface DraggableSelectProps {
-  id: string;
+  id: number;
   option1?: string;
   option2?: string;
   showClearIcon?: boolean;
@@ -16,7 +18,7 @@ interface DraggableSelectProps {
 }
 
 export const DraggableSelect: React.FC<
-  DraggableSelectProps & { onRemove: (id: string) => void }
+  DraggableSelectProps & { onRemove: (id: number) => void }
 > = ({
   id,
   option1,
@@ -47,15 +49,25 @@ export const DraggableSelect: React.FC<
 
   return (
     <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      <Select
-        placeholder={placeholder}
-        size={size}
-        color={color}
-        variant={variant}
-      >
-        <Option value="dog">DOG</Option>
-        <Option value="cat">CAT</Option>
-      </Select>
+      <FormControl>
+        {showClearIcon && (
+          <IconButton
+            style={{ position: "absolute", right: -20, top: 5, zIndex: 2000 }}
+            onClick={() => onRemove(id)}
+          >
+            <ClearIcon />
+          </IconButton>
+        )}
+        <Select
+          placeholder={placeholder}
+          size={size}
+          color={color}
+          variant={variant}
+        >
+          <Option value="dog">DOG</Option>
+          <Option value="cat">CAT</Option>
+        </Select>
+      </FormControl>
     </div>
   );
 };

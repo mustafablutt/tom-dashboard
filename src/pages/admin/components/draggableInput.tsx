@@ -3,10 +3,11 @@ import { useDrag } from "react-dnd";
 import Input from "@mui/joy/Input/Input";
 import { IconButton } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+
 import { variantType, colorType, sizeType } from "../../../types/Types";
 
 interface DraggableInputProps {
-  id: string;
+  id: number;
   type: string;
   value: string;
   showClearIcon?: boolean;
@@ -17,21 +18,21 @@ interface DraggableInputProps {
 }
 
 export const DraggableInput: React.FC<
-  DraggableInputProps & { onRemove: (id: string) => void }
+  DraggableInputProps & { onRemove: (id: number) => void }
 > = ({
   id,
   type,
   value,
   onRemove,
-  showClearIcon,
   placeholder,
   variant,
   color,
   size,
+  showClearIcon,
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "input",
-    item: { id, type, value, placeholder,color,size,variant},
+    item: { id, type, value, placeholder, color, size, variant },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

@@ -101,11 +101,7 @@ export default function SpacingGrid() {
     setGeneratedGrid(grid);
   };
 
-  const jsx = `
-<Grid container spacing={${spacing}}>
-`;
-
-  const handleRemove = (id: string) => {
+  const handleRemove = (id: number) => {
     // kaldırılan öğenin id'si ile ilgili işlemleri burada yapabilirsiniz.
   };
 
@@ -187,7 +183,7 @@ export default function SpacingGrid() {
               if (data.componentName === "Dropdown") {
                 return (
                   <DraggableSelect
-                    id={data.id}
+                    id={data._id}
                     color={props.color}
                     variant={props.variant}
                     size={props.size}
@@ -200,7 +196,7 @@ export default function SpacingGrid() {
               if (data.componentName === "Radiobutton") {
                 return (
                   <DraggableRadioButton
-                    id={data.id}
+                    id={data._id}
                     type={props.type || "text"}
                     placeholder={props.placeholder}
                     variant={props.variant}
@@ -213,7 +209,7 @@ export default function SpacingGrid() {
               } else if (data.componentName === "Input") {
                 return (
                   <DraggableInput
-                    id={data.id}
+                    id={data._id}
                     type={props.type || "text"}
                     value={props.value || ""}
                     placeholder={props.placeholder}
@@ -227,7 +223,7 @@ export default function SpacingGrid() {
               } else if (data.componentName === "Checkbox") {
                 return (
                   <DraggableCheckbox
-                    id={data.id}
+                    id={data._id}
                     checked={props.checked || true}
                     color={props.color}
                     variant={props.variant}
