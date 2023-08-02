@@ -10,14 +10,15 @@ import { DraggableInput } from "./draggableInput";
 import { DraggableRadioButton } from "./draggableRadioButton";
 import Input from "@mui/joy/Input/Input";
 import Checkbox from "@mui/joy/Checkbox/Checkbox";
+
 import Select from "@mui/joy/Select/Select";
 import { MenuItem } from "@mui/material";
-import {
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-} from "@mui/material";
+import Stack from "@mui/joy/Stack";
+import FormControl from "@mui/joy/FormControl";
+import FormLabel from "@mui/joy/FormLabel";
+import FormHelperText from "@mui/joy/FormHelperText";
+
+import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import { colorType, sizeType, variantType } from "../../../types/Types";
 
 interface GridComponentProps {
@@ -205,6 +206,7 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   const handleGridGenerated = (grid: JSX.Element) => {
     gridArray.push(grid);
   };
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
     onGridGenerated(gridArray);
@@ -213,20 +215,49 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input
-          type="number"
-          value={rows}
-          onChange={handleRowChange}
-          placeholder="Number of rows"
-        />
-        {Array.from({ length: rows }, (_, index) => (
-          <RowInput
-            key={index}
-            rowIndex={index}
-            onRowColumnsChange={handleRowColumnsChange}
-          />
-        ))}
-        <button type="submit">Generate Grid</button>
+        <FormControl>
+          <FormLabel
+            sx={(theme) => ({
+              "--FormLabel-color": "#7947ca",
+            })}
+          >
+            Satır sayısı giriniz
+          </FormLabel>
+          <Stack spacing={1.5} sx={{ minWidth: 300 }}>
+            <Input
+              type="number"
+              value={rows}
+              onChange={handleRowChange}
+              placeholder="Number of rows"
+              defaultValue={1}
+              slotProps={{
+                input: {
+                  ref: inputRef,
+                  min: 1,
+                  step: 1,
+                },
+              }}
+            />
+
+            {Array.from({ length: rows }, (_, index) => (
+              <FormControl>
+                <FormLabel
+                  sx={(theme) => ({
+                    "--FormLabel-color": "#7947ca",
+                  })}
+                >
+                  Satır {index + 1}'deki sütun sayısını giriniz:
+                </FormLabel>
+                <RowInput
+                  key={index}
+                  rowIndex={index}
+                  onRowColumnsChange={handleRowColumnsChange}
+                />
+              </FormControl>
+            ))}
+          </Stack>
+          {/* <button type="submit">Generate Grid</button> */}
+        </FormControl>
       </form>
       {cols.map((col, index) => (
         <GridComponent

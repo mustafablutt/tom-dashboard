@@ -24,7 +24,6 @@ export const DraggableCheckbox: React.FC<
   label,
   color,
   size,
-
   showClearIcon,
 }) => {
   const [{ isDragging }, drag] = useDrag(() => ({

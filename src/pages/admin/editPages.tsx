@@ -17,6 +17,7 @@ import Select, { selectClasses } from "@mui/joy/Select";
 import { useSidebar } from "../../context/SidebarContext";
 import RadioGroup from "@mui/joy/RadioGroup";
 import Radio from "@mui/joy/Radio";
+import { Divider, Typography } from "@mui/material";
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = useState(2);
@@ -116,17 +117,18 @@ export default function SpacingGrid() {
       sx={{ flexGrow: 1, ml: 10, mt: 5 }}
     >
       <Grid item xs={4}>
-        <Paper sx={{ p: 2, border: 1 }}>
-          <h2
+        <Paper sx={{ p: 4 }}>
+          <Typography
             style={{
               marginBottom: "10px",
               fontSize: "20px",
-              color: "black",
+              color: "#53308c",
               marginLeft: "2px",
+              fontStyle: "bold",
             }}
           >
             EDIT PAGES
-          </h2>
+          </Typography>
           <Box
             sx={{
               py: 2,
@@ -155,16 +157,7 @@ export default function SpacingGrid() {
             >
               {getMenuOptions(menuData)}
             </Select>
-            <h2
-              style={{
-                marginBottom: "10px",
-                fontSize: "14px",
-                color: "black",
-                marginLeft: "2px",
-              }}
-            >
-              Enter the grid structure you want on the page in row column format
-            </h2>
+            <Divider> Grid Oluştur</Divider>
             <GridGenerator onGridGenerated={handleGridGenerated} />{" "}
           </Box>
 
@@ -180,17 +173,7 @@ export default function SpacingGrid() {
               width: 300,
             }}
           >
-            <h2
-              style={{
-                marginBottom: "10px",
-                fontSize: "14px",
-                color: "black",
-                marginLeft: "2px",
-              }}
-            >
-              Sayfada Bulunan componentleri sürükle bırak yolu ile gridlerin
-              üzerine yerleştirin.
-            </h2>
+            <Divider> Component Sürükle</Divider>
 
             {componentsInCurrentPage?.map((data) => {
               const Component = componentsMap[data.componentName!];
@@ -224,7 +207,7 @@ export default function SpacingGrid() {
                     color={props.color}
                     size={props.size}
                     onRemove={handleRemove}
-                    showClearIcon={true}
+                    showClearIcon={false}
                   />
                 );
               } else if (data.componentName === "Input") {
@@ -238,7 +221,7 @@ export default function SpacingGrid() {
                     color={props.color}
                     size={props.size}
                     onRemove={handleRemove}
-                    showClearIcon={true}
+                    showClearIcon={false}
                   />
                 );
               } else if (data.componentName === "Checkbox") {
@@ -251,11 +234,11 @@ export default function SpacingGrid() {
                     label={props.label}
                     size={props.size}
                     onRemove={handleRemove}
-                    showClearIcon={true}
+                    showClearIcon={false}
                   />
                 );
               } else {
-                return <Component {...props} />;
+                return <Component {...props} showClearIcon={false} />;
               }
             })}
           </Box>
@@ -263,7 +246,18 @@ export default function SpacingGrid() {
       </Grid>
 
       <Grid item xs={8}>
-        <Paper sx={{ p: 2, border: 1 }}>
+        <Paper sx={{ p: 2 }}>
+          <Typography
+            style={{
+              marginBottom: "10px",
+              fontSize: "20px",
+              color: "#53308c",
+              marginLeft: "2px",
+              fontStyle: "bold",
+            }}
+          >
+            {selectedPage}
+          </Typography>
           {generatedGrid} {/* Render the generated grid here */}
         </Paper>
       </Grid>

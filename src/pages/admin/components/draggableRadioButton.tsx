@@ -52,7 +52,7 @@ export const DraggableRadioButton: React.FC<
 
   return (
     <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      <FormControl component="fieldset">
+      <FormControl>
         <RadioGroup defaultValue="medium" name="radio-buttons-group">
           <Radio
             value="small"
