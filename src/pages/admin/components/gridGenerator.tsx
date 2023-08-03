@@ -73,11 +73,13 @@ const GridCell: React.FC<{
     accept: ["input", "checkbox", "select", "radio"],
     drop: (item: DroppedItem, monitor) => {
       console.log("Dropped item:", item);
+      const uniqueId = Date.now() + Math.random();
       setContent((prev) => [
         ...prev,
         item.type === "checkbox" ? (
           <DraggableCheckbox
-            id={item.id}
+            key={uniqueId}
+            id={uniqueId}
             checked={item.checked}
             label={item.label}
             color={item.color}
@@ -88,7 +90,8 @@ const GridCell: React.FC<{
           />
         ) : item.type === "select" ? (
           <DraggableSelect
-            id={item.id}
+            key={uniqueId}
+            id={uniqueId}
             option1="DOG"
             option2="CAT"
             placeholder={item.placeholder}
@@ -100,7 +103,8 @@ const GridCell: React.FC<{
           />
         ) : item.type === "radio" ? (
           <DraggableRadioButton
-            id={item.id}
+            key={uniqueId}
+            id={uniqueId}
             option1="Radio1"
             option2="Radio2"
             option3="Radio3"
@@ -114,7 +118,8 @@ const GridCell: React.FC<{
           />
         ) : (
           <DraggableInput
-            id={item.id}
+            key={uniqueId}
+            id={uniqueId}
             type={item.type}
             value={item.value || ""}
             placeholder={item.placeholder}
@@ -136,7 +141,7 @@ const GridCell: React.FC<{
   }));
 
   const isActive = canDrop && isOver;
-  const backgroundColor = isActive ? "lightgreen" : "white";
+  const backgroundColor = isActive ? "#7947ca" : "white";
 
   return (
     <Grid
@@ -146,8 +151,10 @@ const GridCell: React.FC<{
       ref={drop}
       style={{ background: backgroundColor }}
     >
-      <Paper className={classes.paper}>
-        {`Grid ${rowIndex + 1}-${colIndex + 1}`}
+      <Paper>
+        <div className={classes.paper}>
+          {`Grid ${rowIndex + 1}-${colIndex + 1}`}
+        </div>
         {content.map((item, index) => (
           <div key={index}>{item}</div>
         ))}{" "}

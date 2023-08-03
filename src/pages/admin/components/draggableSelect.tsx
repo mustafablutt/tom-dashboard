@@ -5,6 +5,7 @@ import Option from "@mui/joy/Option/Option";
 import ClearIcon from "@mui/icons-material/Clear";
 import { IconButton } from "@mui/material";
 import FormControl from "@mui/joy/FormControl/FormControl";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 interface DraggableSelectProps {
   id: number;
@@ -48,14 +49,30 @@ export const DraggableSelect: React.FC<
   }));
 
   return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+    <div
+      ref={drag}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        width: "95%",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "8px",
+        marginLeft: "8px",
+      }}
+    >
       <FormControl>
         {showClearIcon && (
           <IconButton
-            style={{ position: "absolute", right: -20, top: 5, zIndex: 2000 }}
+            style={{
+              position: "absolute",
+              right: -5,
+              top: -5,
+              zIndex: 2000,
+              color: "white",
+            }}
             onClick={() => onRemove(id)}
           >
-            <ClearIcon />
+            <CancelIcon style={{ fontSize: "large" }} />
           </IconButton>
         )}
         <Select
