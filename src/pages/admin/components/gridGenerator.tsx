@@ -17,6 +17,8 @@ import Stack from "@mui/joy/Stack";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import FormHelperText from "@mui/joy/FormHelperText";
+import { useCallback } from "react";
+import { Button } from "@material-ui/core";
 
 import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import { colorType, sizeType, variantType } from "../../../types/Types";
@@ -188,6 +190,18 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
 }) => {
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number[]>([]);
+  const [gridCode, setGridCode] = useState<string>("");
+
+  const copyCodeToClipboard = useCallback(() => {
+    navigator.clipboard.writeText(gridCode).then(
+      () => {
+        alert("Kod panoya kopyalandı!");
+      },
+      (err) => {
+        alert("Kopyalama işlemi başarısız oldu!");
+      }
+    );
+  }, [gridCode]);
 
   const handleRowChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRows(parseInt(event.target.value));
@@ -212,6 +226,24 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
 
   React.useEffect(() => {
     onGridGenerated(gridArray);
+  }, [gridArray]);
+
+  React.useEffect(() => {
+    if (gridArray.length === rows) {
+      let gridString = "<Grid container spacing={2} sx={{ flexGrow: 1 }}>\n";
+      gridArray.forEach((_, rowIndex) => {
+        const xsValue = Math.floor(12 / cols[rowIndex]); // Her bir sütunun xs değerini hesapla
+        for (let colIndex = 0; colIndex < cols[rowIndex]; colIndex++) {
+          gridString += `  <Grid xs={${xsValue}} md={${xsValue}}>\n`;
+          gridString += `    <MenuItem>xs=${xsValue} md=${xsValue}</MenuItem>\n`;
+          gridString += "  </Grid>\n";
+        }
+      });
+
+      gridString += "</Grid>";
+      console.log(gridString);
+      setGridCode(gridString);
+    }
   }, [gridArray]);
 
   return (
@@ -250,6 +282,7 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
                 >
                   Satır {index + 1}'deki sütun sayısını giriniz:
                 </FormLabel>
+
                 <RowInput
                   key={index}
                   rowIndex={index}
@@ -258,7 +291,17 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
               </FormControl>
             ))}
           </Stack>
-          {/* <button type="submit">Generate Grid</button> */}
+          <FormControl>
+            <FormLabel>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={copyCodeToClipboard}
+              >
+                Kodu Aktar
+              </Button>
+            </FormLabel>
+          </FormControl>
         </FormControl>
       </form>
       {cols.map((col, index) => (

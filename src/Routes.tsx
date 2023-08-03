@@ -8,6 +8,7 @@ import DeletePerson from "./pages/customer/person/deletePerson";
 import AddPerson from "./pages/customer/person/addPerson";
 import Admin from "./pages/admin/Admin";
 import EditPages from "./pages/admin/editPages";
+import Test from "./pages/admin/testEditPage";
 
 export const RouteList: React.FC = () => {
   return useRoutes([
@@ -17,6 +18,11 @@ export const RouteList: React.FC = () => {
         {
           path: "/",
           element: <Home />,
+        },
+
+        {
+          path: "/test",
+          element: <Test />,
         },
         {
           path: "/admin",
