@@ -1,7 +1,7 @@
 import { useDrag } from "react-dnd";
 import Checkbox from "@mui/joy/Checkbox/Checkbox";
 import { IconButton } from "@mui/material";
-import ClearIcon from "@mui/icons-material/Clear";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import { colorType, sizeType, variantType } from "../../../types/Types";
 
@@ -37,25 +37,38 @@ export const DraggableCheckbox: React.FC<
 
   return (
     <div
-      ref={drag}
-      style={{ opacity: isDragging ? 0.5 : 1, position: "relative" }}
-    >
-      {showClearIcon && (
-        <IconButton
-          style={{ position: "absolute", right: 0, top: 0, zIndex: 1000 }}
-          onClick={() => onRemove(id)}
-        >
-          <ClearIcon />
-        </IconButton>
-      )}
+    ref={drag}
+    style={{
+      opacity: isDragging ? 0.5 : 1,
+      position: "relative",
+      width: "95%", 
+      display: "flex", 
+      justifyContent: "space-between", 
+      alignItems: "center", 
+      marginBottom: "8px",
+      marginLeft:"8px"
+    }}
+  >
+    <Checkbox
+      checked={checked}
+      variant={variant}
+      color={color}
+      size={size}
+      label={label}
+      style={{ flexGrow: 1 }}
+    />
 
-      <Checkbox
-        checked={checked}
-        variant={variant}
-        color={color}
-        size={size}
-        label={label}
-      />
-    </div>
+    {showClearIcon && (
+      <IconButton
+        style={{
+          marginLeft: "8px",
+        }}
+        onClick={() => onRemove(id)}
+      >
+        <CancelIcon />
+      </IconButton>
+    )}
+  </div>
   );
 };
+

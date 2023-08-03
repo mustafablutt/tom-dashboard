@@ -156,20 +156,23 @@ export default function SpacingGrid() {
             <Divider> Grid Oluştur</Divider>
             <GridGenerator onGridGenerated={handleGridGenerated} />{" "}
           </Box>
-
+          <Divider> Component Sürükle</Divider>
           <Box
             sx={{
               py: 2,
               display: "grid",
               gap: 2,
+              marginTop:"5px",
               alignItems: "center",
               flexWrap: "wrap",
-              mt: 0,
+           
               mr: -37.5,
               width: 300,
+              height: "300px", // Set a fixed height for the container
+              overflow: "auto",
             }}
           >
-            <Divider> Component Sürükle</Divider>
+            
 
             {componentsInCurrentPage?.map((data) => {
               const Component = componentsMap[data.componentName!];

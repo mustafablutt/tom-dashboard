@@ -5,6 +5,7 @@ import FormControl from "@mui/joy/FormControl/FormControl";
 import { variantType, colorType, sizeType } from "../../../types/Types";
 import ClearIcon from "@mui/icons-material/Clear";
 import { IconButton } from "@mui/material";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 interface DraggableRadioButtonProps {
   id: number;
@@ -54,14 +55,14 @@ export const DraggableRadioButton: React.FC<
   }));
 
   return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 , marginLeft:"8px",width: "95%",}}>
       <FormControl>
         {showClearIcon && (
           <IconButton
             style={{ position: "absolute", right: 0, top: 0, zIndex: 2000 }}
             onClick={() => onRemove(id)}
           >
-            <ClearIcon />
+            <CancelIcon />
           </IconButton>
         )}
 
