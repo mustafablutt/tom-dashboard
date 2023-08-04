@@ -16,7 +16,7 @@ import FormLabel from "@mui/joy/FormLabel";
 
 import { useCallback } from "react";
 import { Button } from "@material-ui/core";
-
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { colorType, sizeType, variantType } from "../../../types/Types";
 
 interface GridComponentProps {
@@ -248,7 +248,15 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
     gridArray.push(grid);
   };
   const inputRef = React.useRef<HTMLInputElement | null>(null);
-
+  const handleDownload = () => {
+    const element = document.createElement("a");
+    const file = new Blob([gridCode], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = "generatedCode.tsx";
+    document.body.appendChild(element);
+    element.click();
+  };
+  
   function generateGridString(rows: number, cols: number[]): string {
     let gridString = "<Grid container spacing={2} sx={{ flexGrow: 1 }}>\n";
     for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
@@ -401,6 +409,9 @@ export default Test;
               >
                 Kodu Aktar
               </Button>
+              <Button variant="contained" color="primary" onClick={handleDownload}>
+  Download Code
+</Button>
             </FormLabel>
           </FormControl>
         </FormControl>
