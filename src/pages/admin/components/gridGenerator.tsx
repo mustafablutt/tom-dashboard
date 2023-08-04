@@ -9,18 +9,14 @@ import { DraggableSelect } from "./draggableSelect";
 import { DraggableInput } from "./draggableInput";
 import { DraggableRadioButton } from "./draggableRadioButton";
 import Input from "@mui/joy/Input/Input";
-import Checkbox from "@mui/joy/Checkbox/Checkbox";
 
-import Select from "@mui/joy/Select/Select";
-import { MenuItem } from "@mui/material";
 import Stack from "@mui/joy/Stack";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
-import FormHelperText from "@mui/joy/FormHelperText";
+
 import { useCallback } from "react";
 import { Button } from "@material-ui/core";
 
-import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import { colorType, sizeType, variantType } from "../../../types/Types";
 
 interface GridComponentProps {
@@ -231,25 +227,48 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   };
   const inputRef = React.useRef<HTMLInputElement | null>(null);
 
+  function generateGridString(rows: number, cols: number[]): string {
+    let gridString = "<Grid container spacing={2} sx={{ flexGrow: 1 }}>\n";
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+      const xsValue = Math.floor(12 / cols[rowIndex]); // Her bir sütunun xs değerini hesapla
+      for (let colIndex = 0; colIndex < cols[rowIndex]; colIndex++) {
+        gridString += `  <Grid xs={${xsValue}} md={${xsValue}}>\n`;
+        gridString += `    <MenuItem>xs=${xsValue} md=${xsValue}</MenuItem>\n`;
+        gridString += "  </Grid>\n";
+      }
+    }
+    gridString += "</Grid>";
+
+    return gridString;
+  }
+
+  const bodyStart = `
+  import { MenuItem } from "@material-ui/core";
+  import Grid from "@mui/joy/Grid/Grid";
+  import React from "react";
+
+const Test: React.FunctionComponent = () => {
+  return (
+`;
+
+  const bodyEnd = `
+  );
+};
+
+export default Test;
+`;
+
   React.useEffect(() => {
     onGridGenerated(gridArray);
   }, [gridArray]);
 
   React.useEffect(() => {
     if (gridArray.length === rows) {
-      let gridString = "<Grid container spacing={2} sx={{ flexGrow: 1 }}>\n";
-      gridArray.forEach((_, rowIndex) => {
-        const xsValue = Math.floor(12 / cols[rowIndex]); // Her bir sütunun xs değerini hesapla
-        for (let colIndex = 0; colIndex < cols[rowIndex]; colIndex++) {
-          gridString += `  <Grid xs={${xsValue}} md={${xsValue}}>\n`;
-          gridString += `    <MenuItem>xs=${xsValue} md=${xsValue}</MenuItem>\n`;
-          gridString += "  </Grid>\n";
-        }
-      });
+      const gridString = generateGridString(rows, cols);
 
-      gridString += "</Grid>";
-      console.log(gridString);
-      setGridCode(gridString);
+      const finalCode = bodyStart + gridString + bodyEnd;
+      console.log(finalCode);
+      setGridCode(finalCode);
     }
   }, [gridArray]);
 
