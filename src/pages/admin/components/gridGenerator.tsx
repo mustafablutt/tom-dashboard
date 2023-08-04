@@ -23,6 +23,7 @@ interface GridComponentProps {
   row: number;
   cols: number;
   onGridGenerated: (grid: JSX.Element) => void;
+  onItemAdded: (item: DroppedItem, rowIndex: number, colIndex: number) => void;
 }
 
 interface GridGeneratorProps {
@@ -53,16 +54,21 @@ interface DroppedItem {
   checked?: boolean;
   options?: string[];
   onRemove?: () => void;
+  rowIndex?: number; // Add rowIndex property
+  colIndex?: number; // Add colIndex property
 }
 
 const GridCell: React.FC<{
   gridSize: any;
   rowIndex: number;
   colIndex: number;
-}> = ({ gridSize, rowIndex, colIndex }) => {
+  onItemAdded: (item: DroppedItem, rowIndex: number, colIndex: number) => void;
+}> = ({ gridSize, rowIndex, colIndex, onItemAdded }) => {
   const classes = useStyles();
   const [content, setContent] = useState<JSX.Element[]>([]);
-
+  const handleItemAdded = (item: DroppedItem) => {
+    onItemAdded(item, rowIndex, colIndex);
+  };
   const removeItem = (id: number) => {
     setContent((prev) => prev.filter((item) => item.props.id !== id));
   };
@@ -71,6 +77,7 @@ const GridCell: React.FC<{
     accept: ["input", "checkbox", "select", "radio"],
     drop: (item: DroppedItem, monitor) => {
       console.log("Dropped item:", item);
+      handleItemAdded(item);
       const uniqueId = Date.now() + Math.random();
       setContent((prev) => [
         ...prev,
@@ -166,6 +173,7 @@ const GridComponent: React.FC<GridComponentProps> = ({
   row,
   cols,
   onGridGenerated,
+  onItemAdded,
 }) => {
   const calculateGridSize = () => {
     return Math.floor(12 / cols);
@@ -176,7 +184,12 @@ const GridComponent: React.FC<GridComponentProps> = ({
   const grid = (
     <Grid container spacing={3} key={row}>
       {Array.from({ length: cols }, (_, colIndex) => (
-        <GridCell gridSize={gridSize} rowIndex={row} colIndex={colIndex} />
+        <GridCell
+          gridSize={gridSize}
+          rowIndex={row}
+          colIndex={colIndex}
+          onItemAdded={onItemAdded}
+        />
       ))}
     </Grid>
   );
@@ -194,6 +207,7 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number[]>([]);
   const [gridCode, setGridCode] = useState<string>("");
+  const [droppedItems, setDroppedItems] = useState<Array<DroppedItem>>([]); // Sürüklenen öğelerin listesini tutmak için state eklendi.
 
   const copyCodeToClipboard = useCallback(() => {
     navigator.clipboard.writeText(gridCode).then(
@@ -211,6 +225,14 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
     setCols(new Array(parseInt(event.target.value)).fill(0));
   };
 
+  const handleItemAdded = (
+    item: DroppedItem,
+    rowIndex: number,
+    colIndex: number
+  ) => {
+    const newItem = { ...item, rowIndex, colIndex }; // Sürüklenen öğeye satır ve sütun bilgilerini ekleyerek yeni bir nesne oluşturuyoruz.
+    setDroppedItems((prev) => [...prev, newItem]); // Yeni öğeyi listeye ekliyoruz.
+  };
   const handleRowColumnsChange = (rowIndex: number, columnCount: number) => {
     const newCols = [...cols];
     newCols[rowIndex] = columnCount;
@@ -230,10 +252,16 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   function generateGridString(rows: number, cols: number[]): string {
     let gridString = "<Grid container spacing={2} sx={{ flexGrow: 1 }}>\n";
     for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
-      const xsValue = Math.floor(12 / cols[rowIndex]); // Her bir sütunun xs değerini hesapla
+      const xsValue = Math.floor(12 / cols[rowIndex]);
       for (let colIndex = 0; colIndex < cols[rowIndex]; colIndex++) {
         gridString += `  <Grid xs={${xsValue}} md={${xsValue}}>\n`;
-        gridString += `    <MenuItem>xs=${xsValue} md=${xsValue}</MenuItem>\n`;
+        // Check if there are dropped items for this cell and add their code
+        const itemsForCell = droppedItems.filter(
+          (item) => item.rowIndex === rowIndex && item.colIndex === colIndex
+        );
+        itemsForCell.forEach((item) => {
+          gridString += `    ${generateCodeForItem(item)}`;
+        });
         gridString += "  </Grid>\n";
       }
     }
@@ -243,9 +271,13 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   }
 
   const bodyStart = `
-  import { MenuItem } from "@material-ui/core";
+  import Checkbox from "@mui/joy/Checkbox/Checkbox";
+  import Radio from "@mui/joy/Radio/Radio";
+  import RadioGroup from "@mui/joy/RadioGroup/RadioGroup";
+  import Input from "@mui/joy/Input";
+  import Select from "@mui/joy/Select";
   import Grid from "@mui/joy/Grid/Grid";
-  import React from "react";
+  import Option from "@mui/joy/Option/Option";
 
 const Test: React.FunctionComponent = () => {
   return (
@@ -257,6 +289,49 @@ const Test: React.FunctionComponent = () => {
 
 export default Test;
 `;
+  const generateCodeForItem = (item: DroppedItem) => {
+    switch (item.type) {
+      case "input":
+        return `<Input color="${item.color}" placeholder="${item.placeholder}" 
+      variant="${item.variant}" size="${item.size}" />\n`;
+      case "checkbox":
+        return `<Checkbox checked={${item.checked}} color="${item.color}" label="${item.label}" 
+      variant="${item.variant}" size="${item.size}" />\n`;
+      case "select":
+        return `<Select color="${item.color}" placeholder="${item.placeholder}" 
+      variant="${item.variant}" size="${item.size}" > <Option value="dog">DOG</Option>
+      <Option value="cat">CAT</Option> </Select>\n`;
+      case "radio":
+        return ` <RadioGroup
+      defaultValue="radio1"
+      name="radio-buttons-group"
+    >
+    <Radio
+            value="radio1"
+            label="${item.placeholder}"
+            size="${item.size}"
+            color="${item.color}"
+            variant="${item.variant}"
+          />
+          <Radio
+            value="radio2"
+            label="${item.placeholder}"
+            size="${item.size}"
+            color="${item.color}"
+            variant="${item.variant}"
+          />
+          <Radio
+            value="radio3"
+            label="${item.placeholder}"
+            size="${item.size}"
+            color="${item.color}"
+            variant="${item.variant}"
+          />
+          </RadioGroup>\n`;
+      default:
+        return "";
+    }
+  };
 
   React.useEffect(() => {
     onGridGenerated(gridArray);
@@ -336,6 +411,7 @@ export default Test;
           row={index}
           cols={col}
           onGridGenerated={handleGridGenerated}
+          onItemAdded={handleItemAdded}
         />
       ))}
     </div>

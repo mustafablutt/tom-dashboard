@@ -200,7 +200,7 @@ export default function SpacingGrid() {
                 return (
                   <DraggableRadioButton
                     id={data._id}
-                    type={props.type || "text"}
+                    type={props.type || "radio"}
                     placeholder={props.placeholder}
                     variant={props.variant}
                     color={props.color}
@@ -213,7 +213,7 @@ export default function SpacingGrid() {
                 return (
                   <DraggableInput
                     id={data._id}
-                    type={props.type || "text"}
+                    type={props.type || "input"}
                     value={props.value || ""}
                     placeholder={props.placeholder}
                     variant={props.variant}
