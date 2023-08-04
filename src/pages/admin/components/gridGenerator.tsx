@@ -9,15 +9,16 @@ import { DraggableSelect } from "./draggableSelect";
 import { DraggableInput } from "./draggableInput";
 import { DraggableRadioButton } from "./draggableRadioButton";
 import Input from "@mui/joy/Input/Input";
-
+import DownloadIcon from "@mui/icons-material/Download";
 import Stack from "@mui/joy/Stack";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 
 import { useCallback } from "react";
 import { Button } from "@material-ui/core";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { colorType, sizeType, variantType } from "../../../types/Types";
+import { IconButton } from "@mui/material";
 
 interface GridComponentProps {
   row: number;
@@ -256,7 +257,7 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
     document.body.appendChild(element);
     element.click();
   };
-  
+
   function generateGridString(rows: number, cols: number[]): string {
     let gridString = "<Grid container spacing={2} sx={{ flexGrow: 1 }}>\n";
     for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
@@ -401,17 +402,23 @@ export default Test;
             ))}
           </Stack>
           <FormControl>
-            <FormLabel>
+            <FormLabel style={{marginTop:"25px"}}>
               <Button
+              style={{marginRight:"25px"}}
                 variant="contained"
                 color="primary"
                 onClick={copyCodeToClipboard}
               >
-                Kodu Aktar
+                <ContentCopyIcon />
               </Button>
-              <Button variant="contained" color="primary" onClick={handleDownload}>
-  Download Code
-</Button>
+              
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleDownload}
+              >
+                <DownloadIcon />
+              </Button>
             </FormLabel>
           </FormControl>
         </FormControl>

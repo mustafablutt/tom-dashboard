@@ -52,25 +52,28 @@ export default function SpacingGrid() {
 
   const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
     let options: any = [];
-    const addChildren = (children: MenuItem[]) => {
-      children.forEach((child) => {
+  
+    const addLeafNodes = (item: MenuItem) => {
+      if (item.children && item.children.length > 0) {
+        item.children.forEach((child) => {
+          addLeafNodes(child);
+        });
+      } else {
         options.push(
-          <Option key={child.name} value={child.name}>
-            {child.name}
+          <Option key={item.name} value={item.name}>
+            {item.name}
           </Option>
         );
-        if (child.children) {
-          addChildren(child.children);
-        }
-      });
-    };
-    items.forEach((item) => {
-      if (item.children) {
-        addChildren(item.children);
       }
+    };
+  
+    items.forEach((item) => {
+      addLeafNodes(item);
     });
+  
     return options;
   };
+  
 
   const handlePageChange = (
     event:
@@ -156,22 +159,23 @@ export default function SpacingGrid() {
             <Divider> Grid Oluştur</Divider>
             <GridGenerator onGridGenerated={handleGridGenerated} />{" "}
           </Box>
-          <Divider> Component Sürükle</Divider>
-          <Box
-            sx={{
-              py: 2,
-              display: "grid",
-              gap: 2,
-              marginTop:"5px",
-              alignItems: "center",
-              flexWrap: "wrap",
-           
-              mr: -37.5,
-              width: 300,
-              height: "300px", // Set a fixed height for the container
-              overflow: "auto",
-            }}
-          >
+          {selectedPage !== null && (
+  <>
+    <Divider> Component Sürükle</Divider>
+    <Box
+      sx={{
+        py: 2,
+        display: "grid",
+        gap: 2,
+        marginTop: "5px",
+        alignItems: "center",
+        flexWrap: "wrap",
+        mr: -37.5,
+        width: 300,
+        height: "300px", // Set a fixed height for the container
+        overflow: "auto",
+      }}
+    >
             
 
             {componentsInCurrentPage?.map((data) => {
@@ -241,6 +245,8 @@ export default function SpacingGrid() {
               }
             })}
           </Box>
+           </>
+)}
         </Paper>
       </Grid>
 
