@@ -6,18 +6,18 @@ import { useEffect } from "react";
 const DashboardLayout: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const [sidebarWidth, setSidebarWidth] = useState("100px"); // sidebar genişliğini tutan state
+  const [sidebarWidth, setSidebarWidth] = useState("100px");
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
         setSidebarWidth("240px");
       } else {
-        setSidebarWidth("256px");
+        setSidebarWidth("80px");
       }
     };
 
-    handleResize(); // İlk render'da kontrol etmek için çağırın
+    handleResize();
 
     window.addEventListener("resize", handleResize);
 
@@ -32,7 +32,7 @@ const DashboardLayout: React.FC<React.PropsWithChildren<{}>> = ({
         style={{
           flex: `0 0 ${sidebarWidth}`,
           transition: "flex 0.6s",
-          overflow: "hidden", // Ekleyin
+          overflow: "hidden",
         }}
       >
         <Sidebar onWidthChange={setSidebarWidth} />

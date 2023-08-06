@@ -42,9 +42,9 @@ const Sidebar: React.FunctionComponent<{
 
   const showSidebar = () => {
     setClose(!close);
-    onWidthChange(close ? "100px" : "256px");
+    onWidthChange(close ? "80px" : "256px");
   };
-  
+
   const handleSubMenu = (menuId: number, parentId: number) => {
     setOpenSubMenu((prevState) => {
       const newState = { ...prevState };
