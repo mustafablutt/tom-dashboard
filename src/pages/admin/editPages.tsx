@@ -17,7 +17,8 @@ import Select, { selectClasses } from "@mui/joy/Select";
 import { useSidebar } from "../../context/SidebarContext";
 import RadioGroup from "@mui/joy/RadioGroup";
 import Radio from "@mui/joy/Radio";
-import { Divider, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardMedia, Divider, Typography } from "@mui/material";
+import VerticalLinearStepper from "./components/VerticalLinearStepper";
 
 export default function SpacingGrid() {
   const [spacing, setSpacing] = useState(2);
@@ -52,7 +53,7 @@ export default function SpacingGrid() {
 
   const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
     let options: any = [];
-  
+
     const addLeafNodes = (item: MenuItem) => {
       if (item.children && item.children.length > 0) {
         item.children.forEach((child) => {
@@ -66,14 +67,13 @@ export default function SpacingGrid() {
         );
       }
     };
-  
+
     items.forEach((item) => {
       addLeafNodes(item);
     });
-  
+
     return options;
   };
-  
 
   const handlePageChange = (
     event:
@@ -115,8 +115,8 @@ export default function SpacingGrid() {
       columns={16}
       sx={{ flexGrow: 1, ml: 10, mt: 5 }}
     >
-      <Grid item xs={4}>
-        <Paper sx={{ p: 4 }}>
+      <Grid item xs={4.3}>
+      
           <Typography
             style={{
               marginBottom: "10px",
@@ -136,7 +136,6 @@ export default function SpacingGrid() {
               alignItems: "center",
               flexWrap: "wrap",
               mt: 0,
-              mr: -37.5,
               width: 300,
             }}
           >
@@ -160,112 +159,120 @@ export default function SpacingGrid() {
             <GridGenerator onGridGenerated={handleGridGenerated} />{" "}
           </Box>
           {selectedPage !== null && (
-  <>
-    <Divider> Component Sürükle</Divider>
-    <Box
-      sx={{
-        py: 2,
-        display: "grid",
-        gap: 2,
-        marginTop: "5px",
-        alignItems: "center",
-        flexWrap: "wrap",
-        mr: -37.5,
-        width: 300,
-        height: "300px", // Set a fixed height for the container
-        overflow: "auto",
-      }}
-    >
-            
-
-            {componentsInCurrentPage?.map((data) => {
-              const Component = componentsMap[data.componentName!];
-              if (!Component) {
-                console.warn(
-                  `Component ${data.componentName} not found in componentsMap.`
-                );
-                return null;
-              }
-              const props = createPropsFromData(data);
-              if (data.componentName === "Dropdown") {
-                return (
-                  <DraggableSelect
-                    id={data._id}
-                    color={props.color}
-                    variant={props.variant}
-                    size={props.size}
-                    placeholder={props.placeholder}
-                    onRemove={handleRemove}
-                    showClearIcon={false}
-                  />
-                );
-              }
-              if (data.componentName === "Radiobutton") {
-                return (
-                  <DraggableRadioButton
-                    id={data._id}
-                    type={props.type || "radio"}
-                    placeholder={props.placeholder}
-                    variant={props.variant}
-                    color={props.color}
-                    size={props.size}
-                    onRemove={handleRemove}
-                    showClearIcon={false}
-                  />
-                );
-              } else if (data.componentName === "Input") {
-                return (
-                  <DraggableInput
-                    id={data._id}
-                    type={props.type || "input"}
-                    value={props.value || ""}
-                    placeholder={props.placeholder}
-                    variant={props.variant}
-                    color={props.color}
-                    size={props.size}
-                    onRemove={handleRemove}
-                    showClearIcon={false}
-                  />
-                );
-              } else if (data.componentName === "Checkbox") {
-                return (
-                  <DraggableCheckbox
-                    id={data._id}
-                    checked={props.checked || true}
-                    color={props.color}
-                    variant={props.variant}
-                    label={props.label}
-                    size={props.size}
-                    onRemove={handleRemove}
-                    showClearIcon={false}
-                  />
-                );
-              } else {
-                return <Component {...props} showClearIcon={false} />;
-              }
-            })}
-          </Box>
-           </>
-)}
-        </Paper>
+            <>
+              <Divider> Component Sürükle</Divider>
+              <Box
+                sx={{
+                  py: 2,
+                  display: "grid",
+                  gap: 1,
+                  marginTop: "5px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  width: 300,
+                  height: "300px", // Set a fixed height for the container
+                  overflow: "auto",
+                }}
+              >
+                {componentsInCurrentPage?.map((data) => {
+                  const Component = componentsMap[data.componentName!];
+                  if (!Component) {
+                    console.warn(
+                      `Component ${data.componentName} not found in componentsMap.`
+                    );
+                    return null;
+                  }
+                  const props = createPropsFromData(data);
+                  if (data.componentName === "Dropdown") {
+                    return (
+                      <DraggableSelect
+                        id={data._id}
+                        color={props.color}
+                        variant={props.variant}
+                        size={props.size}
+                        placeholder={props.placeholder}
+                        onRemove={handleRemove}
+                        showClearIcon={false}
+                      />
+                    );
+                  }
+                  if (data.componentName === "Radiobutton") {
+                    return (
+                      <DraggableRadioButton
+                        id={data._id}
+                        type={props.type || "radio"}
+                        placeholder={props.placeholder}
+                        variant={props.variant}
+                        color={props.color}
+                        size={props.size}
+                        onRemove={handleRemove}
+                        showClearIcon={false}
+                      />
+                    );
+                  } else if (data.componentName === "Input") {
+                    return (
+                      <DraggableInput
+                        id={data._id}
+                        type={props.type || "input"}
+                        value={props.value || ""}
+                        placeholder={props.placeholder}
+                        variant={props.variant}
+                        color={props.color}
+                        size={props.size}
+                        onRemove={handleRemove}
+                        showClearIcon={false}
+                      />
+                    );
+                  } else if (data.componentName === "Checkbox") {
+                    return (
+                      <DraggableCheckbox
+                        id={data._id}
+                        checked={props.checked || true}
+                        color={props.color}
+                        variant={props.variant}
+                        label={props.label}
+                        size={props.size}
+                        onRemove={handleRemove}
+                        showClearIcon={false}
+                      />
+                    );
+                  } else {
+                    return <Component {...props} showClearIcon={false} />;
+                  }
+                })}
+              </Box>
+            </>
+          )}
+        
       </Grid>
-
-      <Grid item xs={8}>
-        <Paper sx={{ p: 2 }}>
-          <Typography
-            style={{
-              marginBottom: "10px",
-              fontSize: "20px",
-              color: "#53308c",
-              marginLeft: "2px",
-              fontStyle: "bold",
-            }}
-          >
-            {selectedPage}
-          </Typography>
-          {generatedGrid} {/* Render the generated grid here */}
-        </Paper>
-      </Grid>
+      
+      {selectedPage !== null ? (
+        <Grid item xs={8}>
+         
+            <Typography
+              style={{
+                marginBottom: "10px",
+                fontSize: "20px",
+                color: "#53308c",
+                marginLeft: "2px",
+                fontStyle: "bold",
+              }}
+            >
+              {selectedPage}
+            </Typography>
+            {generatedGrid.length === 0 ? (
+              <Typography>
+                {selectedPage && "Grid üretiniz."}
+                {!selectedPage && "Sayfa seçip grid üretiniz."}
+              </Typography>
+            ) : (
+              generatedGrid // Render the generated grid here if it's not empty
+            )}
+        
+        </Grid>
+      ) : (<Grid item xs={8}>
+         <VerticalLinearStepper/>
+        </Grid>)}
     </Grid>
   );
 }

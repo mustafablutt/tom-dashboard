@@ -437,6 +437,7 @@ export default Test;
               </FormControl>
             ))}
           </Stack>
+          {(cols.length !== 0 && rows !== 0)  ? (
           <FormControl>
             <FormLabel style={{ marginTop: "25px" }}>
               <Button
@@ -456,7 +457,7 @@ export default Test;
                 <DownloadIcon />
               </Button>
             </FormLabel>
-          </FormControl>
+          </FormControl>):(null)}
         </FormControl>
       </form>
       {cols.map((col, index) => (
