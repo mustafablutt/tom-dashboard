@@ -264,7 +264,7 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
       const xsValue = Math.floor(12 / cols[rowIndex]);
       for (let colIndex = 0; colIndex < cols[rowIndex]; colIndex++) {
         gridString += `  <Grid xs={${xsValue}} md={${xsValue}}>\n`;
-        // Check if there are dropped items for this cell and add their code
+
         const itemsForCell = droppedItems.filter(
           (item) => item.rowIndex === rowIndex && item.colIndex === colIndex
         );
@@ -279,18 +279,16 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
     return gridString;
   }
 
-  const bodyStart = `
-  import Checkbox from "@mui/joy/Checkbox/Checkbox";
-  import Radio from "@mui/joy/Radio/Radio";
-  import RadioGroup from "@mui/joy/RadioGroup/RadioGroup";
-  import Input from "@mui/joy/Input";
-  import Select from "@mui/joy/Select";
+  const bodyStartBase = `
+  
+  
+  
   import Grid from "@mui/joy/Grid/Grid";
-  import Option from "@mui/joy/Option/Option";
-
-const Test: React.FunctionComponent = () => {
-  return (
-`;
+  
+  
+  const Test: React.FunctionComponent = () => {
+    return (
+  `;
 
   const bodyEnd = `
   );
@@ -349,8 +347,32 @@ export default Test;
   React.useEffect(() => {
     if (gridArray.length === rows) {
       const gridString = generateGridString(rows, cols);
+      let finalBodyStart = bodyStartBase;
 
-      const finalCode = bodyStart + gridString + bodyEnd;
+      if (gridString.includes("<Input")) {
+        finalBodyStart =
+          'import Input from "@mui/joy/Input/Input";\n' + finalBodyStart;
+      }
+
+      if (gridString.includes("Checkbox")) {
+        finalBodyStart =
+          'import Checkbox from "@mui/joy/Checkbox/Checkbox";\n ' +
+          finalBodyStart;
+      }
+
+      if (gridString.includes("Select")) {
+        finalBodyStart =
+          'import Select from "@mui/joy/Select";\n import Option from "@mui/joy/Option";\n' +
+          finalBodyStart;
+      }
+
+      if (gridString.includes("Radio")) {
+        finalBodyStart =
+          'import Radio from "@mui/joy/Radio/Radio";\n import RadioGroup from "@mui/joy/RadioGroup/RadioGroup";\n' +
+          finalBodyStart;
+      }
+
+      const finalCode = finalBodyStart + gridString + bodyEnd;
       console.log(finalCode);
       setGridCode(finalCode);
     }
@@ -402,16 +424,16 @@ export default Test;
             ))}
           </Stack>
           <FormControl>
-            <FormLabel style={{marginTop:"25px"}}>
+            <FormLabel style={{ marginTop: "25px" }}>
               <Button
-              style={{marginRight:"25px"}}
+                style={{ marginRight: "25px" }}
                 variant="contained"
                 color="primary"
                 onClick={copyCodeToClipboard}
               >
                 <ContentCopyIcon />
               </Button>
-              
+
               <Button
                 variant="contained"
                 color="primary"
