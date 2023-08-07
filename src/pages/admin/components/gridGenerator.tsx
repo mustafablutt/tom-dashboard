@@ -30,6 +30,7 @@ interface GridComponentProps {
 
 interface GridGeneratorProps {
   onGridGenerated: (grid: JSX.Element[]) => void;
+  selectedPage?: string | null;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -205,6 +206,7 @@ const GridComponent: React.FC<GridComponentProps> = ({
 
 export const GridGenerator: React.FC<GridGeneratorProps> = ({
   onGridGenerated,
+  selectedPage,
 }) => {
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number[]>([]);
@@ -234,6 +236,11 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
     setRows(value);
     setCols(new Array(value).fill(0));
   };
+
+  React.useEffect(() => {
+    setRows(0); // rows değerini sıfırla
+    setCols([]); // cols dizisini sıfırla
+  }, [selectedPage]); // selectedPage değiştiğinde bu useEffect tetiklensin/ selectedPage değiştiğinde bu useEffect tetiklensin
 
   const handleItemAdded = (
     item: DroppedItem,
@@ -266,8 +273,12 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   const handleDownload = () => {
     const element = document.createElement("a");
     const file = new Blob([gridCode], { type: "text/plain" });
+
+    const fileName = selectedPage
+      ? `${selectedPage.replace(/\s+/g, "")}.tsx`
+      : "generatedCode.tsx";
     element.href = URL.createObjectURL(file);
-    element.download = "generatedCode.tsx";
+    element.download = fileName;
     document.body.appendChild(element);
     element.click();
   };
@@ -294,21 +305,19 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   }
 
   const bodyStartBase = `
-  
-  
-  
   import Grid from "@mui/joy/Grid/Grid";
   
-  
-  const Test: React.FunctionComponent = () => {
+  const ${
+    selectedPage ? selectedPage.replace(/\s+/g, "") : "Test"
+  }: React.FunctionComponent = () => {
     return (
-  `;
+`;
 
   const bodyEnd = `
   );
 };
 
-export default Test;
+export default ${selectedPage ? selectedPage.replace(/\s+/g, "") : "Test"};
 `;
   const generateCodeForItem = (item: DroppedItem) => {
     switch (item.type) {
@@ -437,27 +446,28 @@ export default Test;
               </FormControl>
             ))}
           </Stack>
-          {(cols.length !== 0 && rows !== 0)  ? (
-          <FormControl>
-            <FormLabel style={{ marginTop: "25px" }}>
-              <Button
-                style={{ marginRight: "25px" }}
-                variant="contained"
-                color="primary"
-                onClick={copyCodeToClipboard}
-              >
-                <ContentCopyIcon />
-              </Button>
+          {cols.length !== 0 && rows !== 0 ? (
+            <FormControl>
+              <FormLabel style={{ marginTop: "25px" }}>
+                <Button
+                  style={{ marginRight: "25px" }}
+                  variant="contained"
+                  color="primary"
+                  onClick={copyCodeToClipboard}
+                >
+                  <ContentCopyIcon />
+                </Button>
 
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleDownload}
-              >
-                <DownloadIcon />
-              </Button>
-            </FormLabel>
-          </FormControl>):(null)}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleDownload}
+                >
+                  <DownloadIcon />
+                </Button>
+              </FormLabel>
+            </FormControl>
+          ) : null}
         </FormControl>
       </form>
       {cols.map((col, index) => (
