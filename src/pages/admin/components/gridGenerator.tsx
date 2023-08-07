@@ -405,28 +405,32 @@ export default ${selectedPage ? selectedPage.replace(/\s+/g, "") : "Test"};
     <div>
       <form onSubmit={handleSubmit}>
         <FormControl>
-          <FormLabel
-            sx={(theme) => ({
-              "--FormLabel-color": "#7947ca",
-            })}
-          >
-            Satır sayısı giriniz
-          </FormLabel>
           <Stack spacing={1.5} sx={{ minWidth: 300 }}>
-            <Input
-              type="number"
-              value={rows}
-              onChange={handleRowChange}
-              placeholder="Number of rows"
-              defaultValue={1}
-              slotProps={{
-                input: {
-                  ref: inputRef,
-                  min: 1,
-                  step: 1,
-                },
-              }}
-            />
+            {selectedPage && (
+              <>
+                <FormLabel
+                  sx={(theme) => ({
+                    "--FormLabel-color": "#7947ca",
+                  })}
+                >
+                  Satır sayısı giriniz
+                </FormLabel>
+                <Input
+                  type="number"
+                  value={rows}
+                  onChange={handleRowChange}
+                  placeholder="Number of rows"
+                  defaultValue={1}
+                  slotProps={{
+                    input: {
+                      ref: inputRef,
+                      min: 1,
+                      step: 1,
+                    },
+                  }}
+                />
+              </>
+            )}
 
             {Array.from({ length: rows }, (_, index) => (
               <FormControl>
