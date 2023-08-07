@@ -18,7 +18,8 @@ import { useCallback } from "react";
 import { Button } from "@material-ui/core";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { colorType, sizeType, variantType } from "../../../types/Types";
-import { IconButton } from "@mui/material";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@mui/material/Alert";
 
 interface GridComponentProps {
   row: number;
@@ -208,7 +209,8 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number[]>([]);
   const [gridCode, setGridCode] = useState<string>("");
-  const [droppedItems, setDroppedItems] = useState<Array<DroppedItem>>([]); // Sürüklenen öğelerin listesini tutmak için state eklendi.
+  const [droppedItems, setDroppedItems] = useState<Array<DroppedItem>>([]);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
   const copyCodeToClipboard = useCallback(() => {
     navigator.clipboard.writeText(gridCode).then(
@@ -222,8 +224,15 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   }, [gridCode]);
 
   const handleRowChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRows(parseInt(event.target.value));
-    setCols(new Array(parseInt(event.target.value)).fill(0));
+    const value = event.target.value ? parseInt(event.target.value) : 0;
+
+    if (value > 12) {
+      setOpenSnackbar(true);
+      return;
+    }
+
+    setRows(value);
+    setCols(new Array(value).fill(0));
   };
 
   const handleItemAdded = (
@@ -235,6 +244,11 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
     setDroppedItems((prev) => [...prev, newItem]); // Yeni öğeyi listeye ekliyoruz.
   };
   const handleRowColumnsChange = (rowIndex: number, columnCount: number) => {
+    if (columnCount > 12) {
+      setOpenSnackbar(true);
+      return;
+    }
+
     const newCols = [...cols];
     newCols[rowIndex] = columnCount;
     setCols(newCols);
@@ -454,6 +468,21 @@ export default Test;
           onItemAdded={handleItemAdded}
         />
       ))}
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          12'den büyük değer girilemez!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
