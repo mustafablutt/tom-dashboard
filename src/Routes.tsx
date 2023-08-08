@@ -7,7 +7,6 @@ import AddCustomer from "./pages/customer/addCustomer";
 import DeletePerson from "./pages/customer/person/deletePerson";
 import AddPerson from "./pages/customer/person/addPerson";
 
-import Test from "./pages/admin/testEditPage";
 import ComponentOperations from "./pages/admin/ComponentOperations";
 import PageOperations from "./pages/admin/PageOperations";
 import IncomeStatement from "./pages/customer/financialreporting/incomeStatement";
@@ -30,11 +29,7 @@ export const RouteList: React.FC = () => {
           path: "/admin/page-operations",
           element: <PageOperations />,
         },
-        {
-          path: "/test",
-          element: <Test />,
-        },
-
+    
         {
           path: "/customer/add-customer",
           element: <AddCustomer />,

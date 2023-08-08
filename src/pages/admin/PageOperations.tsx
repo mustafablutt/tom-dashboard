@@ -1,8 +1,7 @@
 import * as React from "react";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import { GridGenerator } from "./components/gridGenerator";
-import Option, { optionClasses } from "@mui/joy/Option";
+import Option from "@mui/joy/Option";
 import Input from "@mui/joy/Input/Input";
 import Checkbox from "@mui/joy/Checkbox/Checkbox";
 import Box from "@mui/joy/Box";
@@ -16,20 +15,13 @@ import { usePageComponent } from "../../context/PageComponentContext";
 import Select, { selectClasses } from "@mui/joy/Select";
 import { useSidebar } from "../../context/SidebarContext";
 import RadioGroup from "@mui/joy/RadioGroup";
-import Radio from "@mui/joy/Radio";
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
   Divider,
   Typography,
 } from "@mui/material";
 import VerticalLinearStepper from "./components/VerticalLinearStepper";
 
 export default function SpacingGrid() {
-  const [spacing, setSpacing] = useState(2);
   const [generatedGrid, setGeneratedGrid] = useState<JSX.Element[]>([]); // State to store generated grid
   const { componentsInCurrentPage, fetchComponentsOfCurrentPage } =
     usePageComponent();
@@ -51,9 +43,7 @@ export default function SpacingGrid() {
     });
     return props;
   };
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSpacing(Number((event.target as HTMLInputElement).value));
-  };
+
   type MenuItem = {
     name: string;
     children?: MenuItem[];
@@ -170,7 +160,7 @@ export default function SpacingGrid() {
         </Box>
         {selectedPage !== null && (
           <>
-            <Divider> Component Sürükle</Divider>
+            <Divider sx={{width:300}}> Component Sürükle</Divider>
             <Box
               sx={{
                 py: 2,

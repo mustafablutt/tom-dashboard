@@ -1,37 +1,21 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
-import Input from "@mui/joy/Input";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import { useSidebar } from "../../context/SidebarContext";
-
 import RadioGroup from "@mui/joy/RadioGroup";
 import Textarea from "@mui/joy/Textarea";
 import { useEffect, useRef, useState } from "react";
 import Select, { selectClasses } from "@mui/joy/Select";
-import Option, { optionClasses } from "@mui/joy/Option";
-
-import Checkbox from "@mui/joy/Checkbox";
+import Option from "@mui/joy/Option";
 import Radio from "@mui/joy/Radio";
 import Button from "@mui/joy/Button";
 import ButtonGroup from "@mui/joy/ButtonGroup";
-
 import Grid from "@mui/joy/Grid";
 import { usePageComponent } from "../../context/PageComponentContext";
-
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import ListDivider from "@mui/joy/ListDivider/ListDivider";
-import ListItemDecorator, {
-  listItemDecoratorClasses,
-} from "@mui/joy/ListItemDecorator";
-
-import Chip from "@mui/joy/Chip";
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
-import Typography from "@mui/joy/Typography";
-import Check from "@mui/icons-material/Check";
 import {
   IAddComponentData,
   IComponentValue,
@@ -39,7 +23,6 @@ import {
 } from "../../interfaces/Interfaces";
 import { colorType, variantType, sizeType } from "../../types/Types";
 import DynamicComponent from "./components/DynamicComponent";
-import { AnyARecord } from "dns";
 import SelectGroupedOptions from "./components/SelectGroupedOptions";
 
 export default function InputColors() {
@@ -64,9 +47,13 @@ export default function InputColors() {
       colorValueRef.current = selectedPageComponent.values.find(
         (value) => value.propertyName === "color"
       )?.valueName;
-      placeholderValueRef.current = selectedPageComponent.values.find(
-        (value) => value.propertyName === "placeholder"
-      )?.valueName;
+      placeholderValueRef.current =
+        selectedPageComponent.values.find(
+          (value) => value.propertyName === "placeholder"
+        )?.valueName ||
+        selectedPageComponent.values.find(
+          (value) => value.propertyName === "label"
+        )?.valueName;
       sizeValueRef.current = selectedPageComponent.values.find(
         (value) => value.propertyName === "size"
       )?.valueName;
@@ -177,9 +164,9 @@ export default function InputColors() {
     return options;
   };
 
-  const handleOrientationChange = (orientation: any) => {
-    setRadioOrientation(orientation);
-  };
+  // const handleOrientationChange = (orientation: any) => {
+  //   setRadioOrientation(orientation);
+  // };
   const handleNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComponentNameText(event.target.value);
   };
@@ -231,6 +218,17 @@ export default function InputColors() {
   ) => {
     setSelectedPage(value);
   };
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showAlert]);
 
   const handlePlaceholderChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -248,20 +246,18 @@ export default function InputColors() {
     const name = componentNameText;
     const pageName = selectedPage;
     const values: IComponentValue[] = [];
-    
+
     values.push({ propertyName: "color", valueName: color });
     values.push({ propertyName: "size", valueName: size });
     values.push({ propertyName: "variant", valueName: variant });
-  
+
     if (selectedComponent === "Radiobutton") {
       values.push({ propertyName: "orientation", valueName: radioOrientation });
     }
-  
+
     if (selectedComponent === "Checkbox") {
-      // Checkbox component doesn't have a placeholder, it has a label
       values.push({ propertyName: "label", valueName: placeholder });
     } else {
-      // For other components, use the "placeholder" property
       values.push({ propertyName: "placeholder", valueName: placeholder });
     }
 
