@@ -140,7 +140,6 @@ const GridCell: React.FC<{
           />
         ),
       ]);
-      console.log(`Dropped ${item} on cell ${rowIndex}-${colIndex}`);
     },
 
     collect: (monitor) => ({
@@ -161,13 +160,15 @@ const GridCell: React.FC<{
       style={{ background: backgroundColor }}
     >
       <Paper>
-        <div className={classes.paper}>
-          {`Grid ${rowIndex + 1}-${colIndex + 1}`}
-        </div>
+        {content.length === 0 && (
+          <div className={classes.paper}>{`Grid ${rowIndex + 1}-${
+            colIndex + 1
+          }`}</div>
+        )}
+
         {content.map((item, index) => (
           <div key={index}>{item}</div>
-        ))}{" "}
-        {/* Rendering all inputs */}
+        ))}
       </Paper>
     </Grid>
   );
@@ -409,7 +410,7 @@ export default ${selectedPage ? selectedPage.replace(/\s+/g, "") : "Test"};
           <Stack spacing={1.5} sx={{ minWidth: 300 }}>
             {selectedPage && (
               <>
-               <Divider> Grid Oluştur</Divider>
+                <Divider> Grid Oluştur</Divider>
                 <FormLabel
                   sx={(theme) => ({
                     "--FormLabel-color": "#7947ca",
