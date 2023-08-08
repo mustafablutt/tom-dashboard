@@ -1,13 +1,6 @@
-import React, { useState } from "react";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useEffect, useState } from "react";
+
 import { RowInput } from "./rowInput";
-import { useDrop } from "react-dnd";
-import { DraggableCheckbox } from "./draggableCheckbox";
-import { DraggableSelect } from "./draggableSelect";
-import { DraggableInput } from "./draggableInput";
-import { DraggableRadioButton } from "./draggableRadioButton";
 import Input from "@mui/joy/Input/Input";
 import DownloadIcon from "@mui/icons-material/Download";
 import Stack from "@mui/joy/Stack";
@@ -17,194 +10,12 @@ import FormLabel from "@mui/joy/FormLabel";
 import { useCallback } from "react";
 import { Button } from "@material-ui/core";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { colorType, sizeType, variantType } from "../../../types/Types";
+
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Divider } from "@mui/material";
-
-interface GridComponentProps {
-  row: number;
-  cols: number;
-  onGridGenerated: (grid: JSX.Element) => void;
-  onItemAdded: (item: DroppedItem, rowIndex: number, colIndex: number) => void;
-}
-
-interface GridGeneratorProps {
-  onGridGenerated: (grid: JSX.Element[]) => void;
-  selectedPage?: string | null;
-}
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-}));
-
-const inputStyle = {
-  width: "300px",
-};
-
-interface DroppedItem {
-  id: number;
-  type: "input" | "checkbox" | "select" | "radio";
-  placeholder?: string;
-  label?: string;
-  variant?: variantType;
-  color?: colorType;
-  size?: sizeType;
-  value?: string;
-  checked?: boolean;
-  options?: string[];
-  onRemove?: () => void;
-  rowIndex?: number; // Add rowIndex property
-  colIndex?: number; // Add colIndex property
-}
-
-const GridCell: React.FC<{
-  gridSize: any;
-  rowIndex: number;
-  colIndex: number;
-  onItemAdded: (item: DroppedItem, rowIndex: number, colIndex: number) => void;
-}> = ({ gridSize, rowIndex, colIndex, onItemAdded }) => {
-  const classes = useStyles();
-  const [content, setContent] = useState<JSX.Element[]>([]);
-  const handleItemAdded = (item: DroppedItem) => {
-    onItemAdded(item, rowIndex, colIndex);
-  };
-  const removeItem = (id: number) => {
-    setContent((prev) => prev.filter((item) => item.props.id !== id));
-  };
-
-  const [{ canDrop, isOver }, drop] = useDrop(() => ({
-    accept: ["input", "checkbox", "select", "radio"],
-    drop: (item: DroppedItem, monitor) => {
-      console.log("Dropped item:", item);
-      handleItemAdded(item);
-      const uniqueId = Date.now() + Math.random();
-      setContent((prev) => [
-        ...prev,
-        item.type === "checkbox" ? (
-          <DraggableCheckbox
-            key={uniqueId}
-            id={uniqueId}
-            checked={item.checked}
-            label={item.label}
-            color={item.color}
-            variant={item.variant}
-            size={item.size}
-            onRemove={removeItem}
-            showClearIcon={true}
-          />
-        ) : item.type === "select" ? (
-          <DraggableSelect
-            key={uniqueId}
-            id={uniqueId}
-            option1="DOG"
-            option2="CAT"
-            placeholder={item.placeholder}
-            color={item.color}
-            size={item.size}
-            variant={item.variant}
-            onRemove={removeItem}
-            showClearIcon={true}
-          />
-        ) : item.type === "radio" ? (
-          <DraggableRadioButton
-            key={uniqueId}
-            id={uniqueId}
-            option1="Radio1"
-            option2="Radio2"
-            option3="Radio3"
-            placeholder={item.placeholder}
-            color={item.color}
-            size={item.size}
-            variant={item.variant}
-            type={item.type}
-            onRemove={removeItem}
-            showClearIcon={true}
-          />
-        ) : (
-          <DraggableInput
-            key={uniqueId}
-            id={uniqueId}
-            type={item.type}
-            value={item.value || ""}
-            placeholder={item.placeholder}
-            color={item.color}
-            variant={item.variant}
-            size={item.size}
-            onRemove={removeItem}
-            showClearIcon={true}
-          />
-        ),
-      ]);
-    },
-
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
-    }),
-  }));
-
-  const isActive = canDrop && isOver;
-  const backgroundColor = isActive ? "#7947ca" : "white";
-
-  return (
-    <Grid
-      item
-      xs={gridSize}
-      key={colIndex}
-      ref={drop}
-      style={{ background: backgroundColor }}
-    >
-      <Paper>
-        {content.length === 0 && (
-          <div className={classes.paper}>{`Grid ${rowIndex + 1}-${
-            colIndex + 1
-          }`}</div>
-        )}
-
-        {content.map((item, index) => (
-          <div key={index}>{item}</div>
-        ))}
-      </Paper>
-    </Grid>
-  );
-};
-
-const GridComponent: React.FC<GridComponentProps> = ({
-  row,
-  cols,
-  onGridGenerated,
-  onItemAdded,
-}) => {
-  const calculateGridSize = () => {
-    return Math.floor(12 / cols);
-  };
-
-  const gridSize = calculateGridSize();
-
-  const grid = (
-    <Grid container spacing={3} key={row}>
-      {Array.from({ length: cols }, (_, colIndex) => (
-        <GridCell
-          gridSize={gridSize}
-          rowIndex={row}
-          colIndex={colIndex}
-          onItemAdded={onItemAdded}
-        />
-      ))}
-    </Grid>
-  );
-
-  React.useEffect(() => {
-    onGridGenerated(grid);
-  }, [grid]);
-
-  return null;
-};
+import { DroppedItem, GridGeneratorProps } from "../../../interfaces/Interfaces";
+import GridComponent from "./GridComponent";
 
 export const GridGenerator: React.FC<GridGeneratorProps> = ({
   onGridGenerated,
@@ -239,7 +50,7 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
     setCols(new Array(value).fill(0));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setRows(0); // rows değerini sıfırla
     setCols([]); // cols dizisini sıfırla
   }, [selectedPage]); // selectedPage değiştiğinde bu useEffect tetiklensin/ selectedPage değiştiğinde bu useEffect tetiklensin
@@ -365,11 +176,11 @@ export default ${selectedPage ? selectedPage.replace(/\s+/g, "") : "Test"};
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     onGridGenerated(gridArray);
   }, [gridArray]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (gridArray.length === rows) {
       const gridString = generateGridString(rows, cols);
       let finalBodyStart = bodyStartBase;

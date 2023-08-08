@@ -1,3 +1,5 @@
+import { colorType, sizeType, variantType } from "../types/Types";
+
 export interface IComponentValue {
   propertyName: string;
   valueName: string | any;
@@ -24,6 +26,33 @@ export interface IFetchComponentData {
   id: string;
   type: string;
   value: string;
+}
+
+export interface GridComponentProps {
+  row: number;
+  cols: number;
+  onGridGenerated: (grid: JSX.Element) => void;
+  onItemAdded: (item: DroppedItem, rowIndex: number, colIndex: number) => void;
+}
+
+export interface GridGeneratorProps {
+  onGridGenerated: (grid: JSX.Element[]) => void;
+  selectedPage?: string | null;
+}
+export interface DroppedItem {
+  id: number;
+  type: "input" | "checkbox" | "select" | "radio";
+  placeholder?: string;
+  label?: string;
+  variant?: variantType;
+  color?: colorType;
+  size?: sizeType;
+  value?: string;
+  checked?: boolean;
+  options?: string[];
+  onRemove?: () => void;
+  rowIndex?: number; // Add rowIndex property
+  colIndex?: number; // Add colIndex property
 }
 
 interface IComponentProperties {
