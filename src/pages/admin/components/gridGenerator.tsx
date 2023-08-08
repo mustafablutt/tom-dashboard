@@ -20,6 +20,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { colorType, sizeType, variantType } from "../../../types/Types";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
+import { Divider } from "@mui/material";
 
 interface GridComponentProps {
   row: number;
@@ -408,6 +409,7 @@ export default ${selectedPage ? selectedPage.replace(/\s+/g, "") : "Test"};
           <Stack spacing={1.5} sx={{ minWidth: 300 }}>
             {selectedPage && (
               <>
+               <Divider> Grid Oluştur</Divider>
                 <FormLabel
                   sx={(theme) => ({
                     "--FormLabel-color": "#7947ca",

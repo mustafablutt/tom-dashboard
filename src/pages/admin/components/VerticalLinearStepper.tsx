@@ -14,12 +14,12 @@ const theme = createTheme({
       MuiStepIcon: {
         styleOverrides: {
           root: {
-            color: '#7947CA', // Diğer adımların rengi
+            color: '#7947CA', 
             '&.Mui-active': {
-              color: '#53308c', // Aktif adımın rengi (kırmızı #FF0000 olarak tanımlanmış)
+              color: '#53308c', 
             },
             '&.Mui-completed': {
-                color: '#7947CA', // Aktif adımın rengi (kırmızı #FF0000 olarak tanımlanmış)
+                color: '#7947CA', 
             },
           },
         },

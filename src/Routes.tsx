@@ -9,6 +9,8 @@ import AddPerson from "./pages/customer/person/addPerson";
 import Admin from "./pages/admin/Admin";
 import EditPages from "./pages/admin/editPages";
 import Test from "./pages/admin/testEditPage";
+import ComponetOperations from "./pages/admin/ComponetOperations";
+import PageOperations from "./pages/admin/PageOperations";
 
 export const RouteList: React.FC = () => {
   return useRoutes([
@@ -19,7 +21,14 @@ export const RouteList: React.FC = () => {
           path: "/",
           element: <Home />,
         },
-
+        {
+          path: "/admin/component-operations",
+          element: <ComponetOperations />,
+        },
+        {
+          path: "/admin/page-operations",
+          element: <PageOperations />,
+        },
         {
           path: "/test",
           element: <Test />,
