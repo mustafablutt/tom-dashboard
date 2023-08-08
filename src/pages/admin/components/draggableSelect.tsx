@@ -2,7 +2,6 @@ import { useDrag } from "react-dnd";
 import Select from "@mui/joy/Select/Select";
 import { variantType, colorType, sizeType } from "../../../types/Types";
 import Option from "@mui/joy/Option/Option";
-import ClearIcon from "@mui/icons-material/Clear";
 import { IconButton } from "@mui/material";
 import FormControl from "@mui/joy/FormControl/FormControl";
 import CancelIcon from "@mui/icons-material/Cancel";

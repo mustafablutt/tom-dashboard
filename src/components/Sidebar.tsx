@@ -15,15 +15,7 @@ import {
   SubMenuItems,
 } from "../styles/SidebarStyles";
 import SearchAppBar from "./Search";
-
-type MenuItem = {
-  _id: number;
-  parentId: number;
-  path: string;
-  name: string;
-  fullPath: string;
-  children?: MenuItem[];
-};
+import { MenuItem } from "../types/Types";
 
 const Sidebar: React.FunctionComponent<{
   onWidthChange: (width: string) => void;
@@ -72,18 +64,14 @@ const Sidebar: React.FunctionComponent<{
     name: string,
     parentId: number
   ) => {
-    // Check if the tab already exists
     const tabExists = tabs.find((tab: Tab) => tab.value === path);
 
-    // If the tab doesn't exist, create a new one
     if (!tabExists && path && name) {
       addTab(name, path);
     } else if (tabExists) {
-      // If the tab does exist, set it as the current tab
       changeTab(path);
     }
 
-    // Close all menus if clicked item is a top level menu
     if (parentId === 0) {
       setOpenSubMenu([]);
       setOpenTopMenu(null);
@@ -123,12 +111,11 @@ const Sidebar: React.FunctionComponent<{
     return false;
   };
   const renderMenuItems = (
-    data: MenuItem[], // MenuItem tipini kullanın
+    data: MenuItem[],
     parentOpen: boolean,
     parentMatched: boolean = false,
     activeParent: MenuItem | null = null
   ): JSX.Element[] => {
-    // JSX.Element[] olarak dönüş tipini belirtin
     const filteredData = data.filter((item) => {
       const matched = nameMatchesSearch(item.name);
       if (matched || parentMatched) {
@@ -147,7 +134,6 @@ const Sidebar: React.FunctionComponent<{
       const isActive = item.path === currentTab;
       const isChildActive = item.children && isAnyChildActive(item.children);
 
-      // Calculate the font weight based on whether the parent or the current item is active
       const fontWeight =
         isActive || isChildActive || isActiveOrParentActive(item)
           ? "bold"
@@ -158,7 +144,7 @@ const Sidebar: React.FunctionComponent<{
           <MenuItems
             onClick={() =>
               item.children && item.children.length > 0
-                ? handleSubMenu(item._id, item.parentId) // _id alanını kullanın
+                ? handleSubMenu(item._id, item.parentId)
                 : null
             }
             style={{
@@ -189,12 +175,12 @@ const Sidebar: React.FunctionComponent<{
               </div>
               {item.children &&
                 item.children.length > 0 &&
-                !openSubMenu[item._id] && ( // _id alanını kullanın
+                !openSubMenu[item._id] && (
                   <ArrowRightIcon style={{ color: "white" }} />
                 )}
               {item.children &&
                 item.children.length > 0 &&
-                openSubMenu[item._id] && ( // _id alanını kullanın
+                openSubMenu[item._id] && (
                   <ArrowDropUpIcon style={{ color: "white" }} />
                 )}
             </MenuItemLinks>
@@ -204,14 +190,14 @@ const Sidebar: React.FunctionComponent<{
             <SubMenuItems
               className="sub-menu-items"
               open={
-                ((parentOpen && openSubMenu[item._id]) || shouldOpen) && // _id alanını kullanın
-                (item.parentId !== 0 || openTopMenu === item._id) // _id alanını kullanın
+                ((parentOpen && openSubMenu[item._id]) || shouldOpen) &&
+                (item.parentId !== 0 || openTopMenu === item._id)
               }
             >
               {renderMenuItems(
                 item.children,
-                ((parentOpen && openSubMenu[item._id]) || shouldOpen) && // _id alanını kullanın
-                  (item.parentId !== 0 || openTopMenu === item._id), // _id alanını kullanın
+                ((parentOpen && openSubMenu[item._id]) || shouldOpen) &&
+                  (item.parentId !== 0 || openTopMenu === item._id),
                 nameMatchesSearch(item.name) || parentMatched,
                 isActiveOrParentActive(item) ? item : activeParent
               )}

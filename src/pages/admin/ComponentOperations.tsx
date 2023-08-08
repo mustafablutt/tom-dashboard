@@ -110,7 +110,6 @@ export default function InputColors() {
     componentNameTextRef.current
   );
 
-  const [isCreating, setIsCreating] = useState(true);
   const [selectedComponentId, setSelectedComponentId] = useState<number>(
     selectedComponentIdRef.current
   );
@@ -139,16 +138,12 @@ export default function InputColors() {
     }
   };
 
-  const handleOrientationChange = (orientation: any) => {
-    setRadioOrientation(orientation);
-  };
   const handleNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComponentNameText(event.target.value);
   };
 
   const handleEditComponents = () => {
     setIsEditing(true);
-    setIsCreating(false);
   };
 
   const handleSelect2Change = (
@@ -168,7 +163,6 @@ export default function InputColors() {
   };
 
   const handleCreateComponents = () => {
-    setIsCreating(true);
     setIsEditing(false);
   };
 
@@ -201,9 +195,7 @@ export default function InputColors() {
   };
 
   const handleAddComponent = async (event: any) => {
-    // Gather values from the input fields
     event.preventDefault();
-    console.log("bunu önemli:", selectedComponentId);
 
     const _id = selectedComponentId;
     const componentName = selectedComponent;
@@ -220,10 +212,8 @@ export default function InputColors() {
     }
 
     if (selectedComponent === "Checkbox") {
-      // Checkbox component doesn't have a placeholder, it has a label
       values.push({ propertyName: "label", valueName: placeholder });
     } else {
-      // For other components, use the "placeholder" property
       values.push({ propertyName: "placeholder", valueName: placeholder });
     }
 
@@ -496,26 +486,6 @@ export default function InputColors() {
             />
           </FormControl>
 
-          {/* {selectedComponent === "Radiobutton" ||
-            (selectedPageComponent?.componentName === "Radiobutton" && (
-              <FormControl>
-                <FormLabel>Orientation</FormLabel>
-                <ButtonGroup
-                  variant="soft"
-                  aria-label="outlined primary button group"
-                  buttonFlex="0 1 200px"
-                  sx={{ width: "100%", justifyContent: "center" }}
-                >
-                  <Button onClick={() => handleOrientationChange("vertical")}>
-                    Vertical
-                  </Button>
-                  <Button onClick={() => handleOrientationChange("horizontal")}>
-                    Horizontal
-                  </Button>
-                </ButtonGroup>
-              </FormControl>
-            ))} */}
-
           <Button onClick={handleAddComponent}>
             {loading ? (
               <CircularProgress sx={{ color: "#fff" }} />
@@ -552,11 +522,7 @@ export default function InputColors() {
         </Box>
       </Grid>
       {showAlert && (
-        <Alert
-          severity="info"
-          // severity={addMessage.includes("Error") ? "error" : "success"}
-          onClose={() => setShowAlert(false)}
-        >
+        <Alert severity="info" onClose={() => setShowAlert(false)}>
           {addMessage}
         </Alert>
       )}

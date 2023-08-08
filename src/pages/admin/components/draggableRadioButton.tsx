@@ -3,7 +3,6 @@ import Radio from "@mui/joy/Radio/Radio";
 import RadioGroup from "@mui/joy/RadioGroup/RadioGroup";
 import FormControl from "@mui/joy/FormControl/FormControl";
 import { variantType, colorType, sizeType } from "../../../types/Types";
-import ClearIcon from "@mui/icons-material/Clear";
 import { IconButton } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 
@@ -55,7 +54,10 @@ export const DraggableRadioButton: React.FC<
   }));
 
   return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 , marginLeft:"8px",width: "95%",}}>
+    <div
+      ref={drag}
+      style={{ opacity: isDragging ? 0.5 : 1, marginLeft: "8px", width: "95%" }}
+    >
       <FormControl>
         {showClearIcon && (
           <IconButton

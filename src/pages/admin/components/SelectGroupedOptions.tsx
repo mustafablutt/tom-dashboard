@@ -23,7 +23,6 @@ type SelectGroupedOptionsProps = {
       | null,
     value: string | null
   ) => void;
-  // Other props if needed
 };
 
 const SelectGroupedOptions: React.FC<SelectGroupedOptionsProps> = ({
@@ -94,7 +93,7 @@ const SelectGroupedOptions: React.FC<SelectGroupedOptionsProps> = ({
                   <React.Fragment>
                     <Chip
                       size="sm"
-                      color="primary" // Replace this with the appropriate color based on the component
+                      color="primary"
                       sx={{ borderRadius: "xs", mr: 1 }}
                     >
                       {pageName}

@@ -6,12 +6,12 @@ import TabList from "@mui/lab/TabList";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTab } from "../context/TabContext";
-import { Outlet, useNavigate } from "react-router-dom"; // Import global TabContext
+import { Outlet, useNavigate } from "react-router-dom";
 
-import { StyledIconButton, StyledTabDiv } from "../styles/TabStyles"; // import the new styles
+import { StyledIconButton, StyledTabDiv } from "../styles/TabStyles";
 
 export default function LabTabs() {
-  const { tabs, currentTab, removeTab, changeTab, reorderTabs } = useTab()!; // Use global TabContext
+  const { tabs, currentTab, removeTab, changeTab, reorderTabs } = useTab()!;
   const navigate = useNavigate();
   return (
     <Box sx={{ width: "100%", typography: "body1" }}>
@@ -28,7 +28,7 @@ export default function LabTabs() {
             onChange={(event, newValue) => changeTab(newValue)}
             TabIndicatorProps={{
               style: {
-                backgroundColor: "#7947CA", // Change the indicator color for the selected tab
+                backgroundColor: "#7947CA",
               },
             }}
             aria-label="lab API tabs example"
@@ -59,19 +59,19 @@ export default function LabTabs() {
                   event.dataTransfer.setData("text/plain", String(index));
                 }}
                 onDragOver={(event) => {
-                  event.preventDefault(); // Bu satırı ekleyin
+                  event.preventDefault();
                 }}
                 onDrop={(event) => {
                   event.preventDefault();
                   const oldIndex = Number(
                     event.dataTransfer.getData("text/plain")
                   );
-                  reorderTabs(oldIndex, index); // Bu satırı ekleyin
+                  reorderTabs(oldIndex, index);
                 }}
                 sx={{
                   color: "GrayText",
                   "&.Mui-selected": {
-                    color: "#7947CA", // Change the color for the active tab
+                    color: "#7947CA",
                   },
                 }}
               />

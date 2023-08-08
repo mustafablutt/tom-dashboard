@@ -8,7 +8,6 @@ import RadioGroup from "@mui/joy/RadioGroup";
 import Radio from "@mui/joy/Radio";
 import { colorType, variantType, sizeType } from "../../../types/Types";
 
-// Add an index signature to the componentMapping object
 interface ComponentMapping {
   [key: string]: React.ElementType;
 }
@@ -40,7 +39,6 @@ const DynamicComponent: React.FC<DynamicComponentProps> = ({
   const SelectedComponent = componentMapping[selectedComponent!];
 
   if (!SelectedComponent) {
-    // Handle the case when the selected component is not found in the mapping
     return null;
   }
 
@@ -48,13 +46,11 @@ const DynamicComponent: React.FC<DynamicComponentProps> = ({
     <FormControl>
       <FormLabel>{selectedComponent}</FormLabel>
       {selectedComponent === "Radiobutton" && (
-        // Special handling for RadioGroup
         <SelectedComponent
           defaultValue="radio2"
           name="radio-buttons-group"
           orientation={radioOrientation}
         >
-          {/* Radio components inside the RadioGroup */}
           <Radio
             value="radio1"
             label={placeholder}
@@ -79,17 +75,15 @@ const DynamicComponent: React.FC<DynamicComponentProps> = ({
         </SelectedComponent>
       )}
       {selectedComponent === "Checkbox" && (
-        // Special handling for Checkbox
         <SelectedComponent
           color={color}
           size={size}
           variant={variant}
-          label={placeholder} // Use the "label" prop for Checkbox
+          label={placeholder}
         />
       )}
       {selectedComponent !== "Radiobutton" &&
         selectedComponent !== "Checkbox" && (
-          // Render other components using the same approach
           <SelectedComponent
             name="random"
             color={color}

@@ -51,8 +51,8 @@ export interface DroppedItem {
   checked?: boolean;
   options?: string[];
   onRemove?: () => void;
-  rowIndex?: number; // Add rowIndex property
-  colIndex?: number; // Add colIndex property
+  rowIndex?: number;
+  colIndex?: number;
 }
 
 interface IComponentProperties {

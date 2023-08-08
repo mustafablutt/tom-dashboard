@@ -1,21 +1,30 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
-    addComponentToPageService ,fetchPageComponents,fetchAllComponents,updatePageComponentService,fetchComponentsOfPageService
+  addComponentToPageService,
+  fetchPageComponents,
+  fetchAllComponents,
+  updatePageComponentService,
+  fetchComponentsOfPageService,
 } from "../services/apiService";
-import { IAddComponentData,IComponent,IFetchComponentData,IUpdateComponentData } from "../interfaces/Interfaces";
+import {
+  IAddComponentData,
+  IComponent,
+  IFetchComponentData,
+  IUpdateComponentData,
+} from "../interfaces/Interfaces";
 
 interface IContext {
   componentsInPage: IUpdateComponentData[] | undefined;
-  componentsInCurrentPage:IFetchComponentData[]|undefined;
-  components : IComponent[] | undefined;
+  componentsInCurrentPage: IFetchComponentData[] | undefined;
+  components: IComponent[] | undefined;
   loading: boolean;
-  succeeded : boolean;
-  addMessage : string;
-  showAlert:boolean;
+  succeeded: boolean;
+  addMessage: string;
+  showAlert: boolean;
   setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
   addComponent: (componentData: IAddComponentData) => Promise<void>;
-  updatePageComponent : (componentData: IUpdateComponentData) =>Promise<void>;
-  fetchComponentsOfCurrentPage: (pageName: string|null) => Promise<void>;
+  updatePageComponent: (componentData: IUpdateComponentData) => Promise<void>;
+  fetchComponentsOfCurrentPage: (pageName: string | null) => Promise<void>;
 }
 
 const PageComponentContext = createContext<IContext | undefined>(undefined);
@@ -23,21 +32,27 @@ const PageComponentContext = createContext<IContext | undefined>(undefined);
 export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [components, setComponents] = useState<IComponent[] | undefined>(undefined);
-  const [componentsInPage, setComponentsInPage] = useState<IUpdateComponentData[] | undefined>(undefined);
-  const [componentsInCurrentPage, setComponentsInCurrentPage] = useState<IFetchComponentData[] | undefined>(undefined);
+  const [components, setComponents] = useState<IComponent[] | undefined>(
+    undefined
+  );
+  const [componentsInPage, setComponentsInPage] = useState<
+    IUpdateComponentData[] | undefined
+  >(undefined);
+  const [componentsInCurrentPage, setComponentsInCurrentPage] = useState<
+    IFetchComponentData[] | undefined
+  >(undefined);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [succeeded, setSucceeded] = useState<boolean>(false);
   const [addMessage, setAddMessage] = useState<string>("");
-  
+
   const [showAlert, setShowAlert] = React.useState(false);
 
   useEffect(() => {
     fetchPageComponents()
       .then((response) => {
         setComponentsInPage(response.data.data);
-        console.log("context içindeyim",response.data.data);
+        console.log("context içindeyim", response.data.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -50,7 +65,7 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchAllComponents()
       .then((response) => {
         setComponents(response.data.data);
-        console.log("components geliyo mu all",response.data.data);
+        console.log("components geliyo mu all", response.data.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -59,12 +74,12 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
       });
   }, []);
 
-  const fetchComponentsOfCurrentPage = async (pageName: string|null) => {
+  const fetchComponentsOfCurrentPage = async (pageName: string | null) => {
     try {
       setLoading(true);
       const response = await fetchComponentsOfPageService(pageName);
       setComponentsInCurrentPage(response.data.data);
-      console.log("edit pages on", response.data.data)
+      console.log("edit pages on", response.data.data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching components of the page", error);
@@ -74,8 +89,8 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
   const addComponent = async (componentData: IAddComponentData) => {
     try {
       setLoading(true);
-      const response2= await addComponentToPageService(componentData);
-      // Assuming the data is successfully added, update the current pageComponent list
+      const response2 = await addComponentToPageService(componentData);
+
       const response = await fetchPageComponents();
       setComponentsInPage(response.data.data);
       console.log("new component values", componentData);
@@ -85,28 +100,28 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(false);
     } catch (error) {
       console.error("Error adding new component", error);
-      setAddMessage("Error adding new component")
+      setAddMessage("Error adding new component");
       setLoading(false);
       setShowAlert(true);
     }
   };
 
-  const updatePageComponent = async (componentData: IUpdateComponentData)=>{
+  const updatePageComponent = async (componentData: IUpdateComponentData) => {
     try {
       setLoading(true);
       const updateResponse = await updatePageComponentService(componentData);
       const respone = await fetchPageComponents();
       setComponentsInPage(respone.data.data);
       setAddMessage(updateResponse.data.message);
-      setShowAlert(true)
+      setShowAlert(true);
       setLoading(false);
     } catch (error) {
       console.error("Error updating component", error);
-      setAddMessage("Error updating component")
+      setAddMessage("Error updating component");
       setLoading(false);
       setShowAlert(true);
     }
-  }
+  };
   return (
     <PageComponentContext.Provider
       value={{
@@ -120,7 +135,7 @@ export const PageComponentProvider: React.FC<{ children: React.ReactNode }> = ({
         setShowAlert,
         updatePageComponent,
         fetchComponentsOfCurrentPage,
-        componentsInCurrentPage
+        componentsInCurrentPage,
       }}
     >
       {children}
@@ -135,4 +150,3 @@ export const usePageComponent = () => {
   }
   return context;
 };
-

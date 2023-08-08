@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-import { IUpdateComponentData } from "../interfaces/Interfaces";
 
 export async function addComponentToPageService(data: {
   componentName: string;
@@ -34,7 +33,10 @@ export async function updatePageComponentService(data: {
     data
   );
 }
-export async function fetchComponentsOfPageService(pageName: string|null): Promise<AxiosResponse<any>> {
-  return axios.get(`https://localhost:7136/api/PageComponent/GetComponentsByPageName?pageName=${pageName}`);
+export async function fetchComponentsOfPageService(
+  pageName: string | null
+): Promise<AxiosResponse<any>> {
+  return axios.get(
+    `https://localhost:7136/api/PageComponent/GetComponentsByPageName?pageName=${pageName}`
+  );
 }
-

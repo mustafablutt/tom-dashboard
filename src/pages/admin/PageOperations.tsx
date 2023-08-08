@@ -58,10 +58,6 @@ export default function SpacingGrid() {
     }
   }, [selectedPage]);
 
-  useEffect(() => {
-    console.log("bunu seçtim editteyim", componentsInCurrentPage);
-  }, [componentsInCurrentPage]);
-
   if (!menuData) {
     return <div>Loading...</div>;
   }
@@ -135,7 +131,7 @@ export default function SpacingGrid() {
                 alignItems: "center",
                 flexWrap: "wrap",
                 width: 300,
-                height: "300px", // Set a fixed height for the container
+                height: "300px",
                 overflow: "auto",
               }}
             >
@@ -229,7 +225,7 @@ export default function SpacingGrid() {
               {!selectedPage && "Sayfa seçip grid üretiniz."}
             </Typography>
           ) : (
-            generatedGrid // Render the generated grid here if it's not empty
+            generatedGrid
           )}
         </Grid>
       ) : (

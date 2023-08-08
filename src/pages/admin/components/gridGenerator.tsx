@@ -14,7 +14,10 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Divider } from "@mui/material";
-import { DroppedItem, GridGeneratorProps } from "../../../interfaces/Interfaces";
+import {
+  DroppedItem,
+  GridGeneratorProps,
+} from "../../../interfaces/Interfaces";
 import GridComponent from "./GridComponent";
 
 export const GridGenerator: React.FC<GridGeneratorProps> = ({
@@ -51,17 +54,17 @@ export const GridGenerator: React.FC<GridGeneratorProps> = ({
   };
 
   useEffect(() => {
-    setRows(0); // rows değerini sıfırla
-    setCols([]); // cols dizisini sıfırla
-  }, [selectedPage]); // selectedPage değiştiğinde bu useEffect tetiklensin/ selectedPage değiştiğinde bu useEffect tetiklensin
+    setRows(0);
+    setCols([]);
+  }, [selectedPage]);
 
   const handleItemAdded = (
     item: DroppedItem,
     rowIndex: number,
     colIndex: number
   ) => {
-    const newItem = { ...item, rowIndex, colIndex }; // Sürüklenen öğeye satır ve sütun bilgilerini ekleyerek yeni bir nesne oluşturuyoruz.
-    setDroppedItems((prev) => [...prev, newItem]); // Yeni öğeyi listeye ekliyoruz.
+    const newItem = { ...item, rowIndex, colIndex };
+    setDroppedItems((prev) => [...prev, newItem]);
   };
   const handleRowColumnsChange = (rowIndex: number, columnCount: number) => {
     if (columnCount > 12) {

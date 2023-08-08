@@ -12,7 +12,7 @@ interface TabContextProps {
   addTab: (label: string, value: string) => void;
   removeTab: (tab: Tab) => void;
   changeTab: (tab: string) => void;
-  reorderTabs: (startIndex: number, endIndex: number) => void; // Yeni eklediğimiz fonksiyon
+  reorderTabs: (startIndex: number, endIndex: number) => void;
 }
 
 export const useTab = () => {

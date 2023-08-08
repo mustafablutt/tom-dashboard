@@ -6,15 +6,7 @@ import {
   ReactNode,
 } from "react";
 import axios from "axios";
-
-type MenuItem = {
-  _id: number;
-  parentId: number;
-  path: string;
-  name: string;
-  fullPath: string;
-  children?: MenuItem[];
-};
+import { MenuItem } from "../types/Types";
 
 const SidebarContext = createContext<{ menuData: MenuItem[] } | null>(null);
 
