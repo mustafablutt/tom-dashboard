@@ -6,8 +6,7 @@ import DeleteCustomer from "./pages/customer/deleteCustomer";
 import AddCustomer from "./pages/customer/addCustomer";
 import DeletePerson from "./pages/customer/person/deletePerson";
 import AddPerson from "./pages/customer/person/addPerson";
-import Admin from "./pages/admin/Admin";
-import EditPages from "./pages/admin/editPages";
+
 import Test from "./pages/admin/testEditPage";
 import ComponetOperations from "./pages/admin/ComponetOperations";
 import PageOperations from "./pages/admin/PageOperations";
@@ -32,14 +31,6 @@ export const RouteList: React.FC = () => {
         {
           path: "/test",
           element: <Test />,
-        },
-        {
-          path: "/admin",
-          element: <Admin />,
-        },
-        {
-          path: "/admin/edit-pages",
-          element: <EditPages />,
         },
 
         {
