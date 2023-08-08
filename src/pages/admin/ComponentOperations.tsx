@@ -1,21 +1,28 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
+import { getMenuOptions } from "./components/menuHelper";
+
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import { useSidebar } from "../../context/SidebarContext";
+
 import RadioGroup from "@mui/joy/RadioGroup";
 import Textarea from "@mui/joy/Textarea";
 import { useEffect, useRef, useState } from "react";
 import Select, { selectClasses } from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
+
 import Radio from "@mui/joy/Radio";
 import Button from "@mui/joy/Button";
 import ButtonGroup from "@mui/joy/ButtonGroup";
+
 import Grid from "@mui/joy/Grid";
 import { usePageComponent } from "../../context/PageComponentContext";
+
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+
 import {
   IAddComponentData,
   IComponentValue,
@@ -23,6 +30,7 @@ import {
 } from "../../interfaces/Interfaces";
 import { colorType, variantType, sizeType } from "../../types/Types";
 import DynamicComponent from "./components/DynamicComponent";
+
 import SelectGroupedOptions from "./components/SelectGroupedOptions";
 
 export default function InputColors() {
@@ -47,13 +55,9 @@ export default function InputColors() {
       colorValueRef.current = selectedPageComponent.values.find(
         (value) => value.propertyName === "color"
       )?.valueName;
-      placeholderValueRef.current =
-        selectedPageComponent.values.find(
-          (value) => value.propertyName === "placeholder"
-        )?.valueName ||
-        selectedPageComponent.values.find(
-          (value) => value.propertyName === "label"
-        )?.valueName;
+      placeholderValueRef.current = selectedPageComponent.values.find(
+        (value) => value.propertyName === "placeholder"
+      )?.valueName;
       sizeValueRef.current = selectedPageComponent.values.find(
         (value) => value.propertyName === "size"
       )?.valueName;
@@ -135,38 +139,9 @@ export default function InputColors() {
     }
   };
 
-  type MenuItem = {
-    name: string;
-    children?: MenuItem[];
+  const handleOrientationChange = (orientation: any) => {
+    setRadioOrientation(orientation);
   };
-
-  const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
-    let options: any = [];
-
-    const addLeafNodes = (item: MenuItem) => {
-      if (item.children && item.children.length > 0) {
-        item.children.forEach((child) => {
-          addLeafNodes(child);
-        });
-      } else {
-        options.push(
-          <Option key={item.name} value={item.name}>
-            {item.name}
-          </Option>
-        );
-      }
-    };
-
-    items.forEach((item) => {
-      addLeafNodes(item);
-    });
-
-    return options;
-  };
-
-  // const handleOrientationChange = (orientation: any) => {
-  //   setRadioOrientation(orientation);
-  // };
   const handleNameChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComponentNameText(event.target.value);
   };
@@ -218,17 +193,6 @@ export default function InputColors() {
   ) => {
     setSelectedPage(value);
   };
-  useEffect(() => {
-    if (showAlert) {
-      const timer = setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [showAlert]);
 
   const handlePlaceholderChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -256,8 +220,10 @@ export default function InputColors() {
     }
 
     if (selectedComponent === "Checkbox") {
+      // Checkbox component doesn't have a placeholder, it has a label
       values.push({ propertyName: "label", valueName: placeholder });
     } else {
+      // For other components, use the "placeholder" property
       values.push({ propertyName: "placeholder", valueName: placeholder });
     }
 

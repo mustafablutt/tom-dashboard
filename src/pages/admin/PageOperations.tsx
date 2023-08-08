@@ -1,7 +1,7 @@
 import * as React from "react";
 import Grid from "@mui/material/Grid";
 import { GridGenerator } from "./components/gridGenerator";
-import Option from "@mui/joy/Option";
+import { getMenuOptions } from "./components/menuHelper";
 import Input from "@mui/joy/Input/Input";
 import Checkbox from "@mui/joy/Checkbox/Checkbox";
 import Box from "@mui/joy/Box";
@@ -15,17 +15,14 @@ import { usePageComponent } from "../../context/PageComponentContext";
 import Select, { selectClasses } from "@mui/joy/Select";
 import { useSidebar } from "../../context/SidebarContext";
 import RadioGroup from "@mui/joy/RadioGroup";
-import {
-  Divider,
-  Typography,
-} from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import VerticalLinearStepper from "./components/VerticalLinearStepper";
 
 export default function SpacingGrid() {
-  const [generatedGrid, setGeneratedGrid] = useState<JSX.Element[]>([]); // State to store generated grid
+  const [generatedGrid, setGeneratedGrid] = useState<JSX.Element[]>([]);
   const { componentsInCurrentPage, fetchComponentsOfCurrentPage } =
     usePageComponent();
-  const [selectedPage, setSelectedPage] = useState<string | null>(null); // Initialize as null
+  const [selectedPage, setSelectedPage] = useState<string | null>(null);
   const { menuData } = useSidebar();
 
   const componentsMap: Record<string, React.ElementType> = {
@@ -42,35 +39,6 @@ export default function SpacingGrid() {
       props[v.propertyName] = v.valueName;
     });
     return props;
-  };
-
-  type MenuItem = {
-    name: string;
-    children?: MenuItem[];
-  };
-
-  const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
-    let options: any = [];
-
-    const addLeafNodes = (item: MenuItem) => {
-      if (item.children && item.children.length > 0) {
-        item.children.forEach((child) => {
-          addLeafNodes(child);
-        });
-      } else {
-        options.push(
-          <Option key={item.name} value={item.name}>
-            {item.name}
-          </Option>
-        );
-      }
-    };
-
-    items.forEach((item) => {
-      addLeafNodes(item);
-    });
-
-    return options;
   };
 
   const handlePageChange = (
@@ -102,9 +70,7 @@ export default function SpacingGrid() {
     setGeneratedGrid(grid);
   };
 
-  const handleRemove = (id: number) => {
-    // kaldırılan öğenin id'si ile ilgili işlemleri burada yapabilirsiniz.
-  };
+  const handleRemove = (id: number) => {};
 
   return (
     <Grid
@@ -152,7 +118,6 @@ export default function SpacingGrid() {
           >
             {getMenuOptions(menuData)}
           </Select>
-         
           <GridGenerator
             onGridGenerated={handleGridGenerated}
             selectedPage={selectedPage}
@@ -160,7 +125,7 @@ export default function SpacingGrid() {
         </Box>
         {selectedPage !== null && (
           <>
-            <Divider sx={{width:300}}> Component Sürükle</Divider>
+            <Divider sx={{ width: 300 }}> Component Sürükle</Divider>
             <Box
               sx={{
                 py: 2,
