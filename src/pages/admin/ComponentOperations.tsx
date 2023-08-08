@@ -155,23 +155,25 @@ export default function InputColors() {
 
   const getMenuOptions: (items: MenuItem[]) => React.ReactNode[] = (items) => {
     let options: any = [];
-    const addChildren = (children: MenuItem[]) => {
-      children.forEach((child) => {
+
+    const addLeafNodes = (item: MenuItem) => {
+      if (item.children && item.children.length > 0) {
+        item.children.forEach((child) => {
+          addLeafNodes(child);
+        });
+      } else {
         options.push(
-          <Option key={child.name} value={child.name}>
-            {child.name}
+          <Option key={item.name} value={item.name}>
+            {item.name}
           </Option>
         );
-        if (child.children) {
-          addChildren(child.children);
-        }
-      });
-    };
-    items.forEach((item) => {
-      if (item.children) {
-        addChildren(item.children);
       }
+    };
+
+    items.forEach((item) => {
+      addLeafNodes(item);
     });
+
     return options;
   };
 

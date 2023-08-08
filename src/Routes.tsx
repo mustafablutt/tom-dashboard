@@ -8,7 +8,7 @@ import DeletePerson from "./pages/customer/person/deletePerson";
 import AddPerson from "./pages/customer/person/addPerson";
 
 import Test from "./pages/admin/testEditPage";
-import ComponetOperations from "./pages/admin/ComponetOperations";
+import ComponentOperations from "./pages/admin/ComponentOperations";
 import PageOperations from "./pages/admin/PageOperations";
 
 export const RouteList: React.FC = () => {
@@ -22,7 +22,7 @@ export const RouteList: React.FC = () => {
         },
         {
           path: "/admin/component-operations",
-          element: <ComponetOperations />,
+          element: <ComponentOperations />,
         },
         {
           path: "/admin/page-operations",
