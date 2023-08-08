@@ -10,7 +10,9 @@ import AddPerson from "./pages/customer/person/addPerson";
 import Test from "./pages/admin/testEditPage";
 import ComponentOperations from "./pages/admin/ComponentOperations";
 import PageOperations from "./pages/admin/PageOperations";
-
+import IncomeStatement from "./pages/customer/financialreporting/incomeStatement";
+import BalanceSheet from "./pages/customer/financialreporting/balanceSheet";
+import CashFlowStatement from "./pages/customer/financialreporting/cashFlowStatement";
 export const RouteList: React.FC = () => {
   return useRoutes([
     {
@@ -49,6 +51,18 @@ export const RouteList: React.FC = () => {
         {
           path: "/person/remove-person",
           element: <DeletePerson />,
+        },
+        {
+          path: "/financialReporting/income-statement",
+          element: <IncomeStatement />,
+        },
+        {
+          path: "/financialReporting/balance-sheet",
+          element: <BalanceSheet />,
+        },
+        {
+          path: "/financialReporting/cash-flow-statement",
+          element: <CashFlowStatement />,
         },
       ],
     },
